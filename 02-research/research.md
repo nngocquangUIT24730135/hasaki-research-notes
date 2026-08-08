@@ -108,7 +108,7 @@ Công ty thuộc nhóm nghiên cứu khi phần lớn thỏa:
 | Guardian, Watsons, Medicare | Chuỗi làm đẹp–sức khỏe đa kênh | Clinic gắn chuỗi yếu hơn; cam kết giao khác |
 | Beauty Box | Chuỗi cửa hàng mỹ phẩm | Phân khúc cao cấp hơn |
 | Olive Young (Hàn Quốc) | Nền tảng làm đẹp + cửa hàng + giao trong ngày | Kho đô thị tự động hóa quy mô lớn hơn |
-| Ulta, Sephora (Mỹ) | Lấy hàng từ cửa hàng giao đơn online | Ít mô hình giao vài giờ kiểu Việt Nam; clinic không phải trụ chính |
+| Ulta, Sephora (Mỹ) | Lấy hàng từ cửa hàng để giao đơn online | Ít mô hình giao vài giờ kiểu Việt Nam; clinic không phải trụ chính |
 | Chuỗi nhà thuốc Việt Nam | Cửa hàng làm điểm lấy hàng, giao nhanh | Ngành hàng và quy định hành nghề khác |
 | Giao hàng nhanh tiện lợi (ví dụ GrabMart) | Cam kết theo giờ | Không sở hữu thương hiệu làm đẹp + clinic |
 
@@ -150,58 +150,60 @@ Hoạch định và mở điểm bán
 
 ### 3.3. Danh mục khoảng 13 quy trình
 
-#### A. Quy trình quản lý
+Tên trong ngoặc theo kiểu **chuỗi giá trị đầu–cuối** (ví dụ *Order-to-Delivery*, *Procure-to-Pay*): nhấn mạnh điểm bắt đầu và kết thúc nghiệp vụ, dễ đối chiếu khung phân loại quốc tế.
+
+#### A. Quy trình quản lý (Management Processes)
 
 | Mã | Quy trình | Khách hàng của quy trình | Kết quả điển hình |
 |----|-----------|--------------------------|-------------------|
-| A1 | Hoạch định chiến lược và mở rộng mạng cửa hàng / clinic | Ban điều hành, khối phát triển chuỗi | Kế hoạch địa điểm, ngân sách, chỉ tiêu được duyệt |
-| A2 | Phê duyệt và hợp tác nhà cung cấp / nhãn hàng | Bộ phận mua hàng và kho | Hợp đồng và dữ liệu nhà cung cấp, hoặc từ chối |
-| A3 | Quản lý tồn kho đa kênh | Các kênh bán và giao hàng | Tồn đồng bộ; lệnh điều chuyển / đặt mua; cảnh báo cận hạn dùng |
-| A4 | Kiểm soát chất lượng nhập hàng và chống hàng giả | Kho / ngành hàng | Lô được phép bán, hoặc cách ly / trả nhà cung cấp |
+| A1 | Hoạch định chiến lược và mở rộng mạng cửa hàng / clinic (*Strategy-to-Expansion*) | Ban điều hành, khối phát triển chuỗi | Kế hoạch địa điểm, ngân sách, chỉ tiêu được duyệt |
+| A2 | Phê duyệt và hợp tác nhà cung cấp / nhãn hàng (*Source-to-Contract*) | Bộ phận mua hàng và kho | Hợp đồng và dữ liệu nhà cung cấp, hoặc từ chối |
+| A3 | Quản lý tồn kho đa kênh (*Plan-to-Stock*) | Các kênh bán và giao hàng | Tồn đồng bộ; lệnh điều chuyển / đặt mua; cảnh báo cận hạn dùng |
+| A4 | Kiểm soát chất lượng nhập hàng và chống hàng giả (*Inspect-to-Release*) | Kho / ngành hàng | Lô được phép bán, hoặc cách ly / trả nhà cung cấp |
 
 Cổng nhà cung cấp Hasaki công bố bốn bước: đăng ký → xác thực → ký hợp đồng → nhận hỗ trợ ([merchant.hasaki.vn](https://merchant.hasaki.vn/nha-cung-cap)).
 
-#### B. Quy trình cốt lõi
+#### B. Quy trình cốt lõi (Core Processes)
 
 | Mã | Quy trình | Khách hàng của quy trình | Kết quả điển hình |
 |----|-----------|--------------------------|-------------------|
-| B1 | Bán hàng và tư vấn tại cửa hàng | Khách tại cửa hàng | Giao dịch hoàn tất, hoặc chỉ tư vấn |
-| B2 | Xử lý đơn online và giao hàng (gồm giao 2 giờ) | Khách đặt trên kênh của Hasaki | Giao thành công, hoặc hủy có kiểm soát (+ hoàn tiền nếu cần) |
-| B3 | Đặt lịch và thực hiện dịch vụ Clinic / Spa | Khách dùng dịch vụ | Liệu trình xong và thanh toán; hoặc dời / hủy |
-| B4 | Đổi trả và hoàn tiền | Khách yêu cầu đổi / trả | Đổi, hoàn, hoặc từ chối theo điều kiện |
-| B5 | Chăm sóc khách hàng và khiếu nại | Khách cần hỗ trợ | Yêu cầu được đóng, hoặc chuyển cấp cao hơn |
+| B1 | Bán hàng và tư vấn tại cửa hàng (*Visit-to-Cash*) | Khách tại cửa hàng | Giao dịch hoàn tất, hoặc chỉ tư vấn |
+| B2 | Xử lý đơn hàng online và giao hàng — gồm giao nhanh 2 giờ (*Order-to-Delivery*) | Khách đặt trên kênh của Hasaki | Giao thành công, hoặc hủy có kiểm soát (+ hoàn tiền nếu cần) |
+| B3 | Đặt lịch và thực hiện dịch vụ Clinic / Spa (*Appointment-to-Service*) | Khách dùng dịch vụ | Liệu trình xong và thanh toán; hoặc dời / hủy |
+| B4 | Đổi trả và hoàn tiền (*Return-to-Refund*) | Khách yêu cầu đổi / trả | Đổi, hoàn, hoặc từ chối theo điều kiện |
+| B5 | Chăm sóc khách hàng và khiếu nại (*Issue-to-Resolution*) | Khách cần hỗ trợ | Yêu cầu được đóng, hoặc chuyển cấp cao hơn |
 
-#### C. Quy trình hỗ trợ
+#### C. Quy trình hỗ trợ (Support Processes)
 
 | Mã | Quy trình | Khách hàng của quy trình | Kết quả điển hình |
 |----|-----------|--------------------------|-------------------|
-| C1 | Tuyển dụng và đào tạo | Quản lý điểm bán / clinic | Nhân sự nhận việc, hoặc từ chối |
-| C2 | Tài chính – đối soát doanh thu đa kênh | Lãnh đạo / kiểm soát nội bộ | Sổ khớp kênh; lệch được xử lý |
-| C3 | Tiếp thị và cấu hình khuyến mãi | Khối bán hàng | Chương trình sẵn sàng chạy; có đo hiệu quả |
-| C4 | Xử lý sự cố hệ thống công nghệ thông tin | Người dùng nội bộ | Dịch vụ được khôi phục |
+| C1 | Tuyển dụng và đào tạo (*Hire-to-Deploy*) | Quản lý điểm bán / clinic | Nhân sự nhận việc, hoặc từ chối |
+| C2 | Tài chính – đối soát doanh thu đa kênh (*Reconcile-to-Close*) | Lãnh đạo / kiểm soát nội bộ | Sổ khớp kênh; lệch được xử lý |
+| C3 | Tiếp thị và cấu hình khuyến mãi (*Campaign-to-Launch*) | Khối bán hàng | Chương trình sẵn sàng chạy; có đo hiệu quả |
+| C4 | Xử lý sự cố hệ thống công nghệ thông tin (*Incident-to-Restore*) | Người dùng nội bộ | Dịch vụ được khôi phục |
 
 ### 3.4. Sơ đồ kiến trúc (nhìn nhanh)
 
 ```text
-┌────────────────── QUẢN LÝ ──────────────────┐
-│ A1 Chiến lược & mở mạng điểm                │
-│ A2 Phê duyệt nhà cung cấp                   │
-│ A3 Quản lý tồn kho đa kênh                  │
-│ A4 Kiểm soát chất lượng nhập hàng           │
-└─────────────────────────────────────────────┘
-┌────────────────── CỐT LÕI ──────────────────┐
-│ B1 Bán hàng tại cửa hàng                    │
-│ B2 Đơn online và giao hàng (kể cả 2 giờ)    │
-│ B3 Đặt lịch và thực hiện Clinic             │
-│ B4 Đổi trả và hoàn tiền                     │
-│ B5 Chăm sóc khách hàng và khiếu nại         │
-└─────────────────────────────────────────────┘
-┌────────────────── HỖ TRỢ ───────────────────┐
-│ C1 Tuyển dụng và đào tạo                    │
-│ C2 Tài chính – đối soát                     │
-│ C3 Tiếp thị và khuyến mãi                   │
-│ C4 Công nghệ thông tin – sự cố hệ thống     │
-└─────────────────────────────────────────────┘
+┌─────────────── QUẢN LÝ (Management) ────────────────┐
+│ A1 Chiến lược & mở mạng (*Strategy-to-Expansion*)   │
+│ A2 Phê duyệt NCC (*Source-to-Contract*)             │
+│ A3 Tồn kho đa kênh (*Plan-to-Stock*)                │
+│ A4 Chất lượng nhập hàng (*Inspect-to-Release*)      │
+└─────────────────────────────────────────────────────┘
+┌─────────────── CỐT LÕI (Core) ──────────────────────┐
+│ B1 Bán tại cửa hàng (*Visit-to-Cash*)               │
+│ B2 Đơn online & giao (*Order-to-Delivery*)          │
+│ B3 Clinic / Spa (*Appointment-to-Service*)          │
+│ B4 Đổi trả & hoàn tiền (*Return-to-Refund*)         │
+│ B5 CSKH & khiếu nại (*Issue-to-Resolution*)         │
+└─────────────────────────────────────────────────────┘
+┌─────────────── HỖ TRỢ (Support) ────────────────────┐
+│ C1 Tuyển dụng & đào tạo (*Hire-to-Deploy*)          │
+│ C2 Tài chính – đối soát (*Reconcile-to-Close*)      │
+│ C3 Tiếp thị & khuyến mãi (*Campaign-to-Launch*)     │
+│ C4 Sự cố CNTT (*Incident-to-Restore*)               │
+└─────────────────────────────────────────────────────┘
 ```
 
 ### 3.5. Năng lực hệ thống thường cần (suy luận ngành)
@@ -233,7 +235,7 @@ Không khẳng định phần mềm nội bộ Hasaki. Để chạy kiến trúc
 
 ### 4.3. Ranh giới các quy trình then chốt
 
-**B2 — Đơn online và giao hàng**
+**B2 — Xử lý đơn hàng online và giao hàng (*Order-to-Delivery*)**
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -251,7 +253,7 @@ Chính sách công bố liên quan: option 2 giờ / 48 giờ tại nội thành
 
 Khi vẽ sơ đồ, vẫn có thể hiện giai đoạn **cam kết giao** (bước trên màn hình đặt hàng + kiểm hệ thống quanh lúc đặt) để đủ cổng điều kiện, rồi **tạo đơn và sẵn sàng soạn → soạn–đóng gói–bàn giao → giao đến khách → xử lý ngoại lệ**. Cam kết trên BPMN giúp hiểu quy tắc; **định lượng chỉ trên lần chạy đã Đặt hàng**. Các bước xếp ưu tiên đơn 2 giờ, xác nhận tồn lúc soạn là *suy luận chuẩn ngành* — xem [ba_model_b2_b4.md](../03-core/ba_model_b2_b4.md).
 
-**B4 — Đổi trả**
+**B4 — Đổi trả (*Return-to-Refund*)**
 
 | Thuộc tính | Nội dung |
 |------------|----------|
