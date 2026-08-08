@@ -1,4 +1,4 @@
-# Nghiên cứu mô hình kinh doanh Hasaki và kiến trúc quy trình
+# Nghiên cứu mô hình kinh doanh Hasaki và kiến trúc quy trình (*process architecture*)
 
 **Đối tượng nghiên cứu:** Công ty Hasaki Beauty & Clinic ([hasaki.vn](https://hasaki.vn/))  
 **Ngày tổng hợp:** 08/08/2026  
@@ -8,21 +8,32 @@
 | Loại nội dung | Cách xử lý trong báo cáo |
 |---------------|--------------------------|
 | Sự kiện / chính sách công bố | Trích từ website Hasaki, trang hỗ trợ, báo chí; kèm đường dẫn và thời điểm nguồn |
-| Kiến trúc quy trình | *Kiến trúc tham chiếu* suy ra từ mô hình kinh doanh và chuẩn phân loại quy trình bán lẻ — **không** khẳng định đây là sổ tay nội bộ đã quan sát tại Hasaki |
+| Kiến trúc quy trình (*process architecture*) | *Kiến trúc tham chiếu* suy ra từ mô hình kinh doanh và chuẩn phân loại quy trình bán lẻ — **không** khẳng định đây là sổ tay nội bộ đã quan sát tại Hasaki |
 | Số liệu quy mô | Nhiều nguồn lệch nhau theo năm; luôn ghi năm nguồn, không gộp thành một con số “chính thức” |
 
 ### Bảng chú thích thuật ngữ
 
 | Thuật ngữ / viết tắt | Giải thích |
 |----------------------|------------|
-| Bán hàng đa kênh | Khách mua và nhận hàng qua nhiều kênh (cửa hàng, website, ứng dụng, sàn thương mại điện tử) nhưng trải nghiệm gắn với cùng một thương hiệu |
-| Kiến trúc quy trình | Danh mục các quy trình nghiệp vụ được phân nhóm (quản lý / cốt lõi / hỗ trợ), có đầu vào–đầu ra rõ |
-| Ranh giới quy trình | Xác định quy trình bắt đầu–kết thúc ở đâu, đối tượng theo dõi là gì, việc gì thuộc quy trình khác |
+| Bán hàng đa kênh (*omnichannel retail*) | Khách mua và nhận hàng qua nhiều kênh (cửa hàng, website, ứng dụng, sàn thương mại điện tử) nhưng trải nghiệm gắn với cùng một thương hiệu |
+| Kiến trúc quy trình (*process architecture*) | Danh mục các quy trình nghiệp vụ được phân nhóm (quản lý / cốt lõi / hỗ trợ), có đầu vào–đầu ra rõ |
+| Ranh giới quy trình (*process boundary*) | Xác định quy trình bắt đầu–kết thúc ở đâu, đối tượng theo dõi là gì, việc gì thuộc quy trình khác |
+| Định danh quy trình (*process identification*) | Xác định danh mục và phạm vi các quy trình trong tổ chức (theo khung FBPM) |
+| Quy trình quản lý / cốt lõi / hỗ trợ (*management / core / support processes*) | Ba lớp trong kiến trúc quy trình |
+| Khách hàng của quy trình (*process customer*) | Bên nhận kết quả đầu ra của quy trình (không nhất thiết là khách mua hàng) |
+| Sự kiện kích hoạt (*trigger*) | Sự kiện mở một lần chạy quy trình mới |
+| Đối tượng theo dõi / lần chạy (*case* / *process instance*) | Thực thể gắn một lần thực hiện quy trình (ví dụ mã đơn) |
+| Kết quả (*outcome*) | Trạng thái kết thúc có kiểm soát của một lần chạy |
 | Tồn khả dụng để cam kết giao | Số lượng hàng hệ thống còn “dám” hứa giao tại một điểm kho/cửa hàng tại thời điểm khách đặt |
+| Thời gian chu kỳ (*cycle time*) | Thời gian từ bắt đầu đến kết thúc một lần chạy quy trình |
 | NowFree | Tên dịch vụ giao nhanh khoảng 2 giờ của Hasaki (theo trang hỗ trợ) |
-| COD | Thanh toán khi nhận hàng |
+| COD | Thanh toán khi nhận hàng (*cash on delivery*) |
 | ĐTVC | Đối tác vận chuyển |
-| BPMN | Chuẩn ký hiệu vẽ sơ đồ quy trình nghiệp vụ |
+| BPMN | *Business Process Model and Notation* — chuẩn ký hiệu vẽ sơ đồ quy trình nghiệp vụ |
+| Cổng điều kiện (*gateway*), XOR | Chỗ chọn nhánh trên sơ đồ; XOR = chỉ đi một nhánh |
+| Bể bơi / làn (*pool* / *lane*) | Khung tổ chức / vai trò trên sơ đồ BPMN |
+| Phân tích định tính / định lượng (*qualitative / quantitative process analysis*) | Phân tích giá trị–lãng phí / đo thời gian–chi phí–chất lượng |
+| Giá trị gia tăng / lãng phí (*value-added analysis* / *waste analysis*) | Phân loại VA–BVA–NVA và nguồn lãng phí (Move / Hold / Overdo) |
 
 ---
 
@@ -124,12 +135,12 @@ Ngành bán lẻ làm đẹp đang biến cửa hàng thành **điểm lấy hà
 
 ---
 
-## 3. Kiến trúc quy trình tham chiếu
+## 3. Kiến trúc quy trình tham chiếu (*reference process architecture*)
 
 ### 3.1. Cơ sở
 
 - Khung phân loại quy trình bán lẻ (APQC — tổ chức nghiên cứu năng suất Hoa Kỳ) giúp đặt tên và phân nhóm quy trình, có yếu tố bán hàng đa kênh.  
-- Kiến trúc quy trình = danh mục quy trình ngang (đầu–cuối), có bên chịu trách nhiệm, sự kiện kích hoạt và kết quả — khác sơ đồ tổ chức dọc theo phòng ban.
+- Kiến trúc quy trình (*process architecture*) = danh mục quy trình ngang (đầu–cuối), có bên chịu trách nhiệm, sự kiện kích hoạt (*trigger*) và kết quả (*outcome*) — khác sơ đồ tổ chức dọc theo phòng ban.
 
 > Phần dưới là **kiến trúc tham chiếu** cho nhóm công ty cùng loại. Chỉ chỗ gắn đường dẫn Hasaki mới là chính sách quan sát được từ bên ngoài.
 
@@ -154,7 +165,7 @@ Tên trong ngoặc theo kiểu **chuỗi giá trị đầu–cuối** (ví dụ 
 
 #### A. Quy trình quản lý (Management Processes)
 
-| Mã | Quy trình | Khách hàng của quy trình | Kết quả điển hình |
+| Mã | Quy trình | Khách hàng của quy trình (*process customer*) | Kết quả điển hình (*typical outcomes*) |
 |----|-----------|--------------------------|-------------------|
 | A1 | Hoạch định chiến lược và mở rộng mạng cửa hàng / clinic (*Strategy-to-Expansion*) | Ban điều hành, khối phát triển chuỗi | Kế hoạch địa điểm, ngân sách, chỉ tiêu được duyệt |
 | A2 | Phê duyệt và hợp tác nhà cung cấp / nhãn hàng (*Source-to-Contract*) | Bộ phận mua hàng và kho | Hợp đồng và dữ liệu nhà cung cấp, hoặc từ chối |
@@ -165,7 +176,7 @@ Cổng nhà cung cấp Hasaki công bố bốn bước: đăng ký → xác th�
 
 #### B. Quy trình cốt lõi (Core Processes)
 
-| Mã | Quy trình | Khách hàng của quy trình | Kết quả điển hình |
+| Mã | Quy trình | Khách hàng của quy trình (*process customer*) | Kết quả điển hình (*typical outcomes*) |
 |----|-----------|--------------------------|-------------------|
 | B1 | Bán hàng và tư vấn tại cửa hàng (*Visit-to-Cash*) | Khách tại cửa hàng | Giao dịch hoàn tất, hoặc chỉ tư vấn |
 | B2 | Xử lý đơn hàng online và giao hàng — gồm giao nhanh 2 giờ (*Order-to-Delivery*) | Khách đặt trên kênh của Hasaki | Giao thành công, hoặc hủy có kiểm soát (+ hoàn tiền nếu cần) |
@@ -175,7 +186,7 @@ Cổng nhà cung cấp Hasaki công bố bốn bước: đăng ký → xác th�
 
 #### C. Quy trình hỗ trợ (Support Processes)
 
-| Mã | Quy trình | Khách hàng của quy trình | Kết quả điển hình |
+| Mã | Quy trình | Khách hàng của quy trình (*process customer*) | Kết quả điển hình (*typical outcomes*) |
 |----|-----------|--------------------------|-------------------|
 | C1 | Tuyển dụng và đào tạo (*Hire-to-Deploy*) | Quản lý điểm bán / clinic | Nhân sự nhận việc, hoặc từ chối |
 | C2 | Tài chính – đối soát doanh thu đa kênh (*Reconcile-to-Close*) | Lãnh đạo / kiểm soát nội bộ | Sổ khớp kênh; lệch được xử lý |
@@ -212,17 +223,17 @@ Không khẳng định phần mềm nội bộ Hasaki. Để chạy kiến trúc
 
 ---
 
-## 4. Ranh giới quy trình
+## 4. Ranh giới quy trình (*process boundaries*)
 
 ### 4.1. Một ranh giới rõ cần trả lời
 
-1. Đối tượng theo dõi là gì? (mã đơn, yêu cầu đổi trả, lịch hẹn…)  
-2. Sự kiện nào mở trường hợp mới?  
-3. Kết quả nào đóng trường hợp (thành công và ngoại lệ có kiểm soát)?  
-4. Ai nhận kết quả đầu ra?  
+1. Đối tượng theo dõi (*case object*) là gì? (mã đơn, yêu cầu đổi trả, lịch hẹn…)  
+2. Sự kiện nào mở trường hợp mới (*trigger*)?  
+3. Kết quả nào đóng trường hợp (*outcome* — thành công và ngoại lệ có kiểm soát)?  
+4. Ai nhận kết quả đầu ra (*process customer*)?  
 5. Giao với quy trình khác bằng sự kiện nào — không “nuốt” cả quy trình kia?
 
-### 4.2. Quy tắc tách ranh giới
+### 4.2. Quy tắc tách ranh giới (*process boundary rules*)
 
 | Đúng | Sai |
 |------|-----|
@@ -231,7 +242,7 @@ Không khẳng định phần mềm nội bộ Hasaki. Để chạy kiến trúc
 | A3 cung cấp tồn khả dụng; B2 tiêu thụ khi cam kết và soạn hàng | Nhét hoạch định tồn cả quý vào sơ đồ đơn online |
 | B2 khác B3 | Một luồng ứng dụng gồm cả mua hàng và điều trị |
 | B4 bắt đầu khi khách yêu cầu đổi trả | Mọi đơn giao xong đều kéo dài sang đổi trả trên cùng sơ đồ |
-| Đối tác vận chuyển là bên ngoài (bể bơi riêng hoặc hộp đen) | Vẽ chi tiết nội bộ hãng vận chuyển như của Hasaki |
+| Đối tác vận chuyển là bên ngoài (bể bơi riêng (*pool*) hoặc hộp đen) | Vẽ chi tiết nội bộ hãng vận chuyển như của Hasaki |
 
 ### 4.3. Ranh giới các quy trình then chốt
 
@@ -239,13 +250,13 @@ Không khẳng định phần mềm nội bộ Hasaki. Để chạy kiến trúc
 
 | Thuộc tính | Nội dung |
 |------------|----------|
-| Đối tượng theo dõi | Mã đơn hàng |
-| Kích hoạt | Khách bấm **Đặt hàng** (thể hiện quyết định mua; hệ thống tạo mã đơn) |
-| Kết thúc | Giao thành công và đã thanh toán, hoặc hủy có thông báo (+ hoàn nếu đã trả trước) |
-| Chuẩn bị trên màn hình trước khi đặt (trước kích hoạt) | Chọn địa chỉ; hệ thống đề xuất hình thức vận chuyển / điều kiện 2 giờ / phí; khách chọn vận chuyển và phương thức thanh toán. Nếu khách dừng ở đây thì **chưa** có lần chạy quy trình (chưa có mã đơn). |
-| Trong phạm vi lần chạy quy trình | Tạo đơn; thanh toán (trả trước hoặc khi nhận); soạn–đóng gói–bàn giao; giao; hẹn lại; hủy sau không liên lạc; phiếu bù khi giao 2 giờ trễ |
-| Ngoài phạm vi | Duyệt ứng dụng / xem sản phẩm / so sánh / giỏ bỏ dở (**không** có mã đơn); mở cửa hàng (A1); ký nhà cung cấp (A2); đặt mua chiến lược (A3); đổi trả sau nhận (B4); clinic (B3) |
-| Đo thời gian chu kỳ (cycle time) | Từ **tạo đơn** sau khi bấm Đặt hàng (kịch bản thanh toán trước: mốc sẵn sàng soạn = thanh toán thành công) đến giao thành công hoặc hủy và đóng trường hợp. **Không** cộng thời gian xem / lựa hàng trên ứng dụng. |
+| Đối tượng theo dõi (*case*) | Mã đơn hàng |
+| Kích hoạt (*trigger*) | Khách bấm **Đặt hàng** (thể hiện quyết định mua; hệ thống tạo mã đơn) |
+| Kết thúc (*end outcomes*) | Giao thành công và đã thanh toán, hoặc hủy có thông báo (+ hoàn nếu đã trả trước) |
+| Chuẩn bị trên màn hình trước khi đặt (trước kích hoạt) | Chọn địa chỉ; hệ thống đề xuất hình thức vận chuyển / điều kiện 2 giờ / phí; khách chọn vận chuyển và phương thức thanh toán. Nếu khách dừng ở đây thì **chưa** có lần chạy quy trình (*process instance*) (chưa có mã đơn). |
+| Trong phạm vi lần chạy quy trình (*process instance scope*) | Tạo đơn; thanh toán (trả trước hoặc khi nhận); soạn–đóng gói–bàn giao; giao; hẹn lại; hủy sau không liên lạc; phiếu bù khi giao 2 giờ trễ |
+| Ngoài phạm vi (*out of scope*) | Duyệt ứng dụng / xem sản phẩm / so sánh / giỏ bỏ dở (**không** có mã đơn); mở cửa hàng (A1); ký nhà cung cấp (A2); đặt mua chiến lược (A3); đổi trả sau nhận (B4); clinic (B3) |
+| Đo thời gian chu kỳ (*cycle time*) | Từ **tạo đơn** sau khi bấm Đặt hàng (kịch bản thanh toán trước: mốc sẵn sàng soạn = thanh toán thành công) đến giao thành công hoặc hủy và đóng trường hợp. **Không** cộng thời gian xem / lựa hàng trên ứng dụng. |
 
 **Vì sao không đo thời gian xem hàng:** khách có thể mở ứng dụng Hasaki xem hàng lâu mà không đặt — không phát sinh mã đơn, không soạn, không giao, không áp dụng cam kết giờ nhận. Theo phân tích quy trình (thời gian chu kỳ = thời gian một lần chạy từ bắt đầu đến kết thúc; khung “từ lúc khách đưa đơn”), chỉ các đơn đã Đặt hàng mới vào mẫu định lượng. Chi tiết số liệu ước lượng: [core.md](../03-core/core.md) mục 5.
 
@@ -257,12 +268,12 @@ Khi vẽ sơ đồ, vẫn có thể hiện giai đoạn **cam kết giao** (bư�
 
 | Thuộc tính | Nội dung |
 |------------|----------|
-| Đối tượng theo dõi | Yêu cầu đổi / trả |
-| Kích hoạt | Khách gửi yêu cầu kèm thông tin liên hệ |
-| Kết thúc | Đổi hàng / hoàn tiền / từ chối có lý do |
+| Đối tượng theo dõi (*case*) | Yêu cầu đổi / trả |
+| Kích hoạt (*trigger*) | Khách gửi yêu cầu kèm thông tin liên hệ |
+| Kết thúc (*outcomes*) | Đổi hàng / hoàn tiền / từ chối có lý do |
 | Chính sách | Cửa sổ **30 ngày** từ 01/06/2024 ([đổi trả](https://hotro.hasaki.vn/doi-tra-hoan-tien.html)) |
-| Đo thời gian chu kỳ (tại cửa hàng) | Từ tiếp nhận yêu cầu đến đổi/từ chối/lập phiếu xong; không gồm đi đường của khách. Chi tiết ước lượng: [core.md](../03-core/core.md) mục 5.2 |
-| Ghi chú khi vẽ BPMN | Tiêu chí chính sách nằm trong **một** hoạt động thẩm định + bảng quyết định; không xẻ mỗi tiêu chí thành cổng XOR — xem [core_bpmn.md](../03-core/core_bpmn.md) phần B |
+| Đo thời gian chu kỳ (*cycle time*, tại cửa hàng) | Từ tiếp nhận yêu cầu đến đổi/từ chối/lập phiếu xong; không gồm đi đường của khách. Chi tiết ước lượng: [core.md](../03-core/core.md) mục 5.2 |
+| Ghi chú khi vẽ BPMN | Tiêu chí chính sách nằm trong **một** hoạt động (*activity*) thẩm định + bảng quyết định (*decision table*); không xẻ mỗi tiêu chí thành cổng XOR (*XOR gateway*) — xem [core_bpmn.md](../03-core/core_bpmn.md) phần B |
 
 Chi tiết phân tích nghiệp vụ và hướng dẫn vẽ: [ba_model_b2_b4.md](../03-core/ba_model_b2_b4.md), [core_bpmn.md](../03-core/core_bpmn.md).
 

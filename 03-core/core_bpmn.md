@@ -1,7 +1,7 @@
 # Hướng dẫn vẽ sơ đồ BPMN — Quy trình B2 và B4
 
-**Mục đích:** hướng dẫn nhóm vẽ hai sơ đồ BPMN 2.0 cho quy trình cốt lõi.  
-**Nguyên tắc:** cổng XOR chỉ đặt khi **luồng phía sau khác nhau**; tiêu chí kiểm tra trong cùng một lần thẩm định ghi trong **hoạt động + bảng quyết định**, không xẻ thành nhiều cổng chỉ để đủ điểm.  
+**Mục đích:** hướng dẫn nhóm vẽ hai sơ đồ BPMN 2.0 cho quy trình cốt lõi (*core processes*).  
+**Nguyên tắc:** cổng XOR (*XOR gateway*) chỉ đặt khi **luồng phía sau khác nhau**; tiêu chí kiểm tra trong cùng một lần thẩm định ghi trong **hoạt động (*activity*) + bảng quyết định (*decision table*)**, không xẻ thành nhiều cổng chỉ để đủ điểm.  
 **Thiết kế đề xuất:** B2 khoảng **10** cổng (nhiều nhánh vận hành thật); B4 khoảng **7** cổng có nghĩa (X1–X7) — nếu rubik cần >7 cổng trên sơ đồ đổi trả, cân nhắc chọn thêm quy trình khác thay vì ép checklist thành cổng.  
 **Phân tích nghiệp vụ chi tiết:** xem file [ba_model_b2_b4.md](./ba_model_b2_b4.md).  
 **Công cụ gợi ý:** Camunda Modeler hoặc bpmn.io.  
@@ -13,11 +13,14 @@
 
 | Khái niệm | Giải thích ngắn |
 |-----------|-----------------|
-| **BPMN** | Chuẩn ký hiệu quốc tế để vẽ quy trình nghiệp vụ (hộp hoạt động, mũi tên, cổng điều kiện, sự kiện bắt đầu/kết thúc). |
-| **Bể bơi (Pool)** | Khung lớn thể hiện một tổ chức hoặc một bên tham gia (ví dụ: Khách hàng, Hasaki). |
-| **Làn (Lane)** | Hàng ngang trong bể bơi, gắn với vai trò (Hệ thống, Kho, Chăm sóc khách hàng…). |
-| **Cổng XOR** | Cổng điều kiện “hoặc cái này hoặc cái kia” — chỉ đi **một** nhánh. Nhãn cổng nên là câu hỏi nghiệp vụ. |
-| **Tách nhánh / gộp nhánh** | Sau khi tách bằng cổng XOR, khi các nhánh gặp lại cần cổng gộp tương ứng để luồng không “treo”. |
+| **BPMN** | *Business Process Model and Notation* — chuẩn ký hiệu quốc tế để vẽ quy trình nghiệp vụ (hộp hoạt động, mũi tên, cổng điều kiện, sự kiện bắt đầu/kết thúc). |
+| **Bể bơi (*pool*)** | Khung lớn thể hiện một tổ chức hoặc một bên tham gia (ví dụ: Khách hàng, Hasaki). |
+| **Làn (*lane*)** | Hàng ngang trong bể bơi, gắn với vai trò (Hệ thống, Kho, Chăm sóc khách hàng…). |
+| **Cổng XOR (*XOR gateway*)** | Cổng điều kiện “hoặc cái này hoặc cái kia” — chỉ đi **một** nhánh. Nhãn cổng nên là câu hỏi nghiệp vụ. |
+| **Tách nhánh / gộp nhánh (*split / join*)** | Sau khi tách bằng cổng XOR, khi các nhánh gặp lại cần cổng gộp tương ứng để luồng không “treo”. |
+| **Sự kiện bắt đầu / kết thúc (*start / end event*)** | Mở hoặc đóng một lần chạy quy trình (*process instance*). |
+| **Hoạt động (*activity*)** | Việc thực hiện trên sơ đồ (ô chữ nhật). |
+| **Luồng tuần tự (*sequence flow*)** | Mũi tên nối các phần tử trong cùng một bể bơi. |
 
 **Quy ước khi vẽ**
 
@@ -31,19 +34,19 @@
 
 # Phần A — Quy trình B2: Xử lý đơn hàng trực tuyến và giao hàng
 
-## A.1. Hồ sơ quy trình (đưa vào báo cáo)
+## A.1. Hồ sơ quy trình (*process profile* — đưa vào báo cáo)
 
 | Trường | Nội dung |
 |--------|----------|
-| Tên quy trình | Xử lý đơn hàng trực tuyến và giao hàng |
-| Khách hàng của quy trình | Khách đặt hàng trên website hoặc ứng dụng Hasaki |
-| Sự kiện kích hoạt | Khách bấm **Đặt hàng** (sau khi đã chọn địa chỉ, hình thức vận chuyển, thanh toán trên màn hình) |
-| Đối tượng theo dõi | Một mã đơn hàng |
-| Kết thúc | **Giao thành công** hoặc **Đơn bị hủy** (có hoàn tiền nếu khách đã trả trước) |
-| Ngoài lần chạy | Duyệt ứng dụng / xem sản phẩm / giỏ bỏ dở — không tạo mã đơn, không đo thời gian chu kỳ |
-| Đo thời gian chu kỳ | Từ tạo đơn (sau Đặt hàng) đến giao thành công / hủy; không gồm thời gian lựa hàng — khớp [research.md](../02-research/research.md) §4.3 |
+| Tên quy trình | Xử lý đơn hàng trực tuyến và giao hàng (*Order-to-Delivery*) |
+| Khách hàng của quy trình (*process customer*) | Khách đặt hàng trên website hoặc ứng dụng Hasaki |
+| Sự kiện kích hoạt (*trigger*) | Khách bấm **Đặt hàng** (sau khi đã chọn địa chỉ, hình thức vận chuyển, thanh toán trên màn hình) |
+| Đối tượng theo dõi (*case*) | Một mã đơn hàng |
+| Kết thúc (*outcomes*) | **Giao thành công** hoặc **Đơn bị hủy** (có hoàn tiền nếu khách đã trả trước) |
+| Ngoài lần chạy (*out of scope*) | Duyệt ứng dụng / xem sản phẩm / giỏ bỏ dở — không tạo mã đơn, không đo thời gian chu kỳ |
+| Đo thời gian chu kỳ (*cycle time*) | Từ tạo đơn (sau Đặt hàng) đến giao thành công / hủy; không gồm thời gian lựa hàng — khớp [research.md](../02-research/research.md) §4.3 |
 
-## A.2. Các giai đoạn trên sơ đồ (vẽ từ trái sang phải)
+## A.2. Các giai đoạn trên sơ đồ (*process stages* — vẽ từ trái sang phải)
 
 Trong quản trị chuỗi cung ứng bán lẻ, chu kỳ xử lý đơn thường được chia thành các giai đoạn. Nhóm dùng cách chia này để sơ đồ dễ đọc. Giai đoạn 1 là **cam kết trên màn hình trước khi đặt** (để đủ cổng); lần chạy quy trình và định lượng bắt đầu từ giai đoạn 2:
 
@@ -55,7 +58,7 @@ Trong quản trị chuỗi cung ứng bán lẻ, chu kỳ xử lý đơn thườ
 | 4. Giao đến khách | Giao tận nơi; thu tiền nếu thanh toán khi nhận; xác nhận đã giao |
 | 5. Xử lý ngoại lệ và đóng đơn | Hẹn giao lại; hủy sau 3 ngày không liên lạc; đổi địa chỉ; phiếu 100.000đ nếu giao 2 giờ trễ |
 
-## A.3. Bể bơi và làn
+## A.3. Bể bơi và làn (*pools and lanes*)
 
 ```text
 Bể bơi: Khách hàng
@@ -66,7 +69,7 @@ Bể bơi: Hasaki
   Làn: Chăm sóc khách hàng – Vận hành đơn
 ```
 
-## A.4. Tên hoạt động gợi ý trên hình
+## A.4. Tên hoạt động (*activity labels*) gợi ý trên hình
 
 **Khách hàng:** cung cấp địa chỉ → chọn hình thức vận chuyển → chọn thanh toán → đặt hàng → thanh toán trước (nếu có) → nhận và kiểm hàng → trả tiền khi nhận (nếu có).
 
@@ -78,7 +81,7 @@ Bể bơi: Hasaki
 
 **Chăm sóc khách hàng:** hẹn giao lại hoặc hướng dẫn nhận tại điểm → thông báo hủy sau 3 ngày không liên lạc → xử lý đổi địa chỉ hoặc hủy khi địa điểm không giao được → xét cấp phiếu 100.000đ khi giao 2 giờ trễ đủ điều kiện.
 
-## A.5. Mười cổng điều kiện XOR (bắt buộc đếm trên hình)
+## A.5. Mười cổng điều kiện XOR (*XOR gateways* — bắt buộc đếm trên hình)
 
 | Mã | Câu hỏi ghi trên cổng | Nhánh |
 |----|----------------------|-------|
@@ -95,7 +98,7 @@ Bể bơi: Hasaki
 
 Ghi chú G6: trang hỗ trợ Hasaki nói hàng phải sẵn lúc đặt, nhưng ít mô tả khi lúc soạn mới hết hàng. Trên sơ đồ giữ nhánh này theo thực tế vận hành bán lẻ và ghi chú *suy luận chuẩn ngành*.
 
-## A.6. Luồng điển hình (để đối chiếu khi vẽ)
+## A.6. Luồng điển hình (*happy path* — để đối chiếu khi vẽ)
 
 **Thành công — giao 2 giờ + thanh toán trước:**  
 Địa chỉ thuộc vùng → đủ điều kiện đề xuất 2 giờ → khách chọn 2 giờ → thanh toán trước thành công → tạo đơn → soạn → giao thành công → (nếu không trễ) kết thúc giao thành công.
@@ -105,7 +108,7 @@ Không chọn 2 giờ → tạo đơn → soạn → giao → khách trả tiề
 
 **Ngoại lệ:** giao không thành → hẹn lại; quá 3 ngày không liên lạc → hủy và hoàn tiền (nếu đã trả trước).
 
-## A.7. Danh mục kiểm tra trước khi nộp hình B2
+## A.7. Danh mục kiểm tra (*checklist*) trước khi nộp hình B2
 
 - [ ] Đọc được năm giai đoạn từ trái sang phải  
 - [ ] Đủ 10 cổng XOR có nhãn câu hỏi tiếng Việt  
@@ -118,27 +121,27 @@ Không chọn 2 giờ → tạo đơn → soạn → giao → khách trả tiề
 
 # Phần B — Quy trình B4: Đổi trả sản phẩm và hoàn tiền
 
-## B.1. Hồ sơ quy trình
+## B.1. Hồ sơ quy trình (*process profile*)
 
 | Trường | Nội dung |
 |--------|----------|
-| Tên quy trình | Đổi trả sản phẩm và hoàn tiền |
-| Khách hàng của quy trình | Khách yêu cầu đổi hoặc trả hàng |
-| Sự kiện kích hoạt | Yêu cầu đổi trả được tiếp nhận |
-| Đối tượng theo dõi | Một yêu cầu đổi–trả |
-| Kết thúc | **Từ chối** / **Đổi hàng xong** / **Hoàn tiền xong** |
+| Tên quy trình | Đổi trả sản phẩm và hoàn tiền (*Return-to-Refund*) |
+| Khách hàng của quy trình (*process customer*) | Khách yêu cầu đổi hoặc trả hàng |
+| Sự kiện kích hoạt (*trigger*) | Yêu cầu đổi trả được tiếp nhận |
+| Đối tượng theo dõi (*case*) | Một yêu cầu đổi–trả |
+| Kết thúc (*outcomes*) | **Từ chối** / **Đổi hàng xong** / **Hoàn tiền xong** |
 
-## B.2. Các giai đoạn (theo quy trình đổi trả ngành mỹ phẩm)
+## B.2. Các giai đoạn (*process stages* — theo quy trình đổi trả ngành mỹ phẩm)
 
 | Giai đoạn | Việc trên sơ đồ |
 |-----------|-----------------|
 | 1. Tiếp nhận | Khách gửi yêu cầu; chọn mang tới cửa hàng hoặc gửi bưu điện |
-| 2. Thẩm định điều kiện | **Một** hoạt động: nhân viên áp dụng bảng chính sách 30 ngày (xem `ba_model` §II.5) |
+| 2. Thẩm định điều kiện | **Một** hoạt động (*activity*): nhân viên áp dụng bảng chính sách 30 ngày (xem `ba_model` §II.5) |
 | 3. Nhận hàng và kiểm tra | Nhận sản phẩm; đối chiếu với yêu cầu đã chấp nhận |
-| 4. Xử lý kết quả | Đổi hàng mới hoặc hoàn tiền theo cách khách đã thanh toán |
+| 4. Xử lý kết quả (*outcome handling*) | Đổi hàng mới hoặc hoàn tiền theo cách khách đã thanh toán |
 | 5. Xử lý hàng trả lại | Đưa lại bán được hoặc loại khỏi bán *(suy luận ngành mỹ phẩm — vệ sinh, tem)* |
 
-## B.3. Bể bơi và làn
+## B.3. Bể bơi và làn (*pools and lanes*)
 
 ```text
 Bể bơi: Khách hàng
@@ -149,7 +152,7 @@ Bể bơi: Hasaki
   Làn: Kế toán / Hoàn tiền
 ```
 
-## B.4. Tên hoạt động gợi ý
+## B.4. Tên hoạt động (*activity labels*) gợi ý
 
 **Khách:** gửi yêu cầu và lý do → mang hoặc gửi sản phẩm (kèm quà tặng nếu đổi sản phẩm chính) → chọn đổi hoặc trả khi được phép → nhận hàng đổi hoặc nhận tiền → bổ sung chứng từ nếu thiếu.
 
@@ -161,7 +164,7 @@ Bể bơi: Hasaki
 
 **Kế toán:** xác định cách hoàn (theo cách khách đã thanh toán) → thực hiện hoàn → xác nhận xong.
 
-## B.5. Cổng XOR — chỉ khi luồng phía sau khác nhau
+## B.5. Cổng XOR — chỉ khi luồng phía sau khác nhau (*XOR gateways*)
 
 **Không** tách mỗi tiêu chí trong bảng 30 ngày thành một cổng. Các tiêu chí đó là **bước trong hoạt động thẩm định** (và bảng quyết định), giống cách nhân viên làm tại cửa hàng.
 
@@ -177,7 +180,7 @@ Bể bơi: Hasaki
 
 **Thứ tự nghiệp vụ quan trọng (không cần thêm cổng “ảo”):** với trả hàng gửi từ tỉnh / trả tại nhà, bước **nhận được hàng trả** đứng **trước** hoạt động hoàn tiền (theo chính sách Hasaki).
 
-## B.6. Luồng điển hình
+## B.6. Luồng điển hình (*happy path*)
 
 **Đổi tại cửa hàng:** tiếp nhận → hồ sơ đủ → thẩm định (một hoạt động) → đạt → chọn đổi → còn tồn → xuất hàng đổi → xử lý hàng trả → kết thúc đổi thành công.
 
@@ -185,7 +188,7 @@ Bể bơi: Hasaki
 
 **Từ chối:** thẩm định không đạt → giải thích → (nếu tranh chấp: quản lý duyệt) → kết thúc từ chối hoặc ngoại lệ được chấp nhận rồi quay lại nhánh đổi/trả.
 
-## B.7. Danh mục kiểm tra trước khi nộp hình B4
+## B.7. Danh mục kiểm tra (*checklist*) trước khi nộp hình B4
 
 - [ ] Có **một** hoạt động thẩm định + bảng quyết định / chú thích chính sách; **không** chuỗi cổng X “còn 30 ngày?” → “mua từ Hasaki?” → …  
 - [ ] Mỗi cổng XOR đổi được nhánh xử lý phía sau (không chỉ liệt kê tiêu chí)  
@@ -196,7 +199,7 @@ Bể bơi: Hasaki
 
 ---
 
-# Phần C — Kiểm tra nhanh trước khi nộp
+# Phần C — Kiểm tra nhanh trước khi nộp (*final checklist*)
 
 | Quy trình | Số cổng thiết kế | Ghi chú rubik |
 |-----------|------------------|---------------|
@@ -213,7 +216,7 @@ Bể bơi: Hasaki
 
 ---
 
-# Phần D — Sơ đồ logic tham chiếu (không thay file BPMN nộp)
+# Phần D — Sơ đồ logic tham chiếu (*reference flow* — không thay file BPMN nộp)
 
 ## B2 (rút gọn)
 

@@ -1,7 +1,7 @@
 # Phân tích nghiệp vụ chi tiết — Quy trình B2 và B4
 
-**Vai trò tài liệu:** làm rõ nghiệp vụ hai quy trình cốt lõi đã chọn để vẽ sơ đồ BPMN, theo góc nhìn phân tích quy trình và phân tích nghiệp vụ.  
-**Phương pháp:** (1) Chính sách công bố của Hasaki = quy tắc nghiệp vụ quan sát được; (2) Chuẩn vận hành bán lẻ / giao nhanh / đổi trả mỹ phẩm = bổ sung bước khi Hasaki không công bố sổ tay nội bộ; (3) Tách rõ **thông tin công bố** và **suy luận theo chuẩn ngành**.  
+**Vai trò tài liệu:** làm rõ nghiệp vụ hai quy trình cốt lõi (*core processes*) đã chọn để vẽ sơ đồ BPMN, theo góc nhìn phân tích quy trình (*process analysis*) và phân tích nghiệp vụ.  
+**Phương pháp:** (1) Chính sách công bố của Hasaki = quy tắc nghiệp vụ (*business rules*) quan sát được; (2) Chuẩn vận hành bán lẻ / giao nhanh / đổi trả mỹ phẩm = bổ sung bước khi Hasaki không công bố sổ tay nội bộ; (3) Tách rõ **thông tin công bố** và **suy luận theo chuẩn ngành**.  
 **Ngày:** 08/08/2026  
 **File liên quan:** [core_bpmn.md](./core_bpmn.md), [core.md](./core.md), [research.md](../02-research/research.md).
 
@@ -22,7 +22,7 @@
 
 | Khung | Áp dụng | Ý chính bằng tiếng Việt |
 |-------|---------|-------------------------|
-| Chu kỳ xử lý đơn: tạo đơn → sẵn sàng soạn → soạn–đóng gói–bàn giao → giao đến khách | B2 | Đo thời gian chu kỳ từ sau Đặt hàng (không gồm xem hàng trên ứng dụng); chia giai đoạn trên sơ đồ |
+| Chu kỳ xử lý đơn: tạo đơn → sẵn sàng soạn → soạn–đóng gói–bàn giao → giao đến khách (*order cycle*) | B2 | Đo thời gian chu kỳ (*cycle time*) từ sau Đặt hàng (không gồm xem hàng trên ứng dụng); chia giai đoạn trên sơ đồ |
 | Giao trong ngày / vài giờ | B2 NowFree | Giờ cắt đơn, hàng đợi ưu tiên, cửa sổ lấy hàng của đơn vị giao, cam kết và bù đắp |
 | Lấy hàng từ cửa hàng giao đơn online | B2 | Tồn khả dụng → soạn → đóng gói → giao → xác nhận đã giao |
 | Đổi trả ngành mỹ phẩm | B4 | Tiếp nhận → thẩm định → nhận hàng → kiểm tra → xử lý hàng trả → đổi hoặc hoàn |
@@ -41,7 +41,7 @@
 | **Trong phạm vi** | Sau khi khách bấm Đặt hàng: tạo đơn, thanh toán, phân bổ–soạn–đóng gói, giao, ngoại lệ, bù khi trễ 2 giờ, hủy có hoàn. Các bước trên màn hình trước khi đặt (địa chỉ, đề xuất cam kết, chọn vận chuyển / thanh toán) có thể hiện trên sơ đồ nhưng **chưa** mở lần chạy nếu chưa Đặt hàng. |
 | **Ngoài phạm vi** | Duyệt ứng dụng / xem hàng / giỏ bỏ dở; hoạch định tồn chiến lược (A3); đổi trả sau khi đã nhận (B4); Clinic (B3); đơn trên sàn (quy tắc sàn khác). |
 
-## I.2. Bảng nhà cung cấp – đầu vào – quy trình – đầu ra – khách hàng
+## I.2. Bảng nhà cung cấp – đầu vào – quy trình – đầu ra – khách hàng (*SIPOC*)
 
 | Bên cung cấp | Đầu vào | Quy trình | Đầu ra | Khách hàng nhận kết quả |
 |--------------|---------|-----------|--------|-------------------------|
@@ -69,7 +69,7 @@
 | Giao | Lộ trình, liên hệ, xác nhận đã giao, thu hộ | Giao; fail → hẹn lại; 3 ngày → hủy + hoàn; đối tác thu hộ | Các cổng giao thành công / hẹn lại / đổi địa chỉ |
 | Đóng đơn | Đúng giờ cam kết; bù đắp | Phiếu 100.000đ nếu trễ đủ điều kiện | Cổng xét phiếu |
 
-## I.4. Danh mục quy tắc nghiệp vụ (gắn cổng trên sơ đồ)
+## I.4. Danh mục quy tắc nghiệp vụ (*business rules* — gắn cổng trên sơ đồ)
 
 | Mã | Quy tắc | Nguồn | Cổng |
 |----|---------|-------|------|
@@ -129,7 +129,7 @@ Trên sơ đồ BPMN chỉ cần hai kết thúc chính: **Giao thành công** v
 | N5 | Trễ so với cam kết 2 giờ | Xét phiếu 100.000đ | G10 |
 | N6 | Bất khả kháng / lỗi phía khách | Không cấp phiếu | G10 nhánh Không |
 
-## I.8. Chỉ số đo lường đề xuất
+## I.8. Chỉ số đo lường đề xuất (*process performance measures*)
 
 Đo trên **đơn đã tạo** (sau Đặt hàng). Không đo thời gian xem / lựa hàng trên ứng dụng — xem [research.md](../02-research/research.md) §4.3.
 
@@ -168,7 +168,7 @@ Chi tiết danh sách hoạt động và cổng B2: [core_bpmn.md](./core_bpmn.m
 | **Trong phạm vi** | Tiếp nhận → thẩm định → nhận hàng → quyết đổi/trả → hoàn tiền → xử lý hàng trả. |
 | **Ngoài phạm vi** | Khiếu nại không phải đổi trả (B5); đơn đang giao (B2); bảo hành ngoài chính sách Hasaki. |
 
-## II.2. Bảng nhà cung cấp – đầu vào – quy trình – đầu ra – khách hàng
+## II.2. Bảng nhà cung cấp – đầu vào – quy trình – đầu ra – khách hàng (*SIPOC*)
 
 | Bên cung cấp | Đầu vào | Quy trình | Đầu ra | Khách hàng nhận kết quả |
 |--------------|---------|-----------|--------|-------------------------|
@@ -197,7 +197,7 @@ Chi tiết danh sách hoạt động và cổng B2: [core_bpmn.md](./core_bpmn.m
 
 **Đặc thù mỹ phẩm:** hàng đã mở hoặc mất tem thường **không** đưa lại kệ bán vì vệ sinh. Chính sách Hasaki phản ánh qua điều kiện “chưa sử dụng / không bóc tem” với trường hợp đổi ý; trường hợp lỗi nhà sản xuất vẫn được đổi/trả.
 
-## II.4. Danh mục quy tắc nghiệp vụ
+## II.4. Danh mục quy tắc nghiệp vụ (*business rules*)
 
 Tiêu chí trong bảng 30 ngày (QĐ-B4-01 … 06) gắn **hoạt động thẩm định** và bảng quyết định §II.5 — không mỗi tiêu chí một cổng XOR. Cột “Cổng / chỗ trên sơ đồ” chỉ ghi khi luồng thật sự rẽ nhánh.
 
@@ -220,7 +220,7 @@ Tiêu chí trong bảng 30 ngày (QĐ-B4-01 … 06) gắn **hoạt động thẩ
 | QĐ-B4-15 | Tranh chấp / ngoại lệ → quản lý duyệt | Suy luận vận hành | X4 |
 | QĐ-B4-16 | Sau nhận: bán lại nếu còn điều kiện; không thì loại | Suy luận ngành mỹ phẩm | Hoạt động xử lý hàng trả |
 
-## II.5. Bảng quyết định thẩm định (rút gọn)
+## II.5. Bảng quyết định thẩm định (*decision table* — rút gọn)
 
 Dùng **trong** hoạt động *Thẩm định theo chính sách đổi trả* trên sơ đồ. Kết quả bảng → cổng X3 (Đạt / Từ chối), không vẽ mỗi cột thành một cổng.
 
@@ -265,7 +265,7 @@ Sự kiện kết thúc trên sơ đồ: **Từ chối** | **Đổi hàng xong**
 | N4 | Hoàn tiền cổng chậm / lỗi | Thử lại + thông báo thời hạn |
 | N5 | Hàng gửi thất lạc | Chăm sóc khách hàng phối hợp đơn vị vận chuyển |
 
-## II.9. Chỉ số đo lường đề xuất
+## II.9. Chỉ số đo lường đề xuất (*process performance measures*)
 
 | Chỉ số | Ý nghĩa |
 |--------|---------|

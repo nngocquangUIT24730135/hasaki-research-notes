@@ -1,9 +1,9 @@
-# Quy trình cốt lõi — Hasaki Beauty & Clinic
+# Quy trình cốt lõi (*core processes*) — Hasaki Beauty & Clinic
 
-**Phạm vi:** các nội dung đồ án gắn nhóm **quy trình cốt lõi**.  
+**Phạm vi:** các nội dung đồ án gắn nhóm **quy trình cốt lõi (*core processes*)**.  
 **Nguồn khung:** [nghiên cứu tổng quan — SoT](../02-research/research.md), [yêu cầu đồ án](../01-requirements/yeu_cau_do_an.md).  
 **Phân tích sâu B2 và B4:** [ba_model_b2_b4.md](./ba_model_b2_b4.md) · [core_bpmn.md](./core_bpmn.md).  
-**Mức mô hình:** kết hợp *thông tin công bố* trên trang hỗ trợ Hasaki và *suy luận theo chuẩn ngành* khi không có sổ tay nội bộ. Nhóm không khẳng định đã quan sát từng bước tại kho/cửa hàng Hasaki. Ranh giới B2/B4 và cách đo thời gian chu kỳ **bám** `02-research/research.md`.  
+**Mức mô hình:** kết hợp *thông tin công bố* trên trang hỗ trợ Hasaki và *suy luận theo chuẩn ngành* khi không có sổ tay nội bộ. Nhóm không khẳng định đã quan sát từng bước tại kho/cửa hàng Hasaki. Ranh giới (*process boundaries*) B2/B4 và cách đo thời gian chu kỳ (*cycle time*) **bám** `02-research/research.md`.  
 **Ngày:** 08/08/2026
 
 ---
@@ -12,13 +12,13 @@
 
 | Mục trong rubik | Nội dung file này đáp ứng |
 |-----------------|---------------------------|
-| Liệt kê quy trình (≥ 3 cốt lõi) | **5** quy trình B1–B5; mỗi quy trình đủ tác nhân, mô tả bước, khách hàng quy trình, kết quả |
-| Kiến trúc quy trình | Sơ đồ vị trí nhóm cốt lõi trong toàn bộ kiến trúc |
+| Liệt kê quy trình (≥ 3 cốt lõi) | **5** quy trình B1–B5; mỗi quy trình đủ tác nhân (*actors*), mô tả bước, khách hàng quy trình (*process customer*), kết quả (*outcomes*) |
+| Kiến trúc quy trình (*process architecture*) | Sơ đồ vị trí nhóm cốt lõi trong toàn bộ kiến trúc |
 | Mô hình hóa 2 quy trình cốt lõi | Chọn **B2** và **B4**; hướng dẫn vẽ tại `core_bpmn.md` |
-| Cổng điều kiện nhiều hơn 7 | B2 thiết kế ~10 cổng vận hành thật; B4 ~7 cổng có nghĩa (không xẻ checklist thẩm định) — xem `core_bpmn.md` |
-| Bằng chứng và phỏng vấn | Mục 3: bằng chứng + 10 câu định tính + 10 câu định lượng |
-| Phân tích định tính 2 quy trình | Mục 4: B2 và B4 |
-| Phân tích định lượng 2 quy trình | Mục 5: B2 và B4 (số liệu có chú thích ước lượng) |
+| Cổng điều kiện (*gateways*) nhiều hơn 7 | B2 thiết kế ~10 cổng vận hành thật; B4 ~7 cổng có nghĩa (không xẻ checklist thẩm định) — xem `core_bpmn.md` |
+| Bằng chứng và phỏng vấn (*evidence* / *interview*) | Mục 3: bằng chứng + 10 câu định tính + 10 câu định lượng |
+| Phân tích định tính (*qualitative analysis*) 2 quy trình | Mục 4: B2 và B4 |
+| Phân tích định lượng (*quantitative analysis*) 2 quy trình | Mục 5: B2 và B4 (số liệu có chú thích ước lượng) |
 | Trình bày | Mục 6: checklist nội dung đưa vào Word / slide |
 
 **Hai quy trình chọn để vẽ sơ đồ và phân tích sâu:**
@@ -30,7 +30,7 @@
 
 ---
 
-## 1. Vị trí nhóm cốt lõi trong kiến trúc quy trình
+## 1. Vị trí nhóm cốt lõi trong kiến trúc quy trình (*process architecture*)
 
 Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hàng cuối.
 
@@ -52,7 +52,7 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Ranh giới nhanh giữa các quy trình cốt lõi:**
+**Ranh giới nhanh (*process boundaries*) giữa các quy trình cốt lõi:**
 
 | Quy trình | Đối tượng theo dõi | Không gộp với |
 |-----------|--------------------|---------------|
@@ -70,9 +70,9 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 
 | Trường | Nội dung |
 |--------|----------|
-| **Tác nhân** | Khách hàng; nhân viên tư vấn; thu ngân; kho cửa hàng; hệ thống bán hàng tại quầy / thành viên |
-| **Khách hàng của quy trình** | Khách mua hoặc được tư vấn tại cửa hàng |
-| **Kết quả có thể** | (1) Giao dịch hoàn tất; (2) Chỉ tư vấn, không mua; (3) Giới thiệu / đặt lịch Clinic (mở B3 nếu khách đồng ý) |
+| **Tác nhân (*actors*)** | Khách hàng; nhân viên tư vấn; thu ngân; kho cửa hàng; hệ thống bán hàng tại quầy / thành viên |
+| **Khách hàng của quy trình (*process customer*)** | Khách mua hoặc được tư vấn tại cửa hàng |
+| **Kết quả có thể (*outcomes*)** | (1) Giao dịch hoàn tất; (2) Chỉ tư vấn, không mua; (3) Giới thiệu / đặt lịch Clinic (mở B3 nếu khách đồng ý) |
 
 **Các bước:**
 
@@ -89,9 +89,9 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 
 | Trường | Nội dung |
 |--------|----------|
-| **Tác nhân** | Khách; hệ thống website/ứng dụng; cổng thanh toán; nhân viên kho/cửa hàng; đối tác vận chuyển / nhân viên giao; chăm sóc khách hàng – vận hành đơn |
-| **Khách hàng của quy trình** | Khách đặt trên Hasaki.vn / ứng dụng |
-| **Kết quả có thể** | (1) Giao thành công và đã thanh toán; (2) Hủy có kiểm soát (+ hoàn trong 30 ngày nếu đã trả trước); (3) Giao thành công kèm phiếu 100.000đ nếu giao 2 giờ trễ đủ điều kiện |
+| **Tác nhân (*actors*)** | Khách; hệ thống website/ứng dụng; cổng thanh toán; nhân viên kho/cửa hàng; đối tác vận chuyển / nhân viên giao; chăm sóc khách hàng – vận hành đơn |
+| **Khách hàng của quy trình (*process customer*)** | Khách đặt trên Hasaki.vn / ứng dụng |
+| **Kết quả có thể (*outcomes*)** | (1) Giao thành công và đã thanh toán; (2) Hủy có kiểm soát (+ hoàn trong 30 ngày nếu đã trả trước); (3) Giao thành công kèm phiếu 100.000đ nếu giao 2 giờ trễ đủ điều kiện |
 
 **Nguồn:** trang hỗ trợ đặt hàng / vận chuyển 2 giờ / quy trình giao hàng; chia giai đoạn theo chuẩn chu kỳ xử lý đơn bán lẻ (xem `ba_model_b2_b4.md`).
 
@@ -111,9 +111,9 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 
 | Trường | Nội dung |
 |--------|----------|
-| **Tác nhân** | Khách; lễ tân; bác sĩ / kỹ thuật viên; thu ngân clinic; hệ thống đặt lịch |
-| **Khách hàng của quy trình** | Khách sử dụng dịch vụ |
-| **Kết quả có thể** | (1) Liệu trình hoàn tất và thanh toán; (2) Dời lịch; (3) Hủy theo quy định; (4) Mua thêm sản phẩm → mở B1 hoặc B2 nếu phát sinh |
+| **Tác nhân (*actors*)** | Khách; lễ tân; bác sĩ / kỹ thuật viên; thu ngân clinic; hệ thống đặt lịch |
+| **Khách hàng của quy trình (*process customer*)** | Khách sử dụng dịch vụ |
+| **Kết quả có thể (*outcomes*)** | (1) Liệu trình hoàn tất và thanh toán; (2) Dời lịch; (3) Hủy theo quy định; (4) Mua thêm sản phẩm → mở B1 hoặc B2 nếu phát sinh |
 
 **Các bước (tham chiếu ngành + mô hình Clinic công bố):** đặt lịch → xác nhận khung giờ và chuyên môn → check-in và tư vấn → thực hiện liệu trình → thanh toán và hẹn lần sau nếu cần.
 
@@ -125,9 +125,9 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 
 | Trường | Nội dung |
 |--------|----------|
-| **Tác nhân** | Khách; nhân viên cửa hàng / chăm sóc khách hàng; kho; kế toán / cổng hoàn tiền; quản lý (khi vượt thẩm quyền) |
-| **Khách hàng của quy trình** | Khách yêu cầu đổi hoặc trả |
-| **Kết quả có thể** | (1) Đổi hàng xong; (2) Hoàn tiền xong theo cách đã thanh toán; (3) Từ chối có giải thích; (4) Quản lý duyệt rồi mới (1)(2)(3) |
+| **Tác nhân (*actors*)** | Khách; nhân viên cửa hàng / chăm sóc khách hàng; kho; kế toán / cổng hoàn tiền; quản lý (khi vượt thẩm quyền) |
+| **Khách hàng của quy trình (*process customer*)** | Khách yêu cầu đổi hoặc trả |
+| **Kết quả có thể (*outcomes*)** | (1) Đổi hàng xong; (2) Hoàn tiền xong theo cách đã thanh toán; (3) Từ chối có giải thích; (4) Quản lý duyệt rồi mới (1)(2)(3) |
 
 **Nguồn:** [Đổi trả – hoàn tiền](https://hotro.hasaki.vn/doi-tra-hoan-tien.html) (30 ngày từ 01/06/2024) và chuẩn đổi trả ngành mỹ phẩm.
 
@@ -145,9 +145,9 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 
 | Trường | Nội dung |
 |--------|----------|
-| **Tác nhân** | Khách; tổng đài / chăm sóc khách hàng; cửa hàng; clinic; kho; kế toán liên quan |
-| **Khách hàng của quy trình** | Khách cần hỗ trợ hoặc khiếu nại |
-| **Kết quả có thể** | (1) Yêu cầu được đóng; (2) Chuyển sang B4 hoặc B2; (3) Chuyển cấp cao / bồi thường theo chính sách |
+| **Tác nhân (*actors*)** | Khách; tổng đài / chăm sóc khách hàng; cửa hàng; clinic; kho; kế toán liên quan |
+| **Khách hàng của quy trình (*process customer*)** | Khách cần hỗ trợ hoặc khiếu nại |
+| **Kết quả có thể (*outcomes*)** | (1) Yêu cầu được đóng; (2) Chuyển sang B4 hoặc B2; (3) Chuyển cấp cao / bồi thường theo chính sách |
 
 **Các bước:** tiếp nhận → phân loại → xử lý trong thẩm quyền hoặc chuyển bộ phận → phản hồi và đóng yêu cầu.
 
@@ -155,7 +155,7 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 
 ## 3. Phương pháp thực hiện (phần cốt lõi)
 
-### 3.1. Bằng chứng
+### 3.1. Bằng chứng (*evidence*)
 
 | Loại | Trạng thái | Cách lấy |
 |------|------------|----------|
@@ -173,13 +173,13 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 | ĐTVC | Đối tác vận chuyển |
 | COD | Thanh toán khi nhận hàng |
 | Xác nhận đã giao | Bằng chứng giao thành công (ký nhận / trạng thái trên hệ thống) |
-| Đối tượng theo dõi | Thực thể gắn một lần chạy quy trình (mã đơn, yêu cầu đổi trả…) |
+| Đối tượng theo dõi (*case*) | Thực thể gắn một lần chạy quy trình (*process instance*) (mã đơn, yêu cầu đổi trả…) |
 
 ### 3.2. Bộ câu hỏi phỏng vấn (đủ 10 + 10)
 
 **Đối tượng gợi ý:** điều phối đơn; nhân viên soạn hàng; nhân viên giao / đối tác vận chuyển; nhân viên đổi trả; chăm sóc khách hàng; lễ tân Clinic.
 
-#### Định tính — 10 câu (5 có cấu trúc + 5 không cấu trúc)
+#### Định tính (*qualitative*) — 10 câu (5 có cấu trúc + 5 không cấu trúc)
 
 **Có cấu trúc:**
 
@@ -197,7 +197,7 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 9. Clinic và bán lẻ phối hợp ra sao khi khách vừa điều trị vừa muốn mua sản phẩm?  
 10. Nếu chỉ được cải một việc để giảm khiếu nại giao hàng, anh/chị chọn việc gì? Vì sao?
 
-#### Định lượng — 10 câu (5 có cấu trúc + 5 không cấu trúc)
+#### Định lượng (*quantitative*) — 10 câu (5 có cấu trúc + 5 không cấu trúc)
 
 **Có cấu trúc:**
 
@@ -219,9 +219,9 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 
 ---
 
-## 4. Phân tích định tính — B2 và B4
+## 4. Phân tích định tính (*qualitative process analysis*) — B2 và B4
 
-**Nhắc lại ký hiệu:** VA = tăng giá trị cho khách; BVA = cần cho doanh nghiệp (kiểm soát, tuân thủ); NVA = không tăng giá trị. Lãng phí: di chuyển thừa (Move), chờ/giữ (Hold), làm thừa (Overdo).
+**Nhắc lại ký hiệu:** VA = tăng giá trị cho khách (*value-adding*); BVA = cần cho doanh nghiệp (*business value-adding*); NVA = không tăng giá trị (*non-value-adding*). Lãng phí (*waste*): di chuyển thừa (Move), chờ/giữ (Hold), làm thừa (Overdo).
 
 ### 4.1. Quy trình B2
 
@@ -251,7 +251,7 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 | Chờ | Chờ thanh toán, chờ shipper, chờ khách nghe máy | Giới hạn thời gian thanh toán; kênh liên hệ đa dạng |
 | Làm thừa | Gọi lặp không kịch bản; đóng gói lại vì soạn sai | Danh mục kiểm tra soạn hàng; mẫu tin nhắn chăm sóc khách hàng |
 
-#### Mô hình xương cá — “Giao 2 giờ không đúng giờ dự kiến”
+#### Mô hình xương cá (*fishbone / Ishikawa*) — “Giao 2 giờ không đúng giờ dự kiến”
 
 ```text
                     Giao không đúng giờ cam kết
@@ -282,7 +282,7 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 | 9 | Xử lý hàng trả (bán lại / loại) | 5 | BVA | Quy định rõ hàng mỹ phẩm đã mở |
 | 10 | Từ chối và giải thích | 2 | BVA | Đào tạo giao tiếp |
 
-#### Lãng phí và xương cá
+#### Lãng phí (*waste*) và xương cá (*fishbone*)
 
 | Loại | Hiện tượng | Khắc phục |
 |------|------------|-----------|
@@ -301,7 +301,7 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 
 ---
 
-## 5. Phân tích định lượng — B2 và B4
+## 5. Phân tích định lượng (*quantitative process analysis*) — B2 và B4
 
 > Chưa có số liệu nội bộ. Bảng dưới là **ước lượng có kiểm soát**. Đơn giá nhân sự giả định 80.000đ/giờ (khoảng 1.333đ/phút). Khi có phỏng vấn, thay bằng số đo.
 >

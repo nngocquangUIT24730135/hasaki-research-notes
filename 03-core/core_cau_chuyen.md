@@ -1,13 +1,13 @@
-# Câu chuyện khách hàng — Hai quy trình cốt lõi B2 và B4
+# Câu chuyện khách hàng — Hai quy trình cốt lõi (*core processes*) B2 và B4
 
 **Mục đích:** giúp người chưa từng mua hàng tại Hasaki hình dung doanh nghiệp vận hành thế nào qua **câu chuyện**, trước khi đọc sơ đồ BPMN hay bảng phân tích.  
 **Hai quy trình được kể:**  
-- **B2** — Từ lúc khách **bấm Đặt hàng** trên website/ứng dụng đến khi nhận hàng (kể cả giao nhanh 2 giờ). Thời gian xem / lựa hàng trước đó không thuộc quy trình vận hành đơn.  
-- **B4** — Từ lúc muốn đổi/trả đến khi đổi hàng, hoàn tiền, hoặc bị từ chối theo chính sách.  
+- **B2** (*Order-to-Delivery*) — Từ lúc khách **bấm Đặt hàng** trên website/ứng dụng đến khi nhận hàng (kể cả giao nhanh 2 giờ). Thời gian xem / lựa hàng trước đó không thuộc quy trình vận hành đơn.  
+- **B4** (*Return-to-Refund*) — Từ lúc muốn đổi/trả đến khi đổi hàng, hoàn tiền, hoặc bị từ chối theo chính sách.  
 
 **Nguồn chính sách đổi trả:** [Đổi trả – hoàn tiền](https://hotro.hasaki.vn/doi-tra-hoan-tien.html)  
 **Nguồn đặt hàng / giao 2 giờ / giao hàng:** trang hỗ trợ Hasaki (đặt hàng, vận chuyển 2 giờ, quy trình giao hàng).  
-**Ranh giới chuẩn:** [research.md](../02-research/research.md) §4.3.  
+**Ranh giới chuẩn (*process boundary*):** [research.md](../02-research/research.md) §4.3.  
 
 > Đây là **câu chuyện minh họa** bám chính sách công bố và logic vận hành đã mô tả trong `core.md` / `ba_model_b2_b4.md`. Chi tiết nội bộ (ai soạn hàng đúng phút nào) có thể khác thực tế từng cửa hàng.
 
@@ -22,7 +22,7 @@ Hasaki với họ là: cửa hàng xanh quen thuộc + website/ứng dụng đ�
 
 ---
 
-## Chương 1 — Lan đặt hàng giao nhanh 2 giờ (quy trình B2, trường hợp thuận lợi)
+## Chương 1 — Lan đặt hàng giao nhanh 2 giờ (quy trình B2, trường hợp thuận lợi / *happy path*)
 
 Một chiều thứ Bảy, Lan hết kem chống nắng. Trên ứng dụng Hasaki, sản phẩm còn biểu tượng gợi ý giao nhanh. Cô chọn địa chỉ căn hộ (nằm trong vùng được hỗ trợ giao 2 giờ), thấy hệ thống đề xuất:
 
@@ -147,7 +147,7 @@ Mỗi dòng trên là **một kết quả có thể** của hoạt động thẩ
 1. Mở đầu slide bằng **Chương 1 + Chương 5** (đặt 2 giờ → nhận nhầm tông → đổi trả): một mạch dễ nhớ.  
 2. Khi chỉ sơ đồ BPMN B2: nhắc lại Chương 1–4.  
 3. Khi chỉ sơ đồ BPMN B4: nhắc lại Chương 5–6 và dẫn đúng câu *soạn sai / nhầm tông màu* từ trang hỗ trợ.  
-4. Nhấn mạnh ranh giới: đơn đã giao thành công vẫn có thể phát sinh đổi trả; khi đó chuyển sang quy trình B4, không kéo dài B2. Thời gian xem hàng trước Đặt hàng không thuộc phân tích định lượng B2.
+4. Nhấn mạnh ranh giới (*process boundary*): đơn đã giao thành công vẫn có thể phát sinh đổi trả; khi đó chuyển sang quy trình B4, không kéo dài B2. Thời gian xem hàng trước Đặt hàng không thuộc phân tích định lượng (*quantitative analysis*) B2.
 
 ---
 

@@ -1,6 +1,6 @@
 # Tài liệu nghiên cứu đồ án — Hasaki Beauty & Clinic
 
-Bộ tài liệu phục vụ đồ án môn **Hệ thống quản trị quy trình nghiệp vụ**, phân tích công ty **Hasaki Beauty & Clinic** (hasaki.vn), tập trung nhóm **quy trình cốt lõi**.
+Bộ tài liệu phục vụ đồ án môn **Hệ thống quản trị quy trình nghiệp vụ (*Business Process Management*)**, phân tích công ty **Hasaki Beauty & Clinic** (hasaki.vn), tập trung nhóm **quy trình cốt lõi (*core processes*)**.
 
 ## Giới hạn phương pháp (đọc trước)
 
@@ -14,7 +14,7 @@ Nhóm **không** khẳng định toàn bộ nội dung là quy trình đang ch�
 ## Cấu trúc thư mục
 
 ```text
-deep_research/
+hasaki-research-notes/
 ├── README.md                 ← File này
 ├── 01-requirements/          Yêu cầu / thang điểm đồ án
 ├── 02-research/              Nghiên cứu mô hình kinh doanh & kiến trúc quy trình
@@ -25,7 +25,7 @@ deep_research/
 | Thư mục | Nội dung |
 |---------|----------|
 | [01-requirements](./01-requirements/) | Diễn giải rubik (thang điểm) đồ án |
-| [02-research](./02-research/) | **Nguồn chuẩn:** mô hình kinh doanh, kiến trúc, ranh giới (B2 bắt đầu khi Đặt hàng; không đo thời gian xem ứng dụng), giao hàng 2 giờ |
+| [02-research](./02-research/) | **Nguồn chuẩn (*source of truth*):** mô hình kinh doanh, kiến trúc (*process architecture*), ranh giới (*process boundaries*) — B2 bắt đầu khi Đặt hàng; không đo thời gian xem ứng dụng — giao hàng 2 giờ |
 | [03-core](./03-core/) | Năm quy trình cốt lõi; phân tích sâu hai quy trình vẽ BPMN — phải khớp `02-research` |
 | [99-references](./99-references/) | Bài mẫu CellphoneS — học cách trình bày, không copy nghiệp vụ |
 
@@ -49,11 +49,17 @@ File sơ đồ BPMN (định dạng `.bpmn`) nhóm tự vẽ trên Camunda Model
 
 ## Thuật ngữ viết tắt thường gặp
 
-| Viết tắt | Nghĩa tiếng Việt |
-|----------|------------------|
-| BPMN | Ký hiệu chuẩn để vẽ sơ đồ quy trình nghiệp vụ |
-| XOR | Cổng điều kiện loại trừ (chỉ đi một nhánh) |
-| COD | Thanh toán khi nhận hàng |
-| VA / BVA / NVA | Hoạt động tăng giá trị / tăng giá trị kinh doanh / không tăng giá trị (dùng khi phân tích định tính) |
+| Viết tắt / thuật ngữ | Nghĩa |
+|----------------------|--------|
+| BPMN | *Business Process Model and Notation* — ký hiệu chuẩn để vẽ sơ đồ quy trình nghiệp vụ |
+| XOR | Cổng điều kiện loại trừ (*exclusive gateway* — chỉ đi một nhánh) |
+| COD | Thanh toán khi nhận hàng (*cash on delivery*) |
+| VA / BVA / NVA | Hoạt động tăng giá trị / tăng giá trị kinh doanh / không tăng giá trị (*value-adding / business value-adding / non-value-adding*) — dùng khi phân tích định tính (*qualitative analysis*) |
+| Ranh giới quy trình | *Process boundary* |
+| Kiến trúc quy trình | *Process architecture* |
+| Thời gian chu kỳ | *Cycle time* |
+| Khách hàng của quy trình | *Process customer* |
+| Sự kiện kích hoạt | *Trigger* |
+| Đối tượng theo dõi / lần chạy | *Case* / *process instance* |
 
 Chi tiết thuật ngữ nghiệp vụ Hasaki nằm trong từng chương.
