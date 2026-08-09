@@ -38,8 +38,9 @@
 | **Vấn đề cần giải quyết** | Khách muốn nhận đúng sản phẩm, đúng thời gian cam kết, thanh toán rõ ràng; Hasaki muốn hoàn tất đơn với chi phí giao kiểm soát và tồn tại điểm lấy hàng chính xác. |
 | **Giá trị với khách** | Cam kết rõ → nhận hàng → thanh toán xong. |
 | **Giá trị với doanh nghiệp** | Doanh thu ghi nhận; giao đúng–đủ–đúng hạn; giảm hủy và giao lại; giảm chi phí phiếu bù. |
-| **Trong phạm vi** | Sau khi khách bấm Đặt hàng: tạo đơn, thanh toán, phân bổ–soạn–đóng gói, giao, ngoại lệ, bù khi trễ 2 giờ, hủy có hoàn. Các bước trên màn hình trước khi đặt (địa chỉ, đề xuất cam kết, chọn vận chuyển / thanh toán) có thể hiện trên sơ đồ nhưng **chưa** mở lần chạy nếu chưa Đặt hàng. |
+| **Trong phạm vi** | Sau khi khách bấm Đặt hàng: tạo đơn, thanh toán, phân bổ–soạn–đóng gói, **giao nhanh 2 giờ hoặc giao thường**, ngoại lệ, bù khi trễ 2 giờ, hủy có hoàn. Các bước trên màn hình trước khi đặt (địa chỉ, đề xuất cam kết, chọn vận chuyển / thanh toán) có thể hiện trên sơ đồ nhưng **chưa** mở lần chạy nếu chưa Đặt hàng. |
 | **Ngoài phạm vi** | Duyệt ứng dụng / xem hàng / giỏ bỏ dở; hoạch định tồn chiến lược (A3); đổi trả sau khi đã nhận (B4); Clinic (B3); đơn trên sàn (quy tắc sàn khác). |
+| **Một quy trình, không hai core** | Không tách “tiếp nhận đơn” và “giao 2H” thành hai quy trình cốt lõi trên kiến trúc: cùng mã đơn, cùng cam kết dịch vụ với khách. Giao 2 giờ / giao thường là **nhánh** trong B2. Chi tiết lập luận: [research.md](../02-research/research.md) §4.3. Tập trung activity theo **vai trò nghiệp vụ**, không theo tầng kỹ thuật. |
 
 ## I.2. Bảng nhà cung cấp – đầu vào – quy trình – đầu ra – khách hàng (*SIPOC*)
 

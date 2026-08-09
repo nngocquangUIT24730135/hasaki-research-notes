@@ -179,7 +179,7 @@ Cổng nhà cung cấp Hasaki công bố bốn bước: đăng ký → xác th�
 | Mã | Quy trình | Khách hàng của quy trình (*process customer*) | Kết quả điển hình (*typical outcomes*) |
 |----|-----------|--------------------------|-------------------|
 | B1 | Bán hàng và tư vấn tại cửa hàng (*Visit-to-Cash*) | Khách tại cửa hàng | Giao dịch hoàn tất, hoặc chỉ tư vấn |
-| B2 | Xử lý đơn hàng online và giao hàng — gồm giao nhanh 2 giờ (*Order-to-Delivery*) | Khách đặt trên kênh của Hasaki | Giao thành công, hoặc hủy có kiểm soát (+ hoàn tiền nếu cần) |
+| B2 | Xử lý đơn hàng online và giao hàng — gồm giao nhanh 2 giờ và giao thường (*Order-to-Delivery*) | Khách đặt trên kênh của Hasaki | Giao thành công, hoặc hủy có kiểm soát (+ hoàn tiền nếu cần) |
 | B3 | Đặt lịch và thực hiện dịch vụ Clinic / Spa (*Appointment-to-Service*) | Khách dùng dịch vụ | Liệu trình xong và thanh toán; hoặc dời / hủy |
 | B4 | Đổi trả và hoàn tiền (*Return-to-Refund*) | Khách yêu cầu đổi / trả | Đổi, hoàn, hoặc từ chối theo điều kiện |
 | B5 | Chăm sóc khách hàng và khiếu nại (*Issue-to-Resolution*) | Khách cần hỗ trợ | Yêu cầu được đóng, hoặc chuyển cấp cao hơn |
@@ -204,7 +204,7 @@ Cổng nhà cung cấp Hasaki công bố bốn bước: đăng ký → xác th�
 └─────────────────────────────────────────────────────┘
 ┌─────────────── CỐT LÕI (Core) ──────────────────────┐
 │ B1 Bán tại cửa hàng (*Visit-to-Cash*)               │
-│ B2 Đơn online & giao (*Order-to-Delivery*)          │
+│ B2 Đơn online & giao 2H/thường (*Order-to-Delivery*)│
 │ B3 Clinic / Spa (*Appointment-to-Service*)          │
 │ B4 Đổi trả & hoàn tiền (*Return-to-Refund*)         │
 │ B5 CSKH & khiếu nại (*Issue-to-Resolution*)         │
@@ -217,9 +217,9 @@ Cổng nhà cung cấp Hasaki công bố bốn bước: đăng ký → xác th�
 └─────────────────────────────────────────────────────┘
 ```
 
-### 3.5. Năng lực hệ thống thường cần (suy luận ngành)
+### 3.5. Năng lực vận hành thường cần (góc nghiệp vụ)
 
-Không khẳng định phần mềm nội bộ Hasaki. Để chạy kiến trúc trên, doanh nghiệp cùng loại thường cần: danh mục và giá; tồn theo từng điểm; quản lý đơn và trạng thái; máy bán hàng tại quầy; soạn hàng tại cửa hàng; kết nối đối tác vận chuyển và thanh toán khi nhận; đặt lịch clinic; thành viên / phiếu mua hàng; cổng nhà cung cấp; tiếp nhận sự cố công nghệ.
+Không khẳng định phần mềm hay thương hiệu hệ thống nội bộ của Hasaki. Doanh nghiệp cùng loại thường cần các **năng lực nghiệp vụ** sau để chạy kiến trúc trên: quản lý danh mục và giá bán; biết tồn theo từng cửa hàng / kho; theo dõi trạng thái đơn từ đặt đến giao; bán tại quầy; soạn và đóng gói tại điểm bán; giao nhanh bán kính ngắn và/hoặc bàn giao đối tác vận chuyển; thu hộ khi nhận hàng; đặt lịch clinic; thành viên và phiếu mua hàng; tiếp nhận nhà cung cấp; xử lý sự cố kênh bán khi gián đoạn. Đó là *việc cần làm được*, không phải danh sách tầng kỹ thuật để vẽ lên sơ đồ BPMN.
 
 ---
 
@@ -243,6 +243,8 @@ Không khẳng định phần mềm nội bộ Hasaki. Để chạy kiến trúc
 | B2 khác B3 | Một luồng ứng dụng gồm cả mua hàng và điều trị |
 | B4 bắt đầu khi khách yêu cầu đổi trả | Mọi đơn giao xong đều kéo dài sang đổi trả trên cùng sơ đồ |
 | Đối tác vận chuyển là bên ngoài (bể bơi riêng (*pool*) hoặc hộp đen) | Vẽ chi tiết nội bộ hãng vận chuyển như của Hasaki |
+| **Một** quy trình B2 gồm cả đặt–thanh toán–soạn–giao (2H hoặc thường) | Tách “mua hàng online” và “giao 2H” thành **hai** quy trình cốt lõi độc lập trên kiến trúc (cùng một mã đơn bị cắt làm đôi) |
+| Làn / tác nhân theo **vai trò nghiệp vụ** (kho, giao hàng, chăm sóc đơn…) | Làn theo tầng kỹ thuật (giao diện / máy chủ / API…) |
 
 ### 4.3. Ranh giới các quy trình then chốt
 
@@ -254,17 +256,39 @@ Không khẳng định phần mềm nội bộ Hasaki. Để chạy kiến trúc
 | Kích hoạt (*trigger*) | Khách bấm **Đặt hàng** (thể hiện quyết định mua; hệ thống tạo mã đơn) |
 | Kết thúc (*end outcomes*) | Giao thành công và đã thanh toán, hoặc hủy có thông báo (+ hoàn nếu đã trả trước) |
 | Chuẩn bị trên màn hình trước khi đặt (trước kích hoạt) | Chọn địa chỉ; hệ thống đề xuất hình thức vận chuyển / điều kiện 2 giờ / phí; khách chọn vận chuyển và phương thức thanh toán. Nếu khách dừng ở đây thì **chưa** có lần chạy quy trình (*process instance*) (chưa có mã đơn). |
-| Trong phạm vi lần chạy quy trình (*process instance scope*) | Tạo đơn; thanh toán (trả trước hoặc khi nhận); soạn–đóng gói–bàn giao; giao; hẹn lại; hủy sau không liên lạc; phiếu bù khi giao 2 giờ trễ |
+| Trong phạm vi lần chạy quy trình (*process instance scope*) | Tạo đơn; thanh toán (trả trước hoặc khi nhận); soạn–đóng gói–bàn giao; **giao nhanh 2 giờ hoặc giao thường**; hẹn lại; hủy sau không liên lạc; phiếu bù khi giao 2 giờ trễ |
 | Ngoài phạm vi (*out of scope*) | Duyệt ứng dụng / xem sản phẩm / so sánh / giỏ bỏ dở (**không** có mã đơn); mở cửa hàng (A1); ký nhà cung cấp (A2); đặt mua chiến lược (A3); đổi trả sau nhận (B4); clinic (B3) |
 | Đo thời gian chu kỳ (*cycle time*) | Từ **tạo đơn** sau khi bấm Đặt hàng (kịch bản thanh toán trước: mốc sẵn sàng soạn = thanh toán thành công) đến giao thành công hoặc hủy và đóng trường hợp. **Không** cộng thời gian xem / lựa hàng trên ứng dụng. |
+
+#### Vì sao B2 là **một** quy trình cốt lõi (không tách “đặt đơn” và “giao 2H”)
+
+Đã cân nhắc hai cách phổ biến trong thực tế vận hành:
+
+| Cách | Ý nghĩa | Khi nào gặp |
+|------|---------|-------------|
+| **Một quy trình đầu–cuối** (*Order-to-Delivery*) | Cùng một mã đơn từ lúc khách đặt đến lúc nhận / hủy | Kiến trúc quy trình, phân tích chu kỳ, cam kết dịch vụ với khách |
+| **Hai (hay nhiều) phân đoạn vận hành** | Ví dụ tiếp nhận đơn rồi mới soạn–giao; hoặc đội checkout khác đội cửa hàng | Chia việc nội bộ, ca làm việc — vẫn thuộc **một** chuỗi giá trị với khách |
+
+**Với Hasaki và công ty bán lẻ mỹ phẩm / chăm sóc cá nhân đa kênh tương tự (cửa hàng + app + giao nhanh từ điểm gần khách):**
+
+1. **Cùng đối tượng theo dõi:** khách và doanh nghiệp theo dõi **một mã đơn**. Chính sách công bố (chọn 2 giờ / 48 giờ, đơn trên 5 triệu chỉ trả trước, không liên lạc 3 ngày thì hủy–hoàn, phiếu 100.000đ khi giao 2 giờ trễ) đều gắn **vòng đời đơn**, không phải hai “sản phẩm quy trình” tách rời.  
+2. **Hình thức giao là lựa chọn trong đơn, không phải quy trình khác:** NowFree 2 giờ và giao thường là **nhánh** sau khi đã đặt (và đủ điều kiện đề xuất 2 giờ). Cùng ngành (chuỗi lấy hàng từ cửa hàng / kho nhỏ trong đô thị): cam kết giờ và soạn–giao là phần thực hiện của cùng đơn đã chốt.  
+3. **Giá trị khách cảm nhận kết thúc khi nhận hàng** (hoặc hủy có kiểm soát), không khi mới “xác nhận đơn trên hệ thống”. Nếu kiến trúc liệt kê “mua hàng online” dừng ở xác nhận và “giao 2H” là core thứ hai, dễ **cắt đôi một case**, trùng bước đặt hàng, và hổng nhánh giao thường / đối tác vận chuyển.  
+4. **Góc nghiệp vụ, không góc kỹ thuật:** sơ đồ B2 nói về ai làm gì (khách, hệ thống kênh bán, cửa hàng/kho, đơn vị giao, chăm sóc đơn) và quyết định nghiệp vụ nào (đủ điều kiện 2 giờ? trả trước hay khi nhận? còn hàng lúc soạn? giao được không?). Không mô tả tầng giao diện–máy chủ, khóa tồn tạm, thuật toán chống gian lận như activity chính — những việc đó nếu cần chỉ là chú thích *suy luận ngành* hoặc thuộc quy trình hỗ trợ / kiểm soát khác.
+
+**Hướng cho đồ án nhóm (đã chốt trong nguồn chuẩn này):**
+
+- Trên **kiến trúc** và khi **mô hình hóa / phân tích** để tính điểm core: dùng **một** B2 — từ Đặt hàng đến giao/hủy — có cổng tách **giao 2 giờ** và **giao thường**.  
+- Có thể chia việc trong nhóm (người viết đoạn checkout, người viết đoạn cửa hàng–shipper) nhưng sản phẩm nộp là **một hồ sơ + một sơ đồ B2** (hoặc một sơ đồ chính), không tính hai core riêng.  
+- Nếu tạm thời vẽ hai hình nối tiếp để làm việc, vẫn phải ghi rõ: đó là **phân đoạn của B2**, cùng mã đơn, và kiến trúc **không** liệt kê thành hai quy trình cốt lõi độc lập.
 
 **Vì sao không đo thời gian xem hàng:** khách có thể mở ứng dụng Hasaki xem hàng lâu mà không đặt — không phát sinh mã đơn, không soạn, không giao, không áp dụng cam kết giờ nhận. Theo phân tích quy trình (thời gian chu kỳ = thời gian một lần chạy từ bắt đầu đến kết thúc; khung “từ lúc khách đưa đơn”), chỉ các đơn đã Đặt hàng mới vào mẫu định lượng. Chi tiết số liệu ước lượng: [core.md](../03-core/core.md) mục 5.
 
 Chính sách công bố liên quan: option 2 giờ / 48 giờ tại nội thành Thành phố Hồ Chí Minh và Hà Nội ([hướng dẫn đặt hàng](https://hotro.hasaki.vn/huong-dan-dat-hang.html)); vùng NowFree trên trang hỗ trợ nêu Thành phố Hồ Chí Minh – Cần Thơ + danh sách khu vực; giao thường 24–48 giờ hoặc 3–6 ngày tùy vùng; đơn trên 5 triệu chỉ thanh toán trước; không liên lạc 3 ngày thì hủy và hoàn trong 30 ngày; không đồng kiểm; có đối tác vận chuyển.
 
-Khi vẽ sơ đồ, vẫn có thể hiện giai đoạn **cam kết giao** (bước trên màn hình đặt hàng + kiểm hệ thống quanh lúc đặt) để đủ cổng điều kiện, rồi **tạo đơn và sẵn sàng soạn → soạn–đóng gói–bàn giao → giao đến khách → xử lý ngoại lệ**. Cam kết trên BPMN giúp hiểu quy tắc; **định lượng chỉ trên lần chạy đã Đặt hàng**. Các bước xếp ưu tiên đơn 2 giờ, xác nhận tồn lúc soạn là *suy luận chuẩn ngành* — xem [ba_model_b2_b4.md](../03-core/ba_model_b2_b4.md).
+Khi vẽ sơ đồ, vẫn có thể hiện giai đoạn **cam kết giao** (bước trên màn hình đặt hàng + kiểm hệ thống quanh lúc đặt) để đủ cổng điều kiện, rồi **tạo đơn và sẵn sàng soạn → soạn–đóng gói–bàn giao → giao đến khách (nhánh 2 giờ hoặc giao thường) → xử lý ngoại lệ**. Cam kết trên BPMN giúp hiểu quy tắc; **định lượng chỉ trên lần chạy đã Đặt hàng**. Các bước xếp ưu tiên đơn 2 giờ, xác nhận tồn lúc soạn là *suy luận chuẩn ngành* — xem [ba_model_b2_b4.md](../03-core/ba_model_b2_b4.md).
 
-**B4 — Đổi trả (*Return-to-Refund*)**
+**B4 — Đổi trả sản phẩm và hoàn tiền (*Return-to-Refund*)**
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -356,8 +380,8 @@ Tất cả chỉ số dưới đây đo trên **đơn đã tạo** (sau Đặt h
 1. Hasaki kết hợp bán lẻ đa nhãn, clinic và kênh số; cửa hàng vừa bán vừa làm điểm lấy hàng giao nhanh.  
 2. Lợi thế bền vững hơn khuyến mãi đơn thuần nằm ở mạng điểm, độ tin chính hãng, khớp giữa cam kết tồn và thực giao, cùng vòng clinic.  
 3. Kiến trúc khoảng 13 quy trình (quản lý / cốt lõi / hỗ trợ) đủ bao phủ nhóm công ty cùng loại.  
-4. Ranh giới rõ giữa đơn online (B2), tồn kho (A3), clinic (B3) và đổi trả (B4) là điều kiện để phân tích và vẽ sơ đồ có ý nghĩa; với B2, xem hàng trên ứng dụng không mở quy trình — chỉ Đặt hàng mới mở lần chạy và mới đo thời gian chu kỳ.  
-5. Giao 2 giờ là hệ thống nhiều tầng; chính sách công bố đủ để hiểu cam kết và bù đắp, chưa đủ để khẳng định thuật toán gán kho nội bộ.
+4. Ranh giới rõ giữa đơn online (B2), tồn kho (A3), clinic (B3) và đổi trả (B4) là điều kiện để phân tích và vẽ sơ đồ có ý nghĩa; với B2, xem hàng trên ứng dụng không mở quy trình — chỉ Đặt hàng mới mở lần chạy và mới đo thời gian chu kỳ. **B2 là một quy trình cốt lõi duy nhất** gồm cả giao 2 giờ và giao thường — không tách “mua hàng” và “giao 2H” thành hai core trên kiến trúc.  
+5. Giao 2 giờ là **nhánh vận hành** trong B2 (nhiều tầng: cam kết vùng–tồn, soạn tại điểm gần, giao chặng cuối, bù khi trễ); chính sách công bố đủ để hiểu cam kết và bù đắp, chưa đủ để khẳng định cách gán cửa hàng nội bộ.
 
 ---
 

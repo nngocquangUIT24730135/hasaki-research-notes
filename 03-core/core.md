@@ -85,22 +85,23 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 
 ---
 
-### B2. Xử lý đơn hàng trực tuyến và giao hàng (gồm giao nhanh 2 giờ)
+### B2. Xử lý đơn hàng trực tuyến và giao hàng (gồm giao nhanh 2 giờ và giao thường)
 
 | Trường | Nội dung |
 |--------|----------|
-| **Tác nhân (*actors*)** | Khách; hệ thống website/ứng dụng; cổng thanh toán; nhân viên kho/cửa hàng; đối tác vận chuyển / nhân viên giao; chăm sóc khách hàng – vận hành đơn |
+| **Tác nhân (*actors*)** | Khách; hệ thống kênh bán; cổng thanh toán; nhân viên kho/cửa hàng; nhân viên giao nhanh và/hoặc đối tác vận chuyển; chăm sóc khách hàng – vận hành đơn |
 | **Khách hàng của quy trình (*process customer*)** | Khách đặt trên Hasaki.vn / ứng dụng |
 | **Kết quả có thể (*outcomes*)** | (1) Giao thành công và đã thanh toán; (2) Hủy có kiểm soát (+ hoàn trong 30 ngày nếu đã trả trước); (3) Giao thành công kèm phiếu 100.000đ nếu giao 2 giờ trễ đủ điều kiện |
 
-**Nguồn:** trang hỗ trợ đặt hàng / vận chuyển 2 giờ / quy trình giao hàng; chia giai đoạn theo chuẩn chu kỳ xử lý đơn bán lẻ (xem `ba_model_b2_b4.md`).
+**Nguồn:** trang hỗ trợ đặt hàng / vận chuyển 2 giờ / quy trình giao hàng; chia giai đoạn theo chuẩn chu kỳ xử lý đơn bán lẻ (xem `ba_model_b2_b4.md`).  
+**Kiến trúc:** B2 là **một** quy trình cốt lõi (*Order-to-Delivery*) — không tách riêng “mua hàng” và “chỉ giao 2H” trên danh mục core. Lập luận: [research.md](../02-research/research.md) §4.3.
 
 | Giai đoạn | Nội dung chính |
 |-----------|----------------|
 | 1. Cam kết giao hàng (trên màn hình trước khi đặt) | Theo địa chỉ hiện lựa chọn vận chuyển; kiểm điều kiện 2 giờ (vùng, giá trị đơn, hàng sẵn tại kho gần); tính phí; khách chọn vận chuyển và thanh toán (đơn trên 5 triệu chỉ thanh toán trước). *Chưa có mã đơn nếu khách dừng.* |
 | 2. Tạo đơn và sẵn sàng soạn | **Kích hoạt:** bấm Đặt hàng → tạo mã đơn; nếu thanh toán trước thì phải thành công mới soạn; nếu thanh toán khi nhận thì soạn sau khi tạo đơn; đơn 2 giờ nên được ưu tiên soạn *(suy luận ngành)* |
-| 3. Soạn – đóng gói – bàn giao | Xác nhận còn hàng lúc soạn; soạn; đóng gói chuẩn Hasaki; bàn giao đơn vị giao |
-| 4. Giao đến khách | Giao tận nơi; thu tiền nếu thanh toán khi nhận; khách ký nhận (không đồng kiểm; nên quay video khi mở) |
+| 3. Soạn – đóng gói – bàn giao | Xác nhận còn hàng lúc soạn; soạn; đóng gói chuẩn Hasaki; bàn giao **shipper 2 giờ** hoặc **đối tác giao thường** |
+| 4. Giao đến khách | Giao tận nơi (nhánh 2 giờ hoặc thường); thu tiền nếu thanh toán khi nhận; khách ký nhận (không đồng kiểm; nên quay video khi mở) |
 | 5. Ngoại lệ và đóng đơn | Giao không thành → hẹn lại; không liên lạc **3 ngày** → hủy và hoàn; điểm không giao được → đổi địa chỉ hoặc hủy; giao 2 giờ trễ → xét phiếu 100.000đ |
 
 **Hồ sơ rút gọn:** kích hoạt = bấm Đặt hàng; đối tượng theo dõi = mã đơn. Duyệt ứng dụng / xem hàng **ngoài** quy trình. Chỉ số gợi ý: tỷ lệ giao đúng giờ cam kết; tỷ lệ giao thành công lần đầu; thời gian từ tạo đơn đến bắt đầu soạn; chi phí phiếu bù đắp. Thời gian chu kỳ đo từ tạo đơn (sau Đặt hàng) — xem mục 5 và [research.md](../02-research/research.md) §4.3.

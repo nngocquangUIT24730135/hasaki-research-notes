@@ -9,20 +9,18 @@
 
 Câu hỏi: Quang **bổ sung giao thường 48H** vào quy trình đang tách, hay **Phúc + Quang gộp thành một quy trình**?
 
-**Khuyến nghị: gộp P1 + Q1 thành một quy trình B2 (*Order-to-Delivery*), trong đó có cả nhánh NowFree 2H và giao thường 48H** — tốt hơn cho nhóm hơn là Quang chỉ vá 48H lên Q1, hoặc giữ hai sơ đồ mãi.
+**Đã chốt trong nguồn chuẩn nhóm** ([research.md](../../02-research/research.md) §4.3): **gộp thành một quy trình B2** (*Order-to-Delivery*) — từ Đặt hàng đến giao/hủy, có **cả nhánh NowFree 2 giờ và giao thường**. Không liệt kê “mua hàng online” và “giao 2H” thành hai quy trình cốt lõi độc lập trên kiến trúc.
 
-| Lý do gộp tốt hơn | Chi tiết |
-|-------------------|----------|
-| Đúng kiến trúc nhóm | `research.md` / `core_bpmn`: một *case* = mã đơn, từ **Đặt hàng** đến giao/hủy; giá trị Hasaki nằm ở giao, không dừng ở OMS |
-| Tránh lệch bàn giao | Hai sơ đồ dễ lệch (thanh toán, tồn, bước “Đặt hàng” vẽ hai lần) |
-| Đủ cổng XOR | Một sơ đồ dễ đạt **>7** XOR (2H/48H, COD/trả trước, tồn, giao thất bại, phiếu 100K…) — khớp rubik và thiết kế ~10 cổng trong `core_bpmn` |
-| Cặp core nộp điểm | Rubik cần **2 core**: B2 gộp + B4 đổi trả sạch hơn P1+Q1 như “hai mảnh một chuỗi” |
+**Lý do nghiệp vụ (tóm tắt):** cùng một mã đơn và cùng cam kết với khách; 2H/thường chỉ là lựa chọn hình thức giao; giá trị kết thúc khi nhận hàng (hoặc hủy có kiểm soát); sơ đồ theo vai trò nghiệp vụ, không theo tầng kỹ thuật.
 
-**Chỉ bổ sung 48H vào Q1?** Được nếu nhóm **cố giữ tách**, nhưng Q1 sẽ phình (3PL / pool ngoài, SLA khác) trong khi P1 vẫn lệch (bắt đầu từ duyệt app, thiên kỹ thuật). Vá 48H trên Q1 **không hết** vấn đề ranh giới P1.
+| Việc cần làm | Chi tiết |
+|--------------|----------|
+| Sản phẩm nộp | **Một** hồ sơ + **một** sơ đồ B2 (có cổng tách 2H vs thường) |
+| Phúc | Đóng góp quy tắc đặt hàng / thanh toán (nghiệp vụ); bỏ browse khỏi chu kỳ; bỏ lane Frontend/Backend |
+| Quang | Đóng góp nhánh soạn–giao 2H và nối nhánh giao thường / đối tác; không giữ Q1 như core riêng |
+| Cặp core điểm | B2 gộp + B4 đổi trả |
 
-**Nếu gộp — làm gọn:** trigger = Đặt hàng (bỏ browse khỏi chu kỳ); XOR sớm NowFree 2H vs giao thường → lane cửa hàng+shipper 2H **hoặc** bàn giao 3PL; giữ phần hay của Quang (tồn thực tế, giao–hẹn 3 ngày, phiếu 100K một cổng); phần Phúc chỉ giữ quy tắc nghiệp vụ checkout (>5 triệu, COD/online), bỏ Frontend/Backend. Tài liệu: một hồ sơ B2; nội dung NowFree trở thành **nhánh 2H** trong B2.
-
-**Nếu tạm giữ tách trước hạn:** vẫn phải khóa handoff P1→Q1 và bỏ browse khỏi P1 — xem các mục dưới (đánh giá hiện trạng từng người).
+**Nếu tạm giữ hai hình để chia việc:** chỉ là phân đoạn nội bộ của B2, cùng mã đơn — kiến trúc và báo cáo vẫn ghi **một** B2. Chi tiết đánh giá hiện trạng P1 ở các mục dưới.
 
 ### Mã dùng trong file này
 

@@ -1,8 +1,9 @@
 # Hướng dẫn vẽ sơ đồ BPMN — Quy trình B2 và B4
 
 **Mục đích:** hướng dẫn nhóm vẽ hai sơ đồ BPMN 2.0 cho quy trình cốt lõi (*core processes*).  
+**Nguồn chuẩn ranh giới:** [research.md](../02-research/research.md) §4.3 — **B2 là một quy trình** từ Đặt hàng đến giao/hủy, gồm cả nhánh **giao 2 giờ** và **giao thường**; không tách “mua hàng online” và “giao 2H” thành hai core trên kiến trúc.  
 **Nguyên tắc:** cổng XOR (*XOR gateway*) chỉ đặt khi **luồng phía sau khác nhau**; tiêu chí kiểm tra trong cùng một lần thẩm định ghi trong **hoạt động (*activity*) + bảng quyết định (*decision table*)**, không xẻ thành nhiều cổng chỉ để đủ điểm.  
-**Thiết kế đề xuất:** B2 khoảng **10** cổng (nhiều nhánh vận hành thật); B4 khoảng **7** cổng có nghĩa (X1–X7) — nếu rubik cần >7 cổng trên sơ đồ đổi trả, cân nhắc chọn thêm quy trình khác thay vì ép checklist thành cổng.  
+**Thiết kế đề xuất:** B2 khoảng **10** cổng (nhiều nhánh vận hành thật, kể cả 2H/thường); B4 khoảng **7** cổng có nghĩa (X1–X7) — nếu rubik cần >7 cổng trên sơ đồ đổi trả, cân nhắc chọn thêm quy trình khác thay vì ép checklist thành cổng.  
 **Phân tích nghiệp vụ chi tiết:** xem file [ba_model_b2_b4.md](./ba_model_b2_b4.md).  
 **Công cụ gợi ý:** Camunda Modeler hoặc bpmn.io.  
 **Tên file nên đặt:** `b2-xu-ly-don-hang-online.bpmn`, `b4-doi-tra-hoan-tien.bpmn`.
@@ -15,11 +16,11 @@
 |-----------|-----------------|
 | **BPMN** | *Business Process Model and Notation* — chuẩn ký hiệu quốc tế để vẽ quy trình nghiệp vụ (hộp hoạt động, mũi tên, cổng điều kiện, sự kiện bắt đầu/kết thúc). |
 | **Bể bơi (*pool*)** | Khung lớn thể hiện một tổ chức hoặc một bên tham gia (ví dụ: Khách hàng, Hasaki). |
-| **Làn (*lane*)** | Hàng ngang trong bể bơi, gắn với vai trò (Hệ thống, Kho, Chăm sóc khách hàng…). |
+| **Làn (*lane*)** | Hàng ngang trong bể bơi, gắn với **vai trò nghiệp vụ** (Hệ thống kênh bán, Kho/cửa hàng, Đơn vị giao, Chăm sóc đơn…) — **không** tách làn “giao diện / máy chủ”. |
 | **Cổng XOR (*XOR gateway*)** | Cổng điều kiện “hoặc cái này hoặc cái kia” — chỉ đi **một** nhánh. Nhãn cổng nên là câu hỏi nghiệp vụ. |
 | **Tách nhánh / gộp nhánh (*split / join*)** | Sau khi tách bằng cổng XOR, khi các nhánh gặp lại cần cổng gộp tương ứng để luồng không “treo”. |
 | **Sự kiện bắt đầu / kết thúc (*start / end event*)** | Mở hoặc đóng một lần chạy quy trình (*process instance*). |
-| **Hoạt động (*activity*)** | Việc thực hiện trên sơ đồ (ô chữ nhật). |
+| **Hoạt động (*activity*)** | Việc thực hiện trên sơ đồ (ô chữ nhật) — tên việc nghiệp vụ, không tên API hay màn hình lập trình. |
 | **Luồng tuần tự (*sequence flow*)** | Mũi tên nối các phần tử trong cùng một bể bơi. |
 
 **Quy ước khi vẽ**
@@ -27,8 +28,9 @@
 1. Nhãn cổng điều kiện viết bằng câu hỏi tiếng Việt (ví dụ: *Đủ điều kiện đề xuất giao 2 giờ?*).  
 2. Việc kiểm tra điều kiện giao nhanh, tạo đơn, chặn thanh toán khi nhận với đơn lớn đặt ở làn **Hệ thống**.  
 3. Việc soạn hàng, giao hàng, gọi khách đặt ở làn **con người**.  
-4. Không vẽ cơ sở dữ liệu hay giao diện lập trình.  
-5. Dưới hình ghi chú nguồn trang hỗ trợ Hasaki; bước nào suy luận theo chuẩn ngành thì ghi rõ.
+4. Không vẽ cơ sở dữ liệu, giao diện lập trình, hay tầng Frontend/Backend.  
+5. Dưới hình ghi chú nguồn trang hỗ trợ Hasaki; bước nào suy luận theo chuẩn ngành thì ghi rõ.  
+6. Một sơ đồ B2 phủ cả nhánh 2 giờ và giao thường (G1–G2); đối tác vận chuyển giao thường = bể bơi ngoài hoặc hộp đen nếu cần.
 
 ---
 
@@ -38,14 +40,14 @@
 
 | Trường | Nội dung |
 |--------|----------|
-| Tên quy trình | Xử lý đơn hàng trực tuyến và giao hàng (*Order-to-Delivery*) |
+| Tên quy trình | Xử lý đơn hàng trực tuyến và giao hàng — gồm giao nhanh 2 giờ và giao thường (*Order-to-Delivery*) |
 | Khách hàng của quy trình (*process customer*) | Khách đặt hàng trên website hoặc ứng dụng Hasaki |
 | Sự kiện kích hoạt (*trigger*) | Khách bấm **Đặt hàng** (sau khi đã chọn địa chỉ, hình thức vận chuyển, thanh toán trên màn hình) |
 | Đối tượng theo dõi (*case*) | Một mã đơn hàng |
 | Kết thúc (*outcomes*) | **Giao thành công** hoặc **Đơn bị hủy** (có hoàn tiền nếu khách đã trả trước) |
-| Ngoài lần chạy (*out of scope*) | Duyệt ứng dụng / xem sản phẩm / giỏ bỏ dở — không tạo mã đơn, không đo thời gian chu kỳ |
+| Ngoài lần chạy (*out of scope*) | Duyệt ứng dụng / xem sản phẩm / giỏ bỏ dở — không tạo mã đơn, không đo thời gian chu kỳ; đổi trả sau nhận (B4) |
 | Đo thời gian chu kỳ (*cycle time*) | Từ tạo đơn (sau Đặt hàng) đến giao thành công / hủy; không gồm thời gian lựa hàng — khớp [research.md](../02-research/research.md) §4.3 |
-
+| Lưu ý kiến trúc | **Một** sơ đồ B2 cho cả nhánh 2 giờ và giao thường — không nộp hai core “checkout” + “chỉ giao 2H” |
 ## A.2. Các giai đoạn trên sơ đồ (*process stages* — vẽ từ trái sang phải)
 
 Trong quản trị chuỗi cung ứng bán lẻ, chu kỳ xử lý đơn thường được chia thành các giai đoạn. Nhóm dùng cách chia này để sơ đồ dễ đọc. Giai đoạn 1 là **cam kết trên màn hình trước khi đặt** (để đủ cổng); lần chạy quy trình và định lượng bắt đầu từ giai đoạn 2:
@@ -54,8 +56,8 @@ Trong quản trị chuỗi cung ứng bán lẻ, chu kỳ xử lý đơn thườ
 |-----------|--------------------------------|
 | 1. Cam kết giao hàng | Theo địa chỉ hiện lựa chọn vận chuyển; kiểm tra điều kiện giao 2 giờ; tính phí; khách chọn *(chưa chắc có đơn nếu dừng)* |
 | 2. Tạo đơn và sẵn sàng lấy hàng | Bấm Đặt hàng → tạo mã đơn; thanh toán (nếu cần); đưa đơn vào soạn hàng |
-| 3. Soạn – đóng gói – bàn giao | Kiểm tồn lúc soạn; soạn; đóng gói; giao cho đơn vị vận chuyển |
-| 4. Giao đến khách | Giao tận nơi; thu tiền nếu thanh toán khi nhận; xác nhận đã giao |
+| 3. Soạn – đóng gói – bàn giao | Kiểm tồn lúc soạn; soạn; đóng gói; bàn giao **shipper 2 giờ** hoặc **đối tác giao thường** |
+| 4. Giao đến khách | Giao tận nơi (nhánh 2 giờ hoặc thường); thu tiền nếu thanh toán khi nhận; xác nhận đã giao |
 | 5. Xử lý ngoại lệ và đóng đơn | Hẹn giao lại; hủy sau 3 ngày không liên lạc; đổi địa chỉ; phiếu 100.000đ nếu giao 2 giờ trễ |
 
 ## A.3. Bể bơi và làn (*pools and lanes*)
@@ -65,9 +67,12 @@ Bể bơi: Khách hàng
 Bể bơi: Hasaki
   Làn: Hệ thống kênh bán hàng
   Làn: Kho / cửa hàng
-  Làn: Đối tác vận chuyển / giao hàng
+  Làn: Giao hàng 2 giờ (nhân viên giao nhanh)   ← nhánh NowFree
+  Làn: Đối tác vận chuyển                        ← nhánh giao thường (hoặc hộp đen / pool ngoài)
   Làn: Chăm sóc khách hàng – Vận hành đơn
 ```
+
+Có thể gộp “Giao hàng 2 giờ” và “Đối tác vận chuyển” thành một làn **Đơn vị giao hàng** nếu hình quá dày — miễn trên cổng G1/G2 vẫn thấy rõ hai nhánh nghiệp vụ.
 
 ## A.4. Tên hoạt động (*activity labels*) gợi ý trên hình
 
@@ -77,7 +82,7 @@ Bể bơi: Hasaki
 
 **Kho / cửa hàng:** nhận lệnh soạn (ưu tiên đơn 2 giờ) → soạn hàng → đóng gói theo chuẩn Hasaki → bàn giao đơn vị giao → nhận hàng hoàn (khi hủy hoặc giao không thành).
 
-**Đối tác vận chuyển:** nhận kiện → liên hệ và giao → thu tiền khi nhận và đối soát → báo kết quả giao.
+**Đối tác / đơn vị giao:** nhận kiện → liên hệ và giao → thu tiền khi nhận và đối soát (nếu giao thường) → báo kết quả giao. Nhánh 2 giờ: ưu tiên bán kính ngắn, bám giờ nhận dự kiến.
 
 **Chăm sóc khách hàng:** hẹn giao lại hoặc hướng dẫn nhận tại điểm → thông báo hủy sau 3 ngày không liên lạc → xử lý đổi địa chỉ hoặc hủy khi địa điểm không giao được → xét cấp phiếu 100.000đ khi giao 2 giờ trễ đủ điều kiện.
 
@@ -114,8 +119,10 @@ Không chọn 2 giờ → tạo đơn → soạn → giao → khách trả tiề
 - [ ] Đủ 10 cổng XOR có nhãn câu hỏi tiếng Việt  
 - [ ] Cam kết giao hàng ở làn Hệ thống; soạn hàng ở Kho; giao ở đối tác vận chuyển; hủy 3 ngày và phiếu 100.000đ ở chăm sóc khách hàng  
 - [ ] Có chú thích: bắt đầu lần chạy = Đặt hàng; giai đoạn cam kết là bước trên màn hình trước khi đặt  
+- [ ] Có **cả hai** nhánh giao 2 giờ và giao thường (sau G1/G2)  
 - [ ] Có chú thích nguồn trang hỗ trợ Hasaki  
 - [ ] Có chú thích G6 là suy luận ngành  
+- [ ] Không dùng làn Frontend/Backend; tên activity là việc nghiệp vụ  
 
 ---
 

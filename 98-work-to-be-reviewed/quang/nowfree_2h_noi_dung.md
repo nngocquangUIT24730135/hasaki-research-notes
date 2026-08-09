@@ -1,8 +1,8 @@
 # Nội dung bổ sung — Quy trình giao hàng NowFree 2 giờ (Q1)
 
 **File BPMN kèm theo:** `hasaki-van-chuyen-2h-manual-layouted-v2.bpmn`  
-**Mục đích:** điền các phần chữ còn thiếu theo rubik `01-requirements/yeu_cau_do_an.md` để kèm sơ đồ mô hình hóa quy trình cốt lõi.  
-**Vị trí kiến trúc:** phân đoạn fulfillment của chuỗi **B2 — Xử lý đơn hàng online và giao hàng** (*Order-to-Delivery*), **chỉ nhánh NowFree 2H**. Quy trình tiếp nhận / xác nhận đơn online (P1 — phần Phúc) bàn giao sang Q1 bằng sự kiện *đơn 2H đã xác nhận, sẵn sàng thực hiện giao*.
+**Mục đích:** điền các phần chữ còn thiếu theo rubik `01-requirements/yeu_cau_do_an.md` để kèm sơ đồ mô hình hóa.  
+**Vị trí kiến trúc (đã chốt SoT):** đây là nội dung cho **nhánh NowFree 2 giờ** trong **một** quy trình cốt lõi **B2 — Xử lý đơn hàng online và giao hàng** (*Order-to-Delivery*). Không tính Q1 là core riêng bên cạnh “mua hàng online”. Xem [research.md](../../02-research/research.md) §4.3. Khi nhóm gộp sơ đồ B2, dùng các mục dưới cho đoạn soạn–giao 2H; nhánh giao thường bổ sung theo `core_bpmn.md`.
 
 > **Phương pháp:** ưu tiên chính sách công bố trên trang hỗ trợ Hasaki; bước nội bộ (phân công cửa hàng, gọi xác nhận trước khi soạn, kiểm tồn thực tế tại quầy) ghi là *suy luận theo chuẩn ngành giao nhanh từ cửa hàng* — không khẳng định đã quan sát sổ tay nội bộ.
 
