@@ -2,7 +2,27 @@
 
 **Nguồn:** `Quy Trình Mua Hàng Online - Hasaki.md`  
 **Đối chiếu:** `01-requirements/yeu_cau_do_an.md`, `02-research/research.md` (đặc biệt §4.3 — B2), `03-core/core_bpmn.md`, slides FBPM Ch.2 (nhận diện / ranh giới), Ch.3 (mô hình hóa), Ch.6 (định tính), Ch.7 (định lượng).  
-**Phạm vi nhận xét:** quy trình cốt lõi mà Phúc đang làm (mua hàng / đơn online) — ranh giới, mức nghiệp vụ vs kỹ thuật, và sự khớp thực tế Hasaki / cùng ngành.
+**Phạm vi nhận xét:** quy trình cốt lõi mà Phúc đang làm (mua hàng / đơn online) — ranh giới, mức nghiệp vụ vs kỹ thuật, và sự khớp thực tế Hasaki / cùng ngành.  
+**File liên quan:** nhận xét Quang — `../quang/01_feedback_quang.md`.
+
+## Quyết định hướng nhóm (P1 ↔ Q1) — đọc trước
+
+Câu hỏi: Quang **bổ sung giao thường 48H** vào quy trình đang tách, hay **Phúc + Quang gộp thành một quy trình**?
+
+**Khuyến nghị: gộp P1 + Q1 thành một quy trình B2 (*Order-to-Delivery*), trong đó có cả nhánh NowFree 2H và giao thường 48H** — tốt hơn cho nhóm hơn là Quang chỉ vá 48H lên Q1, hoặc giữ hai sơ đồ mãi.
+
+| Lý do gộp tốt hơn | Chi tiết |
+|-------------------|----------|
+| Đúng kiến trúc nhóm | `research.md` / `core_bpmn`: một *case* = mã đơn, từ **Đặt hàng** đến giao/hủy; giá trị Hasaki nằm ở giao, không dừng ở OMS |
+| Tránh lệch bàn giao | Hai sơ đồ dễ lệch (thanh toán, tồn, bước “Đặt hàng” vẽ hai lần) |
+| Đủ cổng XOR | Một sơ đồ dễ đạt **>7** XOR (2H/48H, COD/trả trước, tồn, giao thất bại, phiếu 100K…) — khớp rubik và thiết kế ~10 cổng trong `core_bpmn` |
+| Cặp core nộp điểm | Rubik cần **2 core**: B2 gộp + B4 đổi trả sạch hơn P1+Q1 như “hai mảnh một chuỗi” |
+
+**Chỉ bổ sung 48H vào Q1?** Được nếu nhóm **cố giữ tách**, nhưng Q1 sẽ phình (3PL / pool ngoài, SLA khác) trong khi P1 vẫn lệch (bắt đầu từ duyệt app, thiên kỹ thuật). Vá 48H trên Q1 **không hết** vấn đề ranh giới P1.
+
+**Nếu gộp — làm gọn:** trigger = Đặt hàng (bỏ browse khỏi chu kỳ); XOR sớm NowFree 2H vs giao thường → lane cửa hàng+shipper 2H **hoặc** bàn giao 3PL; giữ phần hay của Quang (tồn thực tế, giao–hẹn 3 ngày, phiếu 100K một cổng); phần Phúc chỉ giữ quy tắc nghiệp vụ checkout (>5 triệu, COD/online), bỏ Frontend/Backend. Tài liệu: một hồ sơ B2; nội dung NowFree trở thành **nhánh 2H** trong B2.
+
+**Nếu tạm giữ tách trước hạn:** vẫn phải khóa handoff P1→Q1 và bỏ browse khỏi P1 — xem các mục dưới (đánh giá hiện trạng từng người).
 
 ### Mã dùng trong file này
 
@@ -17,7 +37,7 @@
 
 Phúc đã làm **đủ khung đồ án** cho một quy trình cốt lõi: xếp đúng nhóm core, đủ bốn yếu tố (tác nhân, khách hàng quy trình, kết quả, mô tả), có nguồn trang hỗ trợ Hasaki, có giả định rõ, có gợi ý lane / activity / gateway, có phỏng vấn, và đã viết phân tích định tính + định lượng + kiến nghị. Đây là phần mạnh hơn nhiều bài chỉ dừng ở mô tả.
 
-**Bối cảnh nhóm:** Phúc và Quang **cố ý tách** hai quy trình kế tiếp — P1 (mua / xác nhận đơn) rồi Q1 (giao NowFree 2H, file BPMN của Quang). Cách tách này **hợp lý về vận hành** nếu P1 kết thúc bằng sự kiện *đơn xác nhận — sẵn sàng fulfill 2H* và Q1 chỉ làm đoạn giao. Khi đó feedback “P1 kết thúc sớm” không có nghĩa bắt buộc gộp mọi thứ vào một sơ đồ, mà là: **(1)** đừng bắt đầu P1 từ duyệt/giỏ, **(2)** phải có bảng bàn giao rõ với Q1, **(3)** trên kiến trúc nhóm vẫn gọi chuỗi đầy đủ là B2 (*Order-to-Delivery*). Chi tiết Q1: xem `../quang/01_feedback_quang.md`.
+**Bối cảnh nhóm:** Hiện Phúc–Quang đang tách P1 → Q1. **Hướng khuyến nghị của nhóm review là gộp thành một B2** (có cả 2H và 48H) — xem mục **Quyết định hướng nhóm** ở đầu file. Nếu tạm giữ tách: P1 kết thúc bằng *đơn xác nhận — sẵn sàng fulfill*; **(1)** bỏ duyệt/giỏ khỏi instance P1, **(2)** có bảng bàn giao với Q1, **(3)** kiến trúc vẫn gọi chuỗi đầy đủ là B2. Chi tiết Q1: `../quang/01_feedback_quang.md`.
 
 Điểm cần sửa lớn nhất phía P1: **ranh giới** đang **bắt đầu sớm** (duyệt web / giỏ hàng) so với trigger chuẩn “Đặt hàng”; nội dung đang **lạm dụng góc kỹ thuật / hệ thống** (Frontend–Backend, Inventory Lock, Anti-Fraud, API, Deep-Link…) hơn góc **nghiệp vụ**. Phần “kết thúc ở OMS / đẩy kho” **chấp nhận được trong mô hình tách P1→Q1**, miễn là handoff khớp BPMN Quang.
 

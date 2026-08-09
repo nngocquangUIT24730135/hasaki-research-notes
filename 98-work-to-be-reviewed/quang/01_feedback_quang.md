@@ -2,7 +2,27 @@
 
 **Nguồn:** `hasaki-van-chuyen-2h-manual-layouted-v2.bpmn`  
 **Bối cảnh nhóm:** Quang và Phúc **cố ý tách** thành hai quy trình nối tiếp — Phúc: tiếp nhận / xác nhận đơn online (**P1**); Quang: thực hiện giao hàng NowFree 2H (**Q1**).  
-**Đối chiếu:** `02-research/research.md` (§4.3 B2, §5 NowFree), `03-core/core_bpmn.md`, `01_feedback_phuc.md`, slides FBPM Ch.2–3 (ranh giới, pool/lane), Ch.6–7 nếu sau này viết phân tích.
+**Đối chiếu:** `02-research/research.md` (§4.3 B2, §5 NowFree), `03-core/core_bpmn.md`, `01_feedback_phuc.md`, slides FBPM Ch.2–3 (ranh giới, pool/lane), Ch.6–7 nếu sau này viết phân tích.  
+**File liên quan:** nhận xét Phúc — `../phuc/01_feedback_phuc.md`.
+
+## Quyết định hướng nhóm (P1 ↔ Q1) — đọc trước
+
+Câu hỏi: Quang **bổ sung giao thường 48H** vào quy trình đang tách, hay **Phúc + Quang gộp thành một quy trình**?
+
+**Khuyến nghị: gộp P1 + Q1 thành một quy trình B2 (*Order-to-Delivery*), trong đó có cả nhánh NowFree 2H và giao thường 48H** — tốt hơn cho nhóm hơn là Quang chỉ vá 48H lên Q1, hoặc giữ hai sơ đồ mãi.
+
+| Lý do gộp tốt hơn | Chi tiết |
+|-------------------|----------|
+| Đúng kiến trúc nhóm | `research.md` / `core_bpmn`: một *case* = mã đơn, từ **Đặt hàng** đến giao/hủy; giá trị Hasaki nằm ở giao, không dừng ở OMS |
+| Tránh lệch bàn giao | Hai sơ đồ dễ lệch (thanh toán, tồn, bước “Đặt hàng” vẽ hai lần) |
+| Đủ cổng XOR | Một sơ đồ dễ đạt **>7** XOR (2H/48H, COD/trả trước, tồn, giao thất bại, phiếu 100K…) — khớp rubik và thiết kế ~10 cổng trong `core_bpmn` |
+| Cặp core nộp điểm | Rubik cần **2 core**: B2 gộp + B4 đổi trả sạch hơn P1+Q1 như “hai mảnh một chuỗi” |
+
+**Chỉ bổ sung 48H vào Q1?** Được nếu nhóm **cố giữ tách**, nhưng Q1 sẽ phình (3PL / pool ngoài, SLA khác) trong khi P1 vẫn lệch (bắt đầu từ duyệt app, thiên kỹ thuật). Vá 48H trên Q1 **không hết** vấn đề ranh giới P1.
+
+**Nếu gộp — làm gọn:** trigger = Đặt hàng (bỏ browse khỏi chu kỳ); XOR sớm NowFree 2H vs giao thường → lane cửa hàng+shipper 2H **hoặc** bàn giao 3PL; giữ phần hay của Quang (tồn thực tế, giao–hẹn 3 ngày, phiếu 100K một cổng); phần Phúc chỉ giữ quy tắc nghiệp vụ checkout (>5 triệu, COD/online), bỏ Frontend/Backend. Tài liệu: một hồ sơ B2; `nowfree_2h_noi_dung.md` trở thành **nhánh 2H** trong B2, không phải quy trình thứ hai.
+
+**Nếu tạm giữ tách trước hạn:** vẫn phải khóa handoff P1→Q1 và bỏ browse khỏi P1 — xem các mục dưới (đánh giá hiện trạng BPMN Quang).
 
 ### Mã dùng trong file này
 
@@ -18,7 +38,7 @@
 
 BPMN của Quang **mạnh về nghiệp vụ vận hành 2H**: pool Khách + Hasaki, lane theo vai trò (Hệ thống / Nhân viên cửa hàng / Shipper), trigger bằng *message* “Đơn hàng 2H được đặt”, có đủ nhánh hết tồn thực tế, gọi xác nhận lịch, soạn–bàn giao–giao, hẹn lại trong 3 ngày, hủy–hoàn, và phiếu 100K khi trễ đủ điều kiện. So với P1 của Phúc, Q1 **ít bị lạm dụng technical** hơn rõ rệt.
 
-Điểm cần chốt: **giao diện nối P1 → Q1** (sự kiện nào kết thúc P1 / mở Q1, điều kiện tiền đề nào đã xong), và **vị trí Q1 trong kiến trúc** — Q1 là **phân đoạn fulfillment của B2** (chỉ nhánh NowFree), không phải quy trình quản lý hay một “core” tách hoàn toàn khỏi chuỗi đơn. Nếu nhóm giữ mô hình hai quy trình kế tiếp, phải mô tả rõ trong báo cáo để giảng viên không hiểu là hai SoT mâu thuẫn với B2 gộp.
+Điểm cần chốt (nếu **chưa** gộp B2): **giao diện nối P1 → Q1**, và Q1 chỉ là **phân đoạn fulfillment nhánh NowFree** của B2. **Hướng khuyến nghị:** gộp P1+Q1 thành một B2 có cả 2H và 48H — xem mục **Quyết định hướng nhóm** ở đầu file. Nếu tạm giữ tách, phải mô tả rõ trong báo cáo để không bị hiểu là hai SoT mâu thuẫn với B2 gộp.
 
 | Hạng mục | Hiện trạng Q1 | Đánh giá ngắn |
 |----------|---------------|---------------|
