@@ -83,8 +83,8 @@ Lan đặt **son tông hồng đất**. Đơn giao thành công (B2 đã đóng)
 
 Lúc này **không còn là B2**. Lan bắt đầu **B4 — đổi trả**:
 
-1. Cô liên hệ hotline / đến cửa hàng Hasaki gần nhà (Thành phố Hồ Chí Minh được khuyến khích mang tới showroom), nêu lý do *giao nhầm tông*, mang theo đơn và **quà tặng kèm** nếu lúc mua có quà.  
-2. Nhân viên làm **một lần thẩm định** theo bảng chính sách: còn trong **30 ngày**? Mua từ Hasaki? Không thuộc loại trừ? Nguyên nhân (ở đây: Hasaki soạn sai / nhầm tông)?  
+1. Cô liên hệ hotline / đến cửa hàng Hasaki gần nhà (tại TP.HCM Hasaki khuyến khích mang tới cửa hàng), nêu lý do *giao nhầm tông*, mang theo đơn và **quà tặng kèm** nếu lúc mua có quà.  
+2. Nhân viên làm **một lần xét điều kiện đổi trả** theo bảng chính sách: còn trong **30 ngày**? Mua từ Hasaki? Không thuộc loại trừ? Nguyên nhân (ở đây: Hasaki soạn sai / nhầm tông)?  
 3. Kết luận đạt điều kiện → trong 1–30 ngày được **đổi mới** hoặc **trả không thu phí**.  
 4. Tại cửa hàng, Lan được xem và chọn đúng tông hồng đất còn hàng; hoặc nếu muốn trả tiền, hoàn theo cách đã thanh toán (tiền mặt / chuyển khoản / cổng thanh toán…).
 
@@ -99,7 +99,7 @@ Nếu trả tiền và thanh toán trước bằng cổng thanh toán: B4 kết 
 
 ## Chương 6 — Cùng chính sách đổi trả, nhiều kết quả khác nhau (B4)
 
-Cùng trang [đổi trả](https://hotro.hasaki.vn/doi-tra-hoan-tien.html), bạn của Lan gặp các tình huống khác. Các tình huống này giúp hiểu **bảng quyết định trong một lần thẩm định** (và vài nhánh luồng thật: cửa hàng / bưu điện, đổi / trả, hình thức hoàn) — không phải mỗi dòng dưới đây là một cổng XOR riêng trên sơ đồ:
+Cùng trang [đổi trả](https://hotro.hasaki.vn/doi-tra-hoan-tien.html), bạn của Lan gặp các tình huống khác. Các tình huống này giúp hiểu **bảng quyết định trong một lần xét điều kiện đổi trả** (và vài nhánh luồng thật: cửa hàng / bưu điện, đổi / trả, hình thức hoàn) — không phải mỗi dòng dưới đây là một cổng XOR riêng trên sơ đồ:
 
 | Câu chuyện ngắn | Nhóm theo chính sách | Kết quả thường gặp |
 |-----------------|----------------------|--------------------|
@@ -111,7 +111,7 @@ Cùng trang [đổi trả](https://hotro.hasaki.vn/doi-tra-hoan-tien.html), bạ
 | Đến ngày **thứ 35** mới mang đi đổi | Quá 30 ngày (từ ngày 31 trở đi) | **Không hỗ trợ** |
 | Mai ở tỉnh: gửi bưu điện sản phẩm lỗi + báo mã vận đơn | Cách thức đổi trả công bố | Hasaki nhận hàng rồi xử lý đổi / gửi lại hoặc hoàn |
 
-Mỗi dòng trên là **một kết quả có thể** của hoạt động thẩm định (hoặc của cổng đổi/trả / kênh tiếp nhận). Chi tiết vẽ: [core_bpmn.md](./core_bpmn.md) phần B.
+Mỗi dòng trên là **một kết quả có thể** của hoạt động xét điều kiện đổi trả (hoặc của cổng đổi/trả / kênh tiếp nhận). Chi tiết vẽ: [core_bpmn.md](./core_bpmn.md) phần B.
 
 ---
 
@@ -131,7 +131,7 @@ Mỗi dòng trên là **một kết quả có thể** của hoạt động thẩ
          Nếu sau đó phát hiện sai tông / lỗi / muốn đổi…
                            ▼
      ┌─────────── B4: Đổi trả hoặc hoàn tiền ───────────┐
-     │  Tiếp nhận → Thẩm định 30 ngày → Nhận/kiểm hàng  │
+     │  Tiếp nhận → Xét điều kiện đổi trả 30 ngày → Nhận/kiểm hàng  │
      │  → Đổi mới  /  Hoàn tiền  /  Từ chối              │
      └──────────────────────────────────────────────────┘
 ```

@@ -1,0 +1,969 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_Hasaki_B4" targetNamespace="http://hasaki.vn/bpmn/b4-return-to-resolve" exporter="Cursor" exporterVersion="3.2">
+  <bpmn:collaboration id="Collab_B4">
+    <bpmn:participant id="Pool_Customer" name="Khách hàng" processRef="Process_Customer" />
+    <bpmn:participant id="Pool_Hasaki" name="Hasaki" processRef="Process_Hasaki" />
+    <bpmn:messageFlow id="MF_WalkIn" name="Mang sản phẩm tới cửa hàng (không gọi trước)" sourceRef="T_C_BringDirect" targetRef="SE_H" />
+    <bpmn:messageFlow id="MF_Request" name="Liên hệ: mã đơn, tình trạng SP, lý do đổi trả" sourceRef="T_C_Contact" targetRef="SE_H" />
+    <bpmn:messageFlow id="MF_Guide" name="Xác nhận lý do + hướng dẫn bước tiếp theo" sourceRef="T_Staff_GuideAfterContact" targetRef="X_C2" />
+    <bpmn:messageFlow id="MF_ProductStore" name="Sản phẩm (+ quà kèm nếu đổi SP chính)" sourceRef="T_C_BringAfterContact" targetRef="T_Staff_ReceiveStore" />
+    <bpmn:messageFlow id="MF_Tracking" name="Mã vận đơn / thông tin chuyển phát" sourceRef="T_C_ReportTracking" targetRef="T_Staff_RecordTracking" />
+    <bpmn:messageFlow id="MF_ProductMail" name="Bưu phẩm đổi trả (+ quà kèm nếu có)" sourceRef="T_C_PackSend" targetRef="T_Wh_ReceiveMail" />
+    <bpmn:messageFlow id="MF_Reject" name="Thông báo không hỗ trợ đổi trả" sourceRef="T_Staff_Explain" targetRef="T_C_GetReject" />
+    <bpmn:messageFlow id="MF_OOS" name="Thông báo hết hàng sản phẩm muốn đổi" sourceRef="T_Staff_NotifyOOS" targetRef="T_C_ChooseAlt" />
+    <bpmn:messageFlow id="MF_Exchange" name="Sản phẩm đổi mới" sourceRef="T_Wh_Issue" targetRef="T_C_ReceiveOutcome" />
+    <bpmn:messageFlow id="MF_Refund" name="Tiền hoàn theo phương thức đã thanh toán" sourceRef="T_Acc_Refund" targetRef="T_C_ReceiveOutcome" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_Customer" name="Yêu cầu đổi trả" isExecutable="false">
+    <bpmn:startEvent id="SE_C" name="Nhu cầu đổi trả phát sinh">
+      <bpmn:outgoing>SF_C1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="X_C1" name="Đến cửa hàng luôn hay liên hệ trước?" default="SF_C_Direct">
+      <bpmn:documentation>Hai trường hợp: (1) mang sản phẩm đến cửa hàng trực tiếp, không gọi điện; (2) liên hệ tổng đài/CSKH trước rồi mới quyết định bước tiếp.</bpmn:documentation>
+      <bpmn:incoming>SF_C1</bpmn:incoming>
+      <bpmn:outgoing>SF_C_Direct</bpmn:outgoing>
+      <bpmn:outgoing>SF_C_Contact</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="T_C_BringDirect" name="Mang sản phẩm tới cửa hàng (không gọi trước)">
+      <bpmn:documentation>Đổi sản phẩm chính: đem theo quà tặng kèm (website Hasaki).</bpmn:documentation>
+      <bpmn:incoming>SF_C_Direct</bpmn:incoming>
+      <bpmn:outgoing>SF_C_JoinIn1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_C_Contact" name="Liên hệ tổng đài / chăm sóc khách hàng">
+      <bpmn:documentation>Ví dụ tổng đài 1800 6324 hoặc kênh hỗ trợ Hasaki.vn: mã đơn, tình trạng SP, lý do đổi trả.</bpmn:documentation>
+      <bpmn:incoming>SF_C_Contact</bpmn:incoming>
+      <bpmn:outgoing>SF_C2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="X_C2" name="Sau khi được hướng dẫn, mang tới cửa hàng hay gửi online?" default="SF_C_StoreAfter">
+      <bpmn:documentation>Sau liên hệ CSKH: khách có thể mang tới cửa hàng hoặc trả hàng online (gửi bưu điện).</bpmn:documentation>
+      <bpmn:incoming>SF_C2</bpmn:incoming>
+      <bpmn:outgoing>SF_C_StoreAfter</bpmn:outgoing>
+      <bpmn:outgoing>SF_C_Online</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="T_C_BringAfterContact" name="Mang sản phẩm tới cửa hàng theo hướng dẫn">
+      <bpmn:incoming>SF_C_StoreAfter</bpmn:incoming>
+      <bpmn:outgoing>SF_C_JoinIn2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_C_PackSend" name="Đóng gói và gửi bưu điện theo địa chỉ CSKH chỉ định">
+      <bpmn:documentation>Đóng gói kỹ, kèm quà nếu có; gửi về địa chỉ được chỉ định; giữ mã vận đơn.</bpmn:documentation>
+      <bpmn:incoming>SF_C_Online</bpmn:incoming>
+      <bpmn:outgoing>SF_C_Track</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_C_ReportTracking" name="Báo mã vận đơn cho Hasaki">
+      <bpmn:incoming>SF_C_Track</bpmn:incoming>
+      <bpmn:outgoing>SF_C_JoinIn3</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="GW_C_JoinChannel" name="">
+      <bpmn:incoming>SF_C_JoinIn1</bpmn:incoming>
+      <bpmn:incoming>SF_C_JoinIn2</bpmn:incoming>
+      <bpmn:incoming>SF_C_JoinIn3</bpmn:incoming>
+      <bpmn:outgoing>SF_C3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="GW_C_Outcome" name="Kết quả xử lý?" default="SF_C_Reject">
+      <bpmn:incoming>SF_C3</bpmn:incoming>
+      <bpmn:outgoing>SF_C_Reject</bpmn:outgoing>
+      <bpmn:outgoing>SF_C_Ok</bpmn:outgoing>
+      <bpmn:outgoing>SF_C_OOS</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="T_C_GetReject" name="Nhận thông báo không hỗ trợ">
+      <bpmn:incoming>SF_C_Reject</bpmn:incoming>
+      <bpmn:outgoing>SF_C4</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EE_C_Reject" name="Không được đổi trả">
+      <bpmn:incoming>SF_C4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="T_C_ChooseAlt" name="Chọn sản phẩm khác còn hàng hoặc trả hàng">
+      <bpmn:incoming>SF_C_OOS</bpmn:incoming>
+      <bpmn:outgoing>SF_C_Ok2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="GW_C_JoinDone" name="">
+      <bpmn:incoming>SF_C_Ok</bpmn:incoming>
+      <bpmn:incoming>SF_C_Ok2</bpmn:incoming>
+      <bpmn:outgoing>SF_C_ToReceive</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="T_C_ReceiveOutcome" name="Nhận hàng đổi mới hoặc nhận tiền hoàn">
+      <bpmn:incoming>SF_C_ToReceive</bpmn:incoming>
+      <bpmn:outgoing>SF_C5</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EE_C_Done" name="Đổi trả đã xong">
+      <bpmn:incoming>SF_C5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SF_C1" sourceRef="SE_C" targetRef="X_C1" />
+    <bpmn:sequenceFlow id="SF_C_Direct" name="Đến cửa hàng luôn (không gọi)" sourceRef="X_C1" targetRef="T_C_BringDirect" />
+    <bpmn:sequenceFlow id="SF_C_Contact" name="Liên hệ tổng đài / CSKH trước" sourceRef="X_C1" targetRef="T_C_Contact">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=cachBatDau = "lien_he_truoc"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SF_C2" sourceRef="T_C_Contact" targetRef="X_C2" />
+    <bpmn:sequenceFlow id="SF_C_StoreAfter" name="Mang tới cửa hàng" sourceRef="X_C2" targetRef="T_C_BringAfterContact" />
+    <bpmn:sequenceFlow id="SF_C_Online" name="Trả hàng online" sourceRef="X_C2" targetRef="T_C_PackSend">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=kenhSauHuongDan = "online"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SF_C_Track" sourceRef="T_C_PackSend" targetRef="T_C_ReportTracking" />
+    <bpmn:sequenceFlow id="SF_C_JoinIn1" sourceRef="T_C_BringDirect" targetRef="GW_C_JoinChannel" />
+    <bpmn:sequenceFlow id="SF_C_JoinIn2" sourceRef="T_C_BringAfterContact" targetRef="GW_C_JoinChannel" />
+    <bpmn:sequenceFlow id="SF_C_JoinIn3" sourceRef="T_C_ReportTracking" targetRef="GW_C_JoinChannel" />
+    <bpmn:sequenceFlow id="SF_C3" sourceRef="GW_C_JoinChannel" targetRef="GW_C_Outcome" />
+    <bpmn:sequenceFlow id="SF_C_Reject" name="Không hỗ trợ" sourceRef="GW_C_Outcome" targetRef="T_C_GetReject" />
+    <bpmn:sequenceFlow id="SF_C_Ok" name="Đổi hoặc hoàn xong" sourceRef="GW_C_Outcome" targetRef="GW_C_JoinDone">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=ketQuaXuLy = "doi_hoac_hoan_xong"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SF_C_OOS" name="Hết hàng muốn đổi" sourceRef="GW_C_Outcome" targetRef="T_C_ChooseAlt">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=ketQuaXuLy = "het_hang_muon_doi"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SF_C_Ok2" sourceRef="T_C_ChooseAlt" targetRef="GW_C_JoinDone" />
+    <bpmn:sequenceFlow id="SF_C_ToReceive" sourceRef="GW_C_JoinDone" targetRef="T_C_ReceiveOutcome" />
+    <bpmn:sequenceFlow id="SF_C4" sourceRef="T_C_GetReject" targetRef="EE_C_Reject" />
+    <bpmn:sequenceFlow id="SF_C5" sourceRef="T_C_ReceiveOutcome" targetRef="EE_C_Done" />
+  </bpmn:process>
+  <bpmn:process id="Process_Hasaki" name="Đổi trả hoặc hoàn tiền" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Hasaki">
+      <bpmn:lane id="Lane_Staff" name="Nhân viên cửa hàng / Chăm sóc khách hàng">
+        <bpmn:flowNodeRef>SE_H</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>X0</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Staff_IntakeWalkIn</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Staff_ReceiveStore</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Staff_IntakeContact</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Staff_GuideAfterContact</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>X1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Staff_ReceiveStoreAfter</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Staff_RecordTracking</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_JoinReceive</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Staff_Assess</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>X2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Staff_Explain</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EE_Reject</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Staff_CreateTicketEx</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Staff_CreateTicketBoth</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>X3</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_JoinToExch</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Staff_NotifyOOS</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>X5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_JoinToRefund</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Wh" name="Kho">
+        <bpmn:flowNodeRef>T_Wh_ReceiveMail</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Wh_CheckStock</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>X4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Wh_Issue</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Wh_DispositionEx</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EE_Exchange</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Wh_DispositionRf</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Acc" name="Kế toán / Hoàn tiền">
+        <bpmn:flowNodeRef>T_Acc_CreateRefundOrder</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_Acc_Refund</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EE_Refund</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="SE_H" name="Yêu cầu đổi trả được tiếp nhận">
+      <bpmn:outgoing>SF_H1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="X0" name="Khách đến cửa hàng luôn hay liên hệ CSKH trước?" default="SF_X0_WalkIn">
+      <bpmn:documentation>Hai trường hợp vào quy trình: walk-in (không gọi) hoặc liên hệ tổng đài/CSKH trước.</bpmn:documentation>
+      <bpmn:incoming>SF_H1</bpmn:incoming>
+      <bpmn:outgoing>SF_X0_WalkIn</bpmn:outgoing>
+      <bpmn:outgoing>SF_X0_Contact</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="T_Staff_IntakeWalkIn" name="Tiếp nhận khách mang hàng tới cửa hàng">
+      <bpmn:documentation>Khách đến trực tiếp, không gọi trước. Ghi nhận lý do + thông tin liên hệ tại quầy.</bpmn:documentation>
+      <bpmn:incoming>SF_X0_WalkIn</bpmn:incoming>
+      <bpmn:outgoing>SF_H2a</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_Staff_ReceiveStore" name="Nhận và kiểm sản phẩm tại cửa hàng">
+      <bpmn:documentation>Website: nhân viên check lại sản phẩm; khách xem và lựa chọn đổi. Kiểm hàng bắt buộc trước khi xét điều kiện.</bpmn:documentation>
+      <bpmn:incoming>SF_H2a</bpmn:incoming>
+      <bpmn:outgoing>SF_H3a</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_Staff_IntakeContact" name="Ghi nhận yêu cầu qua tổng đài / CSKH">
+      <bpmn:documentation>Website: khách thông báo lý do + địa chỉ + SĐT. Nhắc quà kèm nếu đổi sản phẩm chính.</bpmn:documentation>
+      <bpmn:incoming>SF_X0_Contact</bpmn:incoming>
+      <bpmn:outgoing>SF_H2b</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_Staff_GuideAfterContact" name="Xác nhận lý do và hướng dẫn bước tiếp theo">
+      <bpmn:documentation>CSKH hướng dẫn: mang tới cửa hàng, hoặc đóng gói gửi bưu điện (địa chỉ chỉ định) rồi báo mã vận đơn.</bpmn:documentation>
+      <bpmn:incoming>SF_H2b</bpmn:incoming>
+      <bpmn:outgoing>SF_H2c</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="X1" name="Khách mang tới cửa hàng hay trả hàng online?" default="SF_X1_Store">
+      <bpmn:documentation>Chỉ sau khi đã liên hệ CSKH. Không phân tỉnh/thành.</bpmn:documentation>
+      <bpmn:incoming>SF_H2c</bpmn:incoming>
+      <bpmn:outgoing>SF_X1_Store</bpmn:outgoing>
+      <bpmn:outgoing>SF_X1_Online</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="T_Staff_ReceiveStoreAfter" name="Nhận và kiểm sản phẩm tại cửa hàng">
+      <bpmn:documentation>Khách đã liên hệ trước, sau đó mang hàng tới cửa hàng. Kiểm hàng bắt buộc trước khi xét điều kiện.</bpmn:documentation>
+      <bpmn:incoming>SF_X1_Store</bpmn:incoming>
+      <bpmn:outgoing>SF_H3b</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_Staff_RecordTracking" name="Ghi nhận mã vận đơn khách báo">
+      <bpmn:documentation>Website: khách liên hệ về mã bưu điện để Hasaki theo dõi.</bpmn:documentation>
+      <bpmn:incoming>SF_X1_Online</bpmn:incoming>
+      <bpmn:outgoing>SF_H3c1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_Wh_ReceiveMail" name="Nhận và kiểm sản phẩm gửi về">
+      <bpmn:documentation>Khi nhận bưu phẩm: kiểm hàng rồi mới xét điều kiện. Hoàn (nếu trả) sau khi nhận hàng.</bpmn:documentation>
+      <bpmn:incoming>SF_H3c1</bpmn:incoming>
+      <bpmn:outgoing>SF_H3c</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="GW_JoinReceive" name="">
+      <bpmn:incoming>SF_H3a</bpmn:incoming>
+      <bpmn:incoming>SF_H3b</bpmn:incoming>
+      <bpmn:incoming>SF_H3c</bpmn:incoming>
+      <bpmn:outgoing>SF_H4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="T_Staff_Assess" name="Xét điều kiện đổi trả theo bảng chính sách 30 ngày">
+      <bpmn:documentation>Bảng Hasaki (01/06/2024): lỗi từ phía nhà cung cấp → Đổi mới — Trả không thu phí; lỗi từ phía người sử dụng → Không hỗ trợ đổi trả; sản phẩm không lỗi → Đổi mới. 31 ngày trở đi / không áp dụng → Không hỗ trợ đổi trả.</bpmn:documentation>
+      <bpmn:incoming>SF_H4</bpmn:incoming>
+      <bpmn:outgoing>SF_H5</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="X2" name="Theo bảng chính sách 30 ngày, được hỗ trợ thế nào?" default="SF_X2_No">
+      <bpmn:incoming>SF_H5</bpmn:incoming>
+      <bpmn:outgoing>SF_X2_No</bpmn:outgoing>
+      <bpmn:outgoing>SF_X2_ExOnly</bpmn:outgoing>
+      <bpmn:outgoing>SF_X2_Both</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="T_Staff_Explain" name="Giải thích lý do không hỗ trợ đổi trả">
+      <bpmn:incoming>SF_X2_No</bpmn:incoming>
+      <bpmn:outgoing>SF_H6</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EE_Reject" name="Không hỗ trợ đổi trả">
+      <bpmn:incoming>SF_H6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="T_Staff_CreateTicketEx" name="Cập nhật yêu cầu đổi trả trên hệ thống đơn hàng">
+      <bpmn:documentation>Suy luận vận hành.</bpmn:documentation>
+      <bpmn:incoming>SF_X2_ExOnly</bpmn:incoming>
+      <bpmn:outgoing>SF_H7ex</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_Staff_CreateTicketBoth" name="Cập nhật yêu cầu đổi trả trên hệ thống đơn hàng">
+      <bpmn:incoming>SF_X2_Both</bpmn:incoming>
+      <bpmn:outgoing>SF_H7both</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="X3" name="Khách chọn đổi mới hay trả không thu phí?" default="SF_X3_Exch">
+      <bpmn:incoming>SF_H7both</bpmn:incoming>
+      <bpmn:outgoing>SF_X3_Exch</bpmn:outgoing>
+      <bpmn:outgoing>SF_X3_Refund</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="GW_JoinToExch" name="">
+      <bpmn:incoming>SF_H7ex</bpmn:incoming>
+      <bpmn:incoming>SF_X3_Exch</bpmn:incoming>
+      <bpmn:incoming>SF_X5_Other</bpmn:incoming>
+      <bpmn:outgoing>SF_H8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="T_Wh_CheckStock" name="Kiểm còn hàng sản phẩm khách muốn đổi">
+      <bpmn:documentation>Suy luận vận hành.</bpmn:documentation>
+      <bpmn:incoming>SF_H8</bpmn:incoming>
+      <bpmn:outgoing>SF_H9</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="X4" name="Sản phẩm muốn đổi còn hàng?" default="SF_X4_No">
+      <bpmn:incoming>SF_H9</bpmn:incoming>
+      <bpmn:outgoing>SF_X4_Yes</bpmn:outgoing>
+      <bpmn:outgoing>SF_X4_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="T_Wh_Issue" name="Giao / gửi sản phẩm đổi mới cho khách">
+      <bpmn:incoming>SF_X4_Yes</bpmn:incoming>
+      <bpmn:outgoing>SF_H10</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_Wh_DispositionEx" name="Xử lý hàng khách trả lại">
+      <bpmn:incoming>SF_H10</bpmn:incoming>
+      <bpmn:outgoing>SF_H11</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EE_Exchange" name="Đổi mới hoàn tất">
+      <bpmn:incoming>SF_H11</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="T_Staff_NotifyOOS" name="Thông báo sản phẩm muốn đổi đã hết hàng">
+      <bpmn:documentation>Suy luận: không khẳng định bắt buộc hoàn khi hết hàng.</bpmn:documentation>
+      <bpmn:incoming>SF_X4_No</bpmn:incoming>
+      <bpmn:outgoing>SF_H12</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="X5" name="Khách chọn phương án nào?" default="SF_X5_Return">
+      <bpmn:incoming>SF_H12</bpmn:incoming>
+      <bpmn:outgoing>SF_X5_Other</bpmn:outgoing>
+      <bpmn:outgoing>SF_X5_Return</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="GW_JoinToRefund" name="">
+      <bpmn:incoming>SF_X3_Refund</bpmn:incoming>
+      <bpmn:incoming>SF_X5_Return</bpmn:incoming>
+      <bpmn:outgoing>SF_H13</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="T_Acc_CreateRefundOrder" name="Cập nhật yêu cầu hoàn tiền trên hệ thống đơn hàng">
+      <bpmn:incoming>SF_H13</bpmn:incoming>
+      <bpmn:outgoing>SF_H14</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_Acc_Refund" name="Hoàn tiền theo phương thức trên chính sách Hasaki">
+      <bpmn:documentation>Theo website: chi nhánh (tiền mặt / CK 3–5 ngày / VNpay…); online/tại nhà hoàn sau khi nhận hàng. Không mã phiếu quà.</bpmn:documentation>
+      <bpmn:incoming>SF_H14</bpmn:incoming>
+      <bpmn:outgoing>SF_H15</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_Wh_DispositionRf" name="Xử lý hàng khách trả lại sau hoàn">
+      <bpmn:incoming>SF_H15</bpmn:incoming>
+      <bpmn:outgoing>SF_H16</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EE_Refund" name="Hoàn tiền hoàn tất">
+      <bpmn:incoming>SF_H16</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SF_H1" sourceRef="SE_H" targetRef="X0" />
+    <bpmn:sequenceFlow id="SF_X0_WalkIn" name="Đến cửa hàng luôn (không gọi)" sourceRef="X0" targetRef="T_Staff_IntakeWalkIn" />
+    <bpmn:sequenceFlow id="SF_X0_Contact" name="Liên hệ tổng đài / CSKH trước" sourceRef="X0" targetRef="T_Staff_IntakeContact">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=cachBatDau = "lien_he_truoc"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SF_H2a" sourceRef="T_Staff_IntakeWalkIn" targetRef="T_Staff_ReceiveStore" />
+    <bpmn:sequenceFlow id="SF_H3a" sourceRef="T_Staff_ReceiveStore" targetRef="GW_JoinReceive" />
+    <bpmn:sequenceFlow id="SF_H2b" sourceRef="T_Staff_IntakeContact" targetRef="T_Staff_GuideAfterContact" />
+    <bpmn:sequenceFlow id="SF_H2c" sourceRef="T_Staff_GuideAfterContact" targetRef="X1" />
+    <bpmn:sequenceFlow id="SF_X1_Store" name="Mang tới cửa hàng" sourceRef="X1" targetRef="T_Staff_ReceiveStoreAfter" />
+    <bpmn:sequenceFlow id="SF_X1_Online" name="Trả hàng online" sourceRef="X1" targetRef="T_Staff_RecordTracking">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=kenhSauHuongDan = "online"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SF_H3b" sourceRef="T_Staff_ReceiveStoreAfter" targetRef="GW_JoinReceive" />
+    <bpmn:sequenceFlow id="SF_H3c1" sourceRef="T_Staff_RecordTracking" targetRef="T_Wh_ReceiveMail" />
+    <bpmn:sequenceFlow id="SF_H3c" sourceRef="T_Wh_ReceiveMail" targetRef="GW_JoinReceive" />
+    <bpmn:sequenceFlow id="SF_H4" sourceRef="GW_JoinReceive" targetRef="T_Staff_Assess" />
+    <bpmn:sequenceFlow id="SF_H5" sourceRef="T_Staff_Assess" targetRef="X2" />
+    <bpmn:sequenceFlow id="SF_X2_No" name="Không hỗ trợ đổi trả" sourceRef="X2" targetRef="T_Staff_Explain" />
+    <bpmn:sequenceFlow id="SF_X2_ExOnly" name="Chỉ đổi mới" sourceRef="X2" targetRef="T_Staff_CreateTicketEx">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=ketQuaChinhSach = "chi_doi_moi"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SF_X2_Both" name="Đổi mới hoặc trả không thu phí" sourceRef="X2" targetRef="T_Staff_CreateTicketBoth">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=ketQuaChinhSach = "doi_moi_hoac_tra_khong_thu_phi"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SF_H6" sourceRef="T_Staff_Explain" targetRef="EE_Reject" />
+    <bpmn:sequenceFlow id="SF_H7ex" sourceRef="T_Staff_CreateTicketEx" targetRef="GW_JoinToExch" />
+    <bpmn:sequenceFlow id="SF_H7both" sourceRef="T_Staff_CreateTicketBoth" targetRef="X3" />
+    <bpmn:sequenceFlow id="SF_X3_Exch" name="Đổi mới" sourceRef="X3" targetRef="GW_JoinToExch" />
+    <bpmn:sequenceFlow id="SF_X3_Refund" name="Trả không thu phí" sourceRef="X3" targetRef="GW_JoinToRefund">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=luaChonKhach = "tra_khong_thu_phi"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SF_H8" sourceRef="GW_JoinToExch" targetRef="T_Wh_CheckStock" />
+    <bpmn:sequenceFlow id="SF_H9" sourceRef="T_Wh_CheckStock" targetRef="X4" />
+    <bpmn:sequenceFlow id="SF_X4_Yes" name="Còn hàng" sourceRef="X4" targetRef="T_Wh_Issue">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=conHang = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SF_X4_No" name="Hết hàng" sourceRef="X4" targetRef="T_Staff_NotifyOOS" />
+    <bpmn:sequenceFlow id="SF_H10" sourceRef="T_Wh_Issue" targetRef="T_Wh_DispositionEx" />
+    <bpmn:sequenceFlow id="SF_H11" sourceRef="T_Wh_DispositionEx" targetRef="EE_Exchange" />
+    <bpmn:sequenceFlow id="SF_H12" sourceRef="T_Staff_NotifyOOS" targetRef="X5" />
+    <bpmn:sequenceFlow id="SF_X5_Other" name="Chọn sản phẩm khác còn hàng" sourceRef="X5" targetRef="GW_JoinToExch">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=luaChonKhiHetHang = "san_pham_khac"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SF_X5_Return" name="Không chọn sản phẩm khác — trả hàng" sourceRef="X5" targetRef="GW_JoinToRefund" />
+    <bpmn:sequenceFlow id="SF_H13" sourceRef="GW_JoinToRefund" targetRef="T_Acc_CreateRefundOrder" />
+    <bpmn:sequenceFlow id="SF_H14" sourceRef="T_Acc_CreateRefundOrder" targetRef="T_Acc_Refund" />
+    <bpmn:sequenceFlow id="SF_H15" sourceRef="T_Acc_Refund" targetRef="T_Wh_DispositionRf" />
+    <bpmn:sequenceFlow id="SF_H16" sourceRef="T_Wh_DispositionRf" targetRef="EE_Refund" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Collab_B4">
+    <bpmndi:BPMNPlane id="BPMNPlane_Collab_B4" bpmnElement="Collab_B4">
+      <bpmndi:BPMNShape id="BPMNShape_Pool_Customer" bpmnElement="Pool_Customer" isHorizontal="true">
+        <dc:Bounds x="80" y="80" width="2032" height="480" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Pool_Hasaki" bpmnElement="Pool_Hasaki" isHorizontal="true">
+        <dc:Bounds x="398" y="640" width="3882" height="1200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_MF_WalkIn" bpmnElement="MF_WalkIn">
+        <di:waypoint x="456" y="200" />
+        <di:waypoint x="456" y="220" />
+        <di:waypoint x="416" y="220" />
+        <di:waypoint x="416" y="600" />
+        <di:waypoint x="486" y="600" />
+        <di:waypoint x="486" y="742" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="326" y="382" width="85" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_MF_Request" bpmnElement="MF_Request">
+        <di:waypoint x="486" y="360" />
+        <di:waypoint x="486" y="742" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="491" y="452" width="86" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_MF_Guide" bpmnElement="MF_Guide">
+        <di:waypoint x="974" y="880" />
+        <di:waypoint x="974" y="860" />
+        <di:waypoint x="934" y="860" />
+        <di:waypoint x="934" y="600" />
+        <di:waypoint x="661" y="600" />
+        <di:waypoint x="661" y="345" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="840" y="642" width="89" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_MF_ProductStore" bpmnElement="MF_ProductStore">
+        <di:waypoint x="806" y="360" />
+        <di:waypoint x="806" y="380" />
+        <di:waypoint x="766" y="380" />
+        <di:waypoint x="766" y="540" />
+        <di:waypoint x="836" y="540" />
+        <di:waypoint x="836" y="600" />
+        <di:waypoint x="1004" y="600" />
+        <di:waypoint x="1004" y="720" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="681" y="412" width="80" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_MF_Tracking" bpmnElement="MF_Tracking">
+        <di:waypoint x="1036" y="520" />
+        <di:waypoint x="1036" y="600" />
+        <di:waypoint x="1284" y="600" />
+        <di:waypoint x="1284" y="1020" />
+        <di:waypoint x="1324" y="1020" />
+        <di:waypoint x="1324" y="1040" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1289" y="789" width="83" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_MF_ProductMail" bpmnElement="MF_ProductMail">
+        <di:waypoint x="836" y="520" />
+        <di:waypoint x="836" y="600" />
+        <di:waypoint x="1554" y="600" />
+        <di:waypoint x="1554" y="1440" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1559" y="819" width="87" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_MF_Reject" bpmnElement="MF_Reject">
+        <di:waypoint x="2254" y="720" />
+        <di:waypoint x="2254" y="600" />
+        <di:waypoint x="1536" y="600" />
+        <di:waypoint x="1536" y="540" />
+        <di:waypoint x="1466" y="540" />
+        <di:waypoint x="1466" y="220" />
+        <di:waypoint x="1506" y="220" />
+        <di:waypoint x="1506" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1471" y="359" width="82" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_MF_OOS" bpmnElement="MF_OOS">
+        <di:waypoint x="3104" y="880" />
+        <di:waypoint x="3104" y="600" />
+        <di:waypoint x="1536" y="600" />
+        <di:waypoint x="1536" y="520" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3017" y="712" width="82" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_MF_Exchange" bpmnElement="MF_Exchange">
+        <di:waypoint x="3134" y="1440" />
+        <di:waypoint x="3134" y="1420" />
+        <di:waypoint x="3174" y="1420" />
+        <di:waypoint x="3174" y="600" />
+        <di:waypoint x="1886" y="600" />
+        <di:waypoint x="1886" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3179" y="1056" width="87" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_MF_Refund" bpmnElement="MF_Refund">
+        <di:waypoint x="3854" y="1680" />
+        <di:waypoint x="3854" y="600" />
+        <di:waypoint x="1886" y="600" />
+        <di:waypoint x="1886" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3470" y="539" width="89" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_SE_C" bpmnElement="SE_C">
+        <dc:Bounds x="150" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="124" y="183" width="89" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_X_C1" bpmnElement="X_C1" isMarkerVisible="true">
+        <dc:Bounds x="286" y="135" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="267" y="88" width="89" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_C_BringDirect" bpmnElement="T_C_BringDirect">
+        <dc:Bounds x="436" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_C_Contact" bpmnElement="T_C_Contact">
+        <dc:Bounds x="436" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_X_C2" bpmnElement="X_C2" isMarkerVisible="true">
+        <dc:Bounds x="636" y="295" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="619" y="220" width="85" height="70" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_C_BringAfterContact" bpmnElement="T_C_BringAfterContact">
+        <dc:Bounds x="786" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_C_PackSend" bpmnElement="T_C_PackSend">
+        <dc:Bounds x="786" y="440" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_C_ReportTracking" bpmnElement="T_C_ReportTracking">
+        <dc:Bounds x="986" y="440" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_GW_C_JoinChannel" bpmnElement="GW_C_JoinChannel" isMarkerVisible="true">
+        <dc:Bounds x="1186" y="135" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_GW_C_Outcome" bpmnElement="GW_C_Outcome" isMarkerVisible="true">
+        <dc:Bounds x="1336" y="135" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1326" y="102" width="70" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_C_GetReject" bpmnElement="T_C_GetReject">
+        <dc:Bounds x="1486" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EE_C_Reject" bpmnElement="EE_C_Reject">
+        <dc:Bounds x="1693" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1675" y="183" width="73" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_C_ChooseAlt" bpmnElement="T_C_ChooseAlt">
+        <dc:Bounds x="1486" y="440" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_GW_C_JoinDone" bpmnElement="GW_C_JoinDone" isMarkerVisible="true">
+        <dc:Bounds x="1686" y="295" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_C_ReceiveOutcome" bpmnElement="T_C_ReceiveOutcome">
+        <dc:Bounds x="1836" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EE_C_Done" bpmnElement="EE_C_Done">
+        <dc:Bounds x="2036" y="302" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2020" y="343" width="68" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C1" bpmnElement="SF_C1">
+        <di:waypoint x="186" y="160" />
+        <di:waypoint x="286" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C_Direct" bpmnElement="SF_C_Direct">
+        <di:waypoint x="336" y="160" />
+        <di:waypoint x="436" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="345" y="165" width="82" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C_JoinIn1" bpmnElement="SF_C_JoinIn1">
+        <di:waypoint x="536" y="160" />
+        <di:waypoint x="1186" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C3" bpmnElement="SF_C3">
+        <di:waypoint x="1236" y="160" />
+        <di:waypoint x="1336" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C_Reject" bpmnElement="SF_C_Reject">
+        <di:waypoint x="1386" y="160" />
+        <di:waypoint x="1486" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1394" y="168" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C4" bpmnElement="SF_C4">
+        <di:waypoint x="1586" y="160" />
+        <di:waypoint x="1693" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C_StoreAfter" bpmnElement="SF_C_StoreAfter">
+        <di:waypoint x="686" y="320" />
+        <di:waypoint x="786" y="320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="693" y="325" width="86" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C_JoinIn2" bpmnElement="SF_C_JoinIn2">
+        <di:waypoint x="886" y="320" />
+        <di:waypoint x="1211" y="320" />
+        <di:waypoint x="1211" y="185" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C_Contact" bpmnElement="SF_C_Contact">
+        <di:waypoint x="311" y="185" />
+        <di:waypoint x="311" y="320" />
+        <di:waypoint x="436" y="320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="316" y="232" width="84" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C_Online" bpmnElement="SF_C_Online">
+        <di:waypoint x="661" y="345" />
+        <di:waypoint x="661" y="480" />
+        <di:waypoint x="786" y="480" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="694" y="485" width="59" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C_Ok" bpmnElement="SF_C_Ok">
+        <di:waypoint x="1361" y="185" />
+        <di:waypoint x="1361" y="320" />
+        <di:waypoint x="1686" y="320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1479" y="287" width="89" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C_OOS" bpmnElement="SF_C_OOS">
+        <di:waypoint x="1361" y="185" />
+        <di:waypoint x="1361" y="480" />
+        <di:waypoint x="1486" y="480" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1366" y="386" width="60" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C2" bpmnElement="SF_C2">
+        <di:waypoint x="536" y="320" />
+        <di:waypoint x="636" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C_Track" bpmnElement="SF_C_Track">
+        <di:waypoint x="886" y="480" />
+        <di:waypoint x="986" y="480" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C_JoinIn3" bpmnElement="SF_C_JoinIn3">
+        <di:waypoint x="1086" y="480" />
+        <di:waypoint x="1211" y="480" />
+        <di:waypoint x="1211" y="185" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C_Ok2" bpmnElement="SF_C_Ok2">
+        <di:waypoint x="1586" y="480" />
+        <di:waypoint x="1711" y="480" />
+        <di:waypoint x="1711" y="345" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C_ToReceive" bpmnElement="SF_C_ToReceive">
+        <di:waypoint x="1736" y="320" />
+        <di:waypoint x="1836" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_C5" bpmnElement="SF_C5">
+        <di:waypoint x="1936" y="320" />
+        <di:waypoint x="2036" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_Lane_Staff" bpmnElement="Lane_Staff" isHorizontal="true">
+        <dc:Bounds x="428" y="640" width="3852" height="560" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Lane_Wh" bpmnElement="Lane_Wh" isHorizontal="true">
+        <dc:Bounds x="428" y="1200" width="3852" height="400" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Lane_Acc" bpmnElement="Lane_Acc" isHorizontal="true">
+        <dc:Bounds x="428" y="1600" width="3852" height="240" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_SE_H" bpmnElement="SE_H">
+        <dc:Bounds x="468" y="742" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="442" y="783" width="89" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_X0" bpmnElement="X0" isMarkerVisible="true">
+        <dc:Bounds x="604" y="735" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="585" y="674" width="89" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Staff_IntakeWalkIn" bpmnElement="T_Staff_IntakeWalkIn">
+        <dc:Bounds x="754" y="720" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Staff_ReceiveStore" bpmnElement="T_Staff_ReceiveStore">
+        <dc:Bounds x="954" y="720" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Staff_IntakeContact" bpmnElement="T_Staff_IntakeContact">
+        <dc:Bounds x="754" y="880" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Staff_GuideAfterContact" bpmnElement="T_Staff_GuideAfterContact">
+        <dc:Bounds x="954" y="880" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_X1" bpmnElement="X1" isMarkerVisible="true">
+        <dc:Bounds x="1154" y="895" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1078" y="950" width="82" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Staff_ReceiveStoreAfter" bpmnElement="T_Staff_ReceiveStoreAfter">
+        <dc:Bounds x="1304" y="880" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Staff_RecordTracking" bpmnElement="T_Staff_RecordTracking">
+        <dc:Bounds x="1304" y="1040" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Wh_ReceiveMail" bpmnElement="T_Wh_ReceiveMail">
+        <dc:Bounds x="1504" y="1440" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_GW_JoinReceive" bpmnElement="GW_JoinReceive" isMarkerVisible="true">
+        <dc:Bounds x="1704" y="735" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Staff_Assess" bpmnElement="T_Staff_Assess">
+        <dc:Bounds x="1854" y="720" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_X2" bpmnElement="X2" isMarkerVisible="true">
+        <dc:Bounds x="2054" y="735" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2035" y="674" width="89" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Staff_Explain" bpmnElement="T_Staff_Explain">
+        <dc:Bounds x="2204" y="720" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EE_Reject" bpmnElement="EE_Reject">
+        <dc:Bounds x="2411" y="742" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2387" y="783" width="84" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Staff_CreateTicketEx" bpmnElement="T_Staff_CreateTicketEx">
+        <dc:Bounds x="2204" y="880" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Staff_CreateTicketBoth" bpmnElement="T_Staff_CreateTicketBoth">
+        <dc:Bounds x="2204" y="1040" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_X3" bpmnElement="X3" isMarkerVisible="true">
+        <dc:Bounds x="2404" y="1055" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2385" y="1110" width="89" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_GW_JoinToExch" bpmnElement="GW_JoinToExch" isMarkerVisible="true">
+        <dc:Bounds x="2554" y="895" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Wh_CheckStock" bpmnElement="T_Wh_CheckStock">
+        <dc:Bounds x="2704" y="1280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_X4" bpmnElement="X4" isMarkerVisible="true">
+        <dc:Bounds x="2904" y="1295" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2887" y="1248" width="85" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Wh_Issue" bpmnElement="T_Wh_Issue">
+        <dc:Bounds x="3054" y="1440" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Wh_DispositionEx" bpmnElement="T_Wh_DispositionEx">
+        <dc:Bounds x="3254" y="1440" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EE_Exchange" bpmnElement="EE_Exchange">
+        <dc:Bounds x="3461" y="1462" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3437" y="1503" width="85" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Staff_NotifyOOS" bpmnElement="T_Staff_NotifyOOS">
+        <dc:Bounds x="3054" y="880" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_X5" bpmnElement="X5" isMarkerVisible="true">
+        <dc:Bounds x="3279" y="895" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3268" y="990" width="73" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_GW_JoinToRefund" bpmnElement="GW_JoinToRefund" isMarkerVisible="true">
+        <dc:Bounds x="3454" y="895" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Acc_CreateRefundOrder" bpmnElement="T_Acc_CreateRefundOrder">
+        <dc:Bounds x="3604" y="1680" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Acc_Refund" bpmnElement="T_Acc_Refund">
+        <dc:Bounds x="3804" y="1680" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_T_Wh_DispositionRf" bpmnElement="T_Wh_DispositionRf">
+        <dc:Bounds x="4004" y="1280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EE_Refund" bpmnElement="EE_Refund">
+        <dc:Bounds x="4204" y="1702" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="4189" y="1743" width="66" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H1" bpmnElement="SF_H1">
+        <di:waypoint x="504" y="760" />
+        <di:waypoint x="604" y="760" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_X0_WalkIn" bpmnElement="SF_X0_WalkIn">
+        <di:waypoint x="654" y="760" />
+        <di:waypoint x="754" y="760" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="663" y="765" width="82" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H2a" bpmnElement="SF_H2a">
+        <di:waypoint x="854" y="760" />
+        <di:waypoint x="954" y="760" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H3a" bpmnElement="SF_H3a">
+        <di:waypoint x="1054" y="760" />
+        <di:waypoint x="1704" y="760" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H4" bpmnElement="SF_H4">
+        <di:waypoint x="1754" y="760" />
+        <di:waypoint x="1854" y="760" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H5" bpmnElement="SF_H5">
+        <di:waypoint x="1954" y="760" />
+        <di:waypoint x="2054" y="760" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_X2_No" bpmnElement="SF_X2_No">
+        <di:waypoint x="2104" y="760" />
+        <di:waypoint x="2204" y="760" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2112" y="765" width="84" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H6" bpmnElement="SF_H6">
+        <di:waypoint x="2304" y="760" />
+        <di:waypoint x="2411" y="760" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_X1_Store" bpmnElement="SF_X1_Store">
+        <di:waypoint x="1204" y="920" />
+        <di:waypoint x="1304" y="920" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1191" y="847" width="86" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H3b" bpmnElement="SF_H3b">
+        <di:waypoint x="1404" y="920" />
+        <di:waypoint x="1729" y="920" />
+        <di:waypoint x="1729" y="785" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_X3_Exch" bpmnElement="SF_X3_Exch">
+        <di:waypoint x="2454" y="1080" />
+        <di:waypoint x="2579" y="1080" />
+        <di:waypoint x="2579" y="945" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2490" y="1058" width="53" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H8" bpmnElement="SF_H8">
+        <di:waypoint x="2579" y="945" />
+        <di:waypoint x="2579" y="1320" />
+        <di:waypoint x="2704" y="1320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H9" bpmnElement="SF_H9">
+        <di:waypoint x="2804" y="1320" />
+        <di:waypoint x="2904" y="1320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_X4_No" bpmnElement="SF_X4_No">
+        <di:waypoint x="2954" y="1320" />
+        <di:waypoint x="3104" y="1320" />
+        <di:waypoint x="3104" y="960" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3000" y="1298" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H12" bpmnElement="SF_H12">
+        <di:waypoint x="3154" y="920" />
+        <di:waypoint x="3279" y="920" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_X5_Return" bpmnElement="SF_X5_Return">
+        <di:waypoint x="3329" y="920" />
+        <di:waypoint x="3454" y="920" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3355" y="925" width="73" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H13" bpmnElement="SF_H13">
+        <di:waypoint x="3504" y="920" />
+        <di:waypoint x="3654" y="920" />
+        <di:waypoint x="3654" y="1680" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H14" bpmnElement="SF_H14">
+        <di:waypoint x="3704" y="1720" />
+        <di:waypoint x="3804" y="1720" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H15" bpmnElement="SF_H15">
+        <di:waypoint x="3904" y="1720" />
+        <di:waypoint x="4054" y="1720" />
+        <di:waypoint x="4054" y="1360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H16" bpmnElement="SF_H16">
+        <di:waypoint x="4104" y="1320" />
+        <di:waypoint x="4222" y="1320" />
+        <di:waypoint x="4222" y="1702" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_X0_Contact" bpmnElement="SF_X0_Contact">
+        <di:waypoint x="629" y="785" />
+        <di:waypoint x="629" y="920" />
+        <di:waypoint x="754" y="920" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="634" y="832" width="84" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_X1_Online" bpmnElement="SF_X1_Online">
+        <di:waypoint x="1179" y="945" />
+        <di:waypoint x="1179" y="1080" />
+        <di:waypoint x="1304" y="1080" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1184" y="999" width="59" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_X2_ExOnly" bpmnElement="SF_X2_ExOnly">
+        <di:waypoint x="2079" y="785" />
+        <di:waypoint x="2079" y="920" />
+        <di:waypoint x="2204" y="920" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2102" y="898" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_X2_Both" bpmnElement="SF_X2_Both">
+        <di:waypoint x="2079" y="785" />
+        <di:waypoint x="2079" y="1080" />
+        <di:waypoint x="2204" y="1080" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2084" y="979" width="89" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_X3_Refund" bpmnElement="SF_X3_Refund">
+        <di:waypoint x="2429" y="1055" />
+        <di:waypoint x="2429" y="875" />
+        <di:waypoint x="3454" y="875" />
+        <di:waypoint x="3479" y="875" />
+        <di:waypoint x="3479" y="895" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2984" y="842" width="66" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_X4_Yes" bpmnElement="SF_X4_Yes">
+        <di:waypoint x="2929" y="1345" />
+        <di:waypoint x="2929" y="1480" />
+        <di:waypoint x="3054" y="1480" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2934" y="1406" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H2b" bpmnElement="SF_H2b">
+        <di:waypoint x="854" y="920" />
+        <di:waypoint x="954" y="920" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H2c" bpmnElement="SF_H2c">
+        <di:waypoint x="1054" y="920" />
+        <di:waypoint x="1154" y="920" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H3c1" bpmnElement="SF_H3c1">
+        <di:waypoint x="1404" y="1080" />
+        <di:waypoint x="1554" y="1080" />
+        <di:waypoint x="1554" y="1440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H3c" bpmnElement="SF_H3c">
+        <di:waypoint x="1604" y="1480" />
+        <di:waypoint x="1729" y="1480" />
+        <di:waypoint x="1729" y="785" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H7ex" bpmnElement="SF_H7ex">
+        <di:waypoint x="2304" y="900" />
+        <di:waypoint x="2324" y="900" />
+        <di:waypoint x="2324" y="860" />
+        <di:waypoint x="2554" y="860" />
+        <di:waypoint x="2554" y="875" />
+        <di:waypoint x="2579" y="875" />
+        <di:waypoint x="2579" y="895" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H7both" bpmnElement="SF_H7both">
+        <di:waypoint x="2304" y="1080" />
+        <di:waypoint x="2404" y="1080" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H10" bpmnElement="SF_H10">
+        <di:waypoint x="3154" y="1480" />
+        <di:waypoint x="3254" y="1480" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_H11" bpmnElement="SF_H11">
+        <di:waypoint x="3354" y="1480" />
+        <di:waypoint x="3461" y="1480" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SF_X5_Other" bpmnElement="SF_X5_Other">
+        <di:waypoint x="3304" y="945" />
+        <di:waypoint x="3304" y="980" />
+        <di:waypoint x="2579" y="980" />
+        <di:waypoint x="2579" y="945" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2908" y="933" width="67" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

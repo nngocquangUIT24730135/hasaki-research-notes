@@ -290,7 +290,7 @@ Khi vẽ sơ đồ, vẫn có thể hiện giai đoạn **cam kết giao** (bư�
 
 **B4 — Đổi trả hoặc hoàn tiền (*Return-to-Resolve*)**
 
-> Tên tiếng Việt dùng **hoặc** vì sau thẩm định có thể **đổi hàng** hoặc **hoàn tiền** (hoặc từ chối). Chuỗi đầu–cuối tiếng Anh: *Return-to-Resolve* (không dùng *Return-to-Refund* — tránh hiểu nhầm quy trình chỉ để hoàn tiền).
+> Tên tiếng Việt dùng **hoặc** vì sau xét điều kiện đổi trả có thể **đổi hàng** hoặc **hoàn tiền** (hoặc từ chối). Chuỗi đầu–cuối tiếng Anh: *Return-to-Resolve* (không dùng *Return-to-Refund* — tránh hiểu nhầm quy trình chỉ để hoàn tiền).
 
 | Thuộc tính | Nội dung |
 |------------|----------|
@@ -299,7 +299,7 @@ Khi vẽ sơ đồ, vẫn có thể hiện giai đoạn **cam kết giao** (bư�
 | Kết thúc (*outcomes*) | Đổi hàng / hoàn tiền / từ chối có lý do |
 | Chính sách | Cửa sổ **30 ngày** từ 01/06/2024 ([đổi trả](https://hotro.hasaki.vn/doi-tra-hoan-tien.html)) |
 | Đo thời gian chu kỳ (*cycle time*, tại cửa hàng) | Từ tiếp nhận yêu cầu đến đổi/từ chối/lập phiếu xong; không gồm đi đường của khách. Chi tiết ước lượng: [core.md](../03-core/core.md) mục 5.2 |
-| Ghi chú khi vẽ BPMN | Tiêu chí chính sách nằm trong **một** hoạt động (*activity*) thẩm định + bảng quyết định (*decision table*); không xẻ mỗi tiêu chí thành cổng XOR (*XOR gateway*) — xem [core_bpmn.md](../03-core/core_bpmn.md) phần B |
+| Ghi chú khi vẽ BPMN | Tiêu chí chính sách nằm trong **một** hoạt động (*activity*) xét điều kiện đổi trả + bảng quyết định (*decision table*); không xẻ mỗi tiêu chí thành cổng XOR (*XOR gateway*) — xem [core_bpmn.md](../03-core/core_bpmn.md) phần B |
 
 Chi tiết phân tích nghiệp vụ và hướng dẫn vẽ: [ba_model_b2_b4.md](../03-core/ba_model_b2_b4.md), [core_bpmn.md](../03-core/core_bpmn.md).
 

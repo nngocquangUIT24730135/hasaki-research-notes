@@ -2,8 +2,8 @@
 
 **Mục đích:** hướng dẫn nhóm vẽ hai sơ đồ BPMN 2.0 cho quy trình cốt lõi (*core processes*).  
 **Nguồn chuẩn ranh giới:** [research.md](../02-research/research.md) §4.3 — **B2 là một quy trình** từ Đặt hàng đến giao/hủy, gồm cả nhánh **giao 2 giờ** và **giao thường**; không tách “mua hàng online” và “giao 2H” thành hai core trên kiến trúc.  
-**Nguyên tắc:** cổng XOR (*XOR gateway*) chỉ đặt khi **luồng phía sau khác nhau**; tiêu chí kiểm tra trong cùng một lần thẩm định ghi trong **hoạt động (*activity*) + bảng quyết định (*decision table*)**, không xẻ thành nhiều cổng chỉ để đủ điểm.  
-**Thiết kế đề xuất:** B2 khoảng **10** cổng (nhiều nhánh vận hành thật, kể cả 2H/thường); B4 khoảng **7** cổng có nghĩa (X1–X7) — nếu rubik cần >7 cổng trên sơ đồ đổi trả, cân nhắc chọn thêm quy trình khác thay vì ép checklist thành cổng.  
+**Nguyên tắc:** cổng XOR (*XOR gateway*) chỉ đặt khi **luồng phía sau khác nhau**; tiêu chí kiểm tra trong cùng một lần xét điều kiện đổi trả ghi trong **hoạt động (*activity*) + bảng quyết định (*decision table*)**, không xẻ thành nhiều cổng chỉ để đủ điểm.  
+**Thiết kế đề xuất:** B2 khoảng **10** cổng (nhiều nhánh vận hành thật, kể cả 2H/thường); B4 khoảng **6** cổng nghiệp vụ (X0–X5): walk-in/liên hệ, cửa hàng/online, bảng Hasaki, đổi|trả, còn hàng, hết hàng → SP khác|trả (suy luận, không bắt buộc hoàn).  
 **Phân tích nghiệp vụ chi tiết:** xem file [ba_model_b2_b4.md](./ba_model_b2_b4.md).  
 **Công cụ gợi ý:** Camunda Modeler hoặc bpmn.io.  
 **Tên file nên đặt:** `b2-xu-ly-don-hang-online.bpmn`, `b4-doi-tra-hoac-hoan-tien.bpmn`.
@@ -134,7 +134,7 @@ Không chọn 2 giờ → tạo đơn → soạn → giao → khách trả tiề
 |--------|----------|
 | Tên quy trình | Đổi trả hoặc hoàn tiền (*Return-to-Resolve*) |
 | Khách hàng của quy trình (*process customer*) | Khách yêu cầu đổi hoặc trả hàng |
-| Sự kiện kích hoạt (*trigger*) | Yêu cầu đổi trả được tiếp nhận |
+| Sự kiện kích hoạt (*trigger*) | *Yêu cầu đổi trả được tiếp nhận* (walk-in mang hàng hoặc liên hệ CSKH — đồng bộ pool khách) |
 | Đối tượng theo dõi (*case*) | Một yêu cầu đổi–trả |
 | Kết thúc (*outcomes*) | **Từ chối** / **Đổi hàng xong** / **Hoàn tiền xong** |
 
@@ -142,67 +142,66 @@ Không chọn 2 giờ → tạo đơn → soạn → giao → khách trả tiề
 
 | Giai đoạn | Việc trên sơ đồ |
 |-----------|-----------------|
-| 1. Tiếp nhận | Khách gửi yêu cầu; chọn mang tới cửa hàng hoặc gửi bưu điện |
-| 2. Thẩm định điều kiện | **Một** hoạt động (*activity*): nhân viên áp dụng bảng chính sách 30 ngày (xem `ba_model` §II.5) |
-| 3. Nhận hàng và kiểm tra | Nhận sản phẩm; đối chiếu với yêu cầu đã chấp nhận |
-| 4. Xử lý kết quả (*outcome handling*) | Đổi hàng mới hoặc hoàn tiền theo cách khách đã thanh toán |
-| 5. Xử lý hàng trả lại | Đưa lại bán được hoặc loại khỏi bán *(suy luận ngành mỹ phẩm — vệ sinh, tem)* |
+| 1. Tiếp nhận | Khách báo lý do + liên hệ; hướng dẫn cửa hàng (ưu tiên TP.HCM) hoặc gửi bưu điện; nhắc mang quà nếu đổi SP chính |
+| 2. Nhận và kiểm sản phẩm | Tại CH: nhận SP (+ quà nếu có), xem tem / tình trạng; bưu điện: nhận kiện rồi đối chiếu |
+| 3. Xét điều kiện đổi trả | **Một** hoạt động: đối chiếu bảng chính sách 30 ngày (xem `ba_model` §II.5) — gồm cả quà kèm khi đổi SP chính |
+| 4. Xử lý kết quả | Đổi hàng mới **hoặc** hoàn theo cách đã thanh toán *(một activity hoàn — không xẻ 4 cổng)* |
+| 5. Xử lý hàng trả lại | Đưa lại bán được hoặc loại khỏi bán *(suy luận ngành mỹ phẩm)* |
+
+Bản nộp / làm việc chi tiết: [return-to-resolve/](./return-to-resolve/).
 
 ## B.3. Bể bơi và làn (*pools and lanes*)
 
 ```text
-Bể bơi: Khách hàng
+Bể bơi: Khách hàng (white-box — walk-in / liên hệ → mang CH hoặc gửi online → nhận kết quả)
 Bể bơi: Hasaki
   Làn: Nhân viên cửa hàng / Chăm sóc khách hàng
-  Làn: Quản lý (khi vượt thẩm quyền)
   Làn: Kho
   Làn: Kế toán / Hoàn tiền
 ```
 
+Không vẽ làn Quản lý khi chưa có bằng chứng công bố về mức thẩm quyền. Cổng X0–X5 + message flow đồng bộ hai pool (xem `return-to-resolve/`).
+
 ## B.4. Tên hoạt động (*activity labels*) gợi ý
 
-**Khách:** gửi yêu cầu và lý do → mang hoặc gửi sản phẩm (kèm quà tặng nếu đổi sản phẩm chính) → chọn đổi hoặc trả khi được phép → nhận hàng đổi hoặc nhận tiền → bổ sung chứng từ nếu thiếu.
+**Khách:** thông báo lý do + liên hệ → mang tới cửa hàng hoặc gửi bưu điện (kèm quà nếu đổi SP chính) → nhận hàng đổi hoặc nhận hoàn.
 
-**Nhân viên / chăm sóc khách hàng:** tiếp nhận → **thẩm định theo bảng chính sách** (30 ngày, mua từ Hasaki, loại trừ, nguyên nhân lỗi, hình thức / lỗi nhà sản xuất–vận chuyển) → giải thích từ chối nếu không đạt → lập phiếu đổi/trả nếu đạt → yêu cầu bổ sung hồ sơ nếu thiếu.
+**Nhân viên / CSKH:** ghi nhận thông tin yêu cầu (quầy hoặc CSKH) → nhận & kiểm tại cửa hàng **hoặc** hướng dẫn gửi online → **xét điều kiện bảng 30 ngày** → giải thích nếu từ chối → thông báo hết hàng → hỏi SP khác hoặc trả.
 
-**Quản lý:** xem xét tranh chấp / ngoại lệ → chấp nhận ngoại lệ hoặc giữ quyết định từ chối.
+**Kho:** nhận & kiểm hàng gửi về → kiểm còn hàng khi đổi → giao/gửi đổi → xử lý hàng trả.
 
-**Kho:** nhận hàng trả → xuất hàng đổi → phân loại hàng trả (nhập bán lại / không bán lại).
-
-**Kế toán:** xác định cách hoàn (theo cách khách đã thanh toán) → thực hiện hoàn → xác nhận xong.
+**Kế toán:** hoàn theo phương thức trên website (tiền mặt / CK 3–5 ngày / VNpay 3–8 hoặc 15–90 ngày hoặc chuyển sang đơn sau; trả tại nhà: sau khi nhận hàng).
 
 ## B.5. Cổng XOR — chỉ khi luồng phía sau khác nhau (*XOR gateways*)
 
-**Không** tách mỗi tiêu chí trong bảng 30 ngày thành một cổng. Các tiêu chí đó là **bước trong hoạt động thẩm định** (và bảng quyết định), giống cách nhân viên làm tại cửa hàng.
+**Không** tách mỗi tiêu chí trong bảng 30 ngày thành một cổng. **Không** dùng cổng “hồ sơ đủ xét điều kiện đổi trả” (không sát thực tế quầy mỹ phẩm — xem [return-to-resolve.md](./return-to-resolve/return-to-resolve.md) §0).
 
 | Mã | Câu hỏi ghi trên cổng | Nhánh | Vì sao là cổng |
 |----|----------------------|-------|----------------|
-| X1 | Tiếp nhận tại cửa hàng hay gửi bưu điện? | Tại cửa hàng / Gửi bưu điện | Thứ tự nhận hàng và kiểm khác nhau |
-| X2 | Hồ sơ đủ để thẩm định? (chứng từ; quà kèm nếu đổi sản phẩm chính) | Đủ / Thiếu → yêu cầu bổ sung rồi quay lại | Vòng bổ sung hồ sơ thật |
-| X3 | Kết quả thẩm định theo chính sách? | Đạt / Từ chối | Một lần thẩm định → một nhánh kết quả |
-| X4 | Cần quản lý duyệt ngoại lệ? *(thường sau tranh chấp)* | Có → quản lý / Không → giữ từ chối hoặc tiếp tục | Đổi làn / thẩm quyền |
-| X5 | Phương án là **đổi hàng** hay **trả và hoàn tiền**? | Đổi / Trả | Hai chuỗi xử lý khác nhau |
-| X6 | Còn hàng để đổi? *(suy luận ngành)* | Có → xuất đổi / Không → đề xuất trả hoặc chờ hàng | Nhánh vận hành kho |
-| X7 | Hình thức hoàn theo cách đã thanh toán? | Tiền mặt / Chuyển khoản / Cổng thanh toán / Chuyển mã phiếu quà | Thời hạn và tác nhân hoàn khác nhau |
+| X1 | Hàng về cửa hàng hay gửi online? | Cửa hàng (gồm walk-in hoặc đã liên hệ rồi mang tới) / Online | Handoff Level 2 |
+| X2 | Theo bảng chính sách 30 ngày, được hỗ trợ thế nào? | Không hỗ trợ đổi trả / Chỉ đổi mới / Đổi mới hoặc trả không thu phí | Bảng Hasaki |
+| X3 | Khách chọn đổi mới hay trả không thu phí? | Đổi mới / Trả không thu phí | Chỉ khi X2 cho phép cả hai |
+| X4 | Còn hàng sản phẩm muốn đổi? | Còn → xuất đổi / Hết → thông báo | Suy luận vận hành; trang Hasaki không mô tả nhánh hết hàng |
+| X5 | Khách chọn phương án nào? | SP khác còn hàng / Trả hàng–hoàn | Suy luận; **không** ghi Hasaki bắt buộc hoàn khi hết hàng |
 
-**Thứ tự nghiệp vụ quan trọng (không cần thêm cổng “ảo”):** với trả hàng gửi từ tỉnh / trả tại nhà, bước **nhận được hàng trả** đứng **trước** hoạt động hoàn tiền (theo chính sách Hasaki).
+Sau khi đủ điều kiện: **cập nhật yêu cầu đổi trả trên hệ thống đơn hàng**; trước khi hoàn: **cập nhật yêu cầu hoàn tiền trên hệ thống đơn hàng**. Trả từ tỉnh / tại nhà → nhận hàng trước rồi mới hoàn. Chi tiết: [return-to-resolve/](./return-to-resolve/).
 
 ## B.6. Luồng điển hình (*happy path*)
 
-**Đổi tại cửa hàng:** tiếp nhận → hồ sơ đủ → thẩm định (một hoạt động) → đạt → chọn đổi → còn tồn → xuất hàng đổi → xử lý hàng trả → kết thúc đổi thành công.
+**Đổi tại cửa hàng:** tiếp nhận → mang tới CH → nhận & kiểm SP → xét điều kiện đổi trả đạt → đổi → còn tồn → xuất đổi → xử lý hàng trả → đổi thành công.
 
-**Trả và hoàn qua cổng thanh toán (khách tỉnh gửi hàng):** tiếp nhận → thẩm định đạt → chọn trả → nhận hàng gửi về → hoàn theo cổng thanh toán trong thời hạn công bố → xử lý hàng trả → kết thúc hoàn tiền.
+**Trả từ tỉnh:** tiếp nhận → gửi bưu điện → nhận kiện → xét điều kiện đổi trả đạt → trả → hoàn theo cách đã thanh toán → xử lý hàng trả → hoàn tiền xong.
 
-**Từ chối:** thẩm định không đạt → giải thích → (nếu tranh chấp: quản lý duyệt) → kết thúc từ chối hoặc ngoại lệ được chấp nhận rồi quay lại nhánh đổi/trả.
+**Từ chối:** xét điều kiện đổi trả không đạt → giải thích → kết thúc từ chối.
 
 ## B.7. Danh mục kiểm tra (*checklist*) trước khi nộp hình B4
 
-- [ ] Có **một** hoạt động thẩm định + bảng quyết định / chú thích chính sách; **không** chuỗi cổng X “còn 30 ngày?” → “mua từ Hasaki?” → …  
-- [ ] Mỗi cổng XOR đổi được nhánh xử lý phía sau (không chỉ liệt kê tiêu chí)  
-- [ ] Hoàn tiền **sau** khi đã nhận hàng đối với trường hợp trả tại nhà / gửi bưu điện  
-- [ ] Chú thích chính sách 30 ngày (áp dụng từ 01/06/2024) và đường dẫn trang đổi trả  
-- [ ] Bước xử lý hàng trả lại có ghi chú suy luận ngành nếu Hasaki không công bố chi tiết  
-- [ ] Số cổng ~6–7 là chấp nhận được nếu đúng nghiệp vụ; không ép thêm cổng checklist  
+- [ ] Có **một** hoạt động xét điều kiện đổi trả + bảng quyết định; **không** chuỗi cổng checklist / không cổng “hồ sơ đủ”  
+- [ ] Mỗi cổng XOR đổi được nhánh xử lý phía sau  
+- [ ] Hoàn tiền **sau** khi đã nhận hàng (trả tại nhà / gửi bưu điện)  
+- [ ] Chú thích chính sách 30 ngày (từ 01/06/2024) + link trang đổi trả  
+- [ ] Xử lý hàng trả có ghi chú suy luận ngành nếu cần  
+- [ ] ~6 cổng nghiệp vụ (X0–X5) là chấp nhận được; không ép thêm cổng chỉ để >7 
 
 ---
 
@@ -211,15 +210,15 @@ Bể bơi: Hasaki
 | Quy trình | Số cổng thiết kế | Ghi chú rubik |
 |-----------|------------------|---------------|
 | B2 | ~10 (G1–G10) | Nhiều nhánh vận hành thật; phù hợp ngưỡng >7 |
-| B4 | ~7 (X1–X7) | Ưu tiên đúng thực tế; nếu môn bắt buộc >7 trên đúng sơ đồ này mà thiếu, chọn quy trình khác thay vì xẻ checklist |
+| B4 | ~6 (X0–X5) | Walk-in/liên hệ + cửa hàng/online + bảng Hasaki + hết hàng (suy luận); >7 cổng lấy ở B2 |
 
 | Nội dung nghiệp vụ dễ quên | Thể hiện trên hình |
 |----------------------------|--------------------|
 | Cam kết giao hàng khác với soạn hàng | Giai đoạn 1 khác giai đoạn 3 (B2) |
 | Hủy sau 3 ngày và hoàn trong 30 ngày | G8 → thông báo hủy → hoàn tiền |
 | Phiếu 100.000đ có trường hợp miễn trừ | G10 |
-| Tem / chưa sử dụng / 30 ngày | Trong **hoạt động thẩm định** + bảng quyết định, không phải chuỗi cổng |
-| Hoàn đúng cách khách đã thanh toán | X7 |
+| Tem / chưa sử dụng / 30 ngày / quà kèm | Trong **nhận hàng + hoạt động xét điều kiện đổi trả** + bảng quyết định, không phải chuỗi cổng “hồ sơ” |
+| Hoàn theo phương thức trên website Hasaki | Một activity hoàn (ghi chú thời hạn), không xẻ cổng theo kênh; không mã phiếu quà |
 
 ---
 
@@ -249,23 +248,20 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-  I[Tiep nhan] --> X1{X1 Cua hang hay buu dien?}
-  X1 --> H[Kiem ho so]
-  H --> X2{X2 Ho so du?}
-  X2 -->|Thieu| BoSung[Yeu cau bo sung] --> H
-  X2 -->|Du| T[Tham dinh theo bang chinh sach]
-  T --> X3{X3 Dat hay tu choi?}
-  X3 -->|Tu choi| GiaiThich[Giai thich]
-  GiaiThich --> X4{X4 Can quan ly?}
-  X4 -->|Khong| R[Ket thuc tu choi]
-  X4 -->|Co| QL[Quan ly duyet]
-  QL -->|Giu tu choi| R
-  QL -->|Ngoai le| X5
-  X3 -->|Dat| X5{X5 Doi hay tra?}
-  X5 -->|Doi| X6{X6 Con hang doi?}
-  X6 -->|Co| Doi[Xuat hang doi] --> OK1[Doi thanh cong]
-  X6 -->|Khong| TraHoacCho[De xuat tra hoac cho hang]
-  X5 -->|Tra| Nhan[Nhan hang tra neu chua co]
-  Nhan --> X7{X7 Hinh thuc hoan?}
-  X7 --> Hoan[Thuc hien hoan] --> OK2[Hoan tien xong]
+  I[Tiep nhan quầy/CSKH] --> X1{X1 Cua hang hay online?}
+  X1 -->|Cua hang| N1[Nhan va kiem SP]
+  X1 -->|Online| G[Huong dan + ma van don] --> N2[Nhan va kiem SP gui ve]
+  N1 --> T[Xet dieu kien bang 30 ngay]
+  N2 --> T
+  T --> X2{X2 Theo bang chinh sach, duoc ho tro the nao?}
+  X2 -->|Khong ho tro doi tra| R[Tu choi]
+  X2 -->|Chi doi moi| P1[Cap nhat yeu cau doi tra tren he thong] --> X4
+  X2 -->|Doi moi hoac tra khong thu phi| P2[Cap nhat yeu cau doi tra tren he thong] --> X3{X3 Doi moi hay tra khong thu phi?}
+  X3 -->|Doi moi| X4{X4 Con hang?}
+  X3 -->|Tra khong thu phi| DH[Cap nhat yeu cau hoan tien tren he thong] --> Hoan[Hoan theo hinh thuc da TT]
+  X4 -->|Co| Doi[Xuat doi moi] --> OK1[Doi xong]
+  X4 -->|Het| TB[Thong bao het hang] --> X5{X5 Khach chon?}
+  X5 -->|SP khac| X4
+  X5 -->|Tra hang| DH
+  Hoan --> OK2[Hoan xong]
 ```

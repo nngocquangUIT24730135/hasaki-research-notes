@@ -15,7 +15,7 @@
 | Liệt kê quy trình (≥ 3 cốt lõi) | **5** quy trình B1–B5; mỗi quy trình đủ tác nhân (*actors*), mô tả bước, khách hàng quy trình (*process customer*), kết quả (*outcomes*) |
 | Kiến trúc quy trình (*process architecture*) | Sơ đồ vị trí nhóm cốt lõi trong toàn bộ kiến trúc |
 | Mô hình hóa 2 quy trình cốt lõi | Chọn **B2** và **B4**; hướng dẫn vẽ tại `core_bpmn.md` |
-| Cổng điều kiện (*gateways*) nhiều hơn 7 | B2 thiết kế ~10 cổng vận hành thật; B4 ~7 cổng có nghĩa (không xẻ checklist thẩm định) — xem `core_bpmn.md` |
+| Cổng điều kiện (*gateways*) nhiều hơn 7 | B2 thiết kế ~10 cổng vận hành thật; B4 ~6 cổng (X0–X5): walk-in/liên hệ + cửa hàng/online + bảng Hasaki + hết hàng (suy luận) — xem `core_bpmn.md` và `return-to-resolve/` |
 | Bằng chứng và phỏng vấn (*evidence* / *interview*) | Mục 3: bằng chứng + 10 câu định tính + 10 câu định lượng |
 | Phân tích định tính (*qualitative analysis*) 2 quy trình | Mục 4: B2 và B4 |
 | Phân tích định lượng (*quantitative analysis*) 2 quy trình | Mục 5: B2 và B4 (số liệu có chú thích ước lượng) |
@@ -135,9 +135,9 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 | Giai đoạn | Nội dung chính |
 |-----------|----------------|
 | 1. Tiếp nhận | Khách báo lý do và liên hệ; Thành phố Hồ Chí Minh ưu tiên đến cửa hàng; tỉnh có thể gửi bưu điện; đổi sản phẩm chính nên mang quà tặng kèm |
-| 2. Thẩm định | Còn 30 ngày? Mua từ Hasaki? Thuộc loại trừ? Lỗi do người dùng → từ chối; lỗi nhà sản xuất / vận chuyển / cận hạn / soạn sai → cho đổi hoặc trả; đổi ý + đủ hình thức → đổi mới — **một lần thẩm định** theo bảng, không tách mỗi tiêu chí thành cổng trên sơ đồ |
-| 3. Nhận và kiểm hàng | Tại cửa hàng thường gộp khi thẩm định; gửi bưu điện: nhận kiện rồi đối chiếu |
-| 4. Xử lý kết quả | Đổi (cần còn hàng thay thế — *suy luận ngành*) hoặc hoàn: tiền mặt / chuyển khoản 3–5 ngày / cổng thanh toán 3–8 hoặc 15–90 ngày / phiếu quà → mã đơn sau; trả tại nhà: hoàn **sau** khi nhận được hàng |
+| 2. Xét điều kiện đổi trả | Còn 30 ngày? Mua từ Hasaki? Thuộc loại trừ? Lỗi do người dùng → từ chối; lỗi nhà sản xuất / vận chuyển / cận hạn / soạn sai → cho đổi hoặc trả; đổi ý + đủ hình thức → đổi mới — **một lần xét điều kiện đổi trả** theo bảng, không tách mỗi tiêu chí thành cổng trên sơ đồ |
+| 3. Nhận và kiểm hàng | Tại cửa hàng thường gộp khi xét điều kiện đổi trả; gửi bưu điện: nhận kiện rồi đối chiếu |
+| 4. Xử lý kết quả | Đổi (cần còn hàng thay thế — *suy luận*) hoặc hoàn theo website: tiền mặt; CK 3–5 ngày; VNpay 3–8 hoặc 15–90 ngày hoặc chuyển thanh toán đơn tiếp theo; trả tại nhà: hoàn **sau** khi nhận được hàng |
 | 5. Xử lý hàng trả | Đưa lại bán nếu đủ điều kiện; hàng đã mở / mất tem thường không bán lại *(suy luận ngành mỹ phẩm)* |
 
 ---
@@ -266,30 +266,30 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 
 ### 4.2. Quy trình B4
 
-> Khớp mô hình BPMN: **một** hoạt động thẩm định theo bảng chính sách; cổng XOR chỉ ở chỗ luồng khác nhau (kênh tiếp nhận, hồ sơ đủ/thiếu, đạt/từ chối, đổi/trả, còn hàng, hình thức hoàn). Tiêu chí 30 ngày / tem / loại trừ nằm **trong** thẩm định, không phải từng dòng VA riêng cho mỗi cổng.
+> Khớp [website Hasaki](https://hotro.hasaki.vn/doi-tra-hoan-tien.html): xét điều kiện theo bảng 30 ngày; X2 ba nhánh theo bảng Hasaki (không hỗ trợ đổi trả / chỉ đổi mới / đổi mới hoặc trả không thu phí); hết hàng đổi → thông báo → khách chọn SP khác hoặc trả–hoàn (*suy luận*, không khẳng định bắt buộc hoàn); cập nhật yêu cầu đổi trả / hoàn tiền trên hệ thống đơn hàng. Chi tiết: `return-to-resolve/`.
 
 #### Giá trị gia tăng
 
 | # | Hoạt động | Giai đoạn | Loại | Khắc phục nếu cần |
 |---|-----------|-----------|------|-------------------|
 | 1 | Tiếp nhận yêu cầu và lý do | 1 | BVA | Mẫu thu thập đủ trường |
-| 2 | Kiểm hồ sơ (chứng từ, quà kèm); yêu cầu bổ sung nếu thiếu | 1 | BVA / NVA nếu phải đi lại | Danh mục kiểm tra trước khi thẩm định |
-| 3 | Thẩm định theo bảng 30 ngày *(một lần: hạn, nguồn mua, loại trừ, lỗi, hình thức)* | 2 | BVA | Bảng quyết định một trang |
-| 4 | Khách giải thích lại nhiều lần / thiếu thông tin lúc đầu | 1 | NVA | Hỏi đủ một lần |
-| 5 | Đối chiếu hàng khi nhận gửi bưu điện *(tại cửa hàng thường gộp trong thẩm định)* | 3 | VA | Ảnh, video chuẩn |
-| 6 | Đổi hàng | 4 | VA | Đảm bảo còn hàng đổi |
-| 7 | Chờ quản lý duyệt tranh chấp | 2 | NVA (chờ) | Rõ mức thẩm quyền |
-| 8 | Hoàn tiền theo cách đã thanh toán | 4 | VA | Báo trước thời hạn hoàn |
+| 2 | Nhận & kiểm SP (+ quà kèm nếu đổi SP chính) | 2 | VA | Checklist tem–seal tại quầy; nhắc quà trước khi đến |
+| 3 | Xét điều kiện đổi trả theo bảng 30 ngày *(một lần)* | 3 | BVA | Bảng quyết định một trang |
+| 4 | Khách đi lại vì thiếu quà / hiểu sai chính sách | 1–2 | NVA | Hỏi đủ + hướng dẫn kênh lần đầu |
+| 5 | Đối chiếu hàng khi nhận gửi bưu điện | 2 | VA | Ảnh, video chuẩn |
+| 6 | Đổi hàng | 4 | VA | Báo còn/hết tồn |
+| 7 | Chờ nhận kiện tỉnh trước khi hoàn | 2–4 | BVA / Hold | Theo dõi mã bưu điện |
+| 8 | Hoàn tiền theo cách đã thanh toán | 4 | VA | Báo trước thời hạn theo kênh TT |
 | 9 | Xử lý hàng trả (bán lại / loại) | 5 | BVA | Quy định rõ hàng mỹ phẩm đã mở |
-| 10 | Từ chối và giải thích | 2 | BVA | Đào tạo giao tiếp |
+| 10 | Từ chối và giải thích | 3 | BVA | Đào tạo giao tiếp |
 
 #### Lãng phí (*waste*) và xương cá (*fishbone*)
 
 | Loại | Hiện tượng | Khắc phục |
 |------|------------|-----------|
 | Di chuyển thừa | Gửi bưu điện qua lại vì thiếu quà kèm / thiếu mã đơn | Danh mục kiểm tra trước khi gửi |
-| Chờ | Chờ hoàn tiền thẻ quốc tế lâu → phát sinh khiếu nại; chờ quản lý duyệt case rõ chính sách | Thông báo thời hạn; bảng quyết định + mức thẩm quyền |
-| Làm thừa | Tách / kiểm lại từng tiêu chí như nhiều cấp dù đã có bảng một trang | Một lần thẩm định + bảng quyết định |
+| Chờ | Chờ hoàn tiền thẻ quốc tế lâu → phát sinh khiếu nại; chờ kiện tỉnh | Thông báo thời hạn theo kênh TT; theo dõi mã bưu điện |
+| Làm thừa | Tách / kiểm lại từng tiêu chí như nhiều cấp dù đã có bảng một trang | Một lần xét điều kiện đổi trả + bảng quyết định |
 
 ```text
                  Khiếu nại / từ chối đổi trả
@@ -346,18 +346,17 @@ Cam kết NowFree theo **giờ nhận dự kiến** (thường cửa sổ khoả
 
 **Thời gian chu kỳ** tại cửa hàng đo từ **tiếp nhận yêu cầu** đến ghi nhận xong (không gồm thời gian khách đi đường tới cửa hàng). Hoàn tiền qua cổng thanh toán đo bằng **ngày** theo chính sách (chuyển khoản 3–5; cổng thanh toán 3–8 hoặc 15–90 ngày làm việc).
 
-**Giả định kịch bản điển hình:** hồ sơ đủ lần đầu (không vòng bổ sung); **một** lần thẩm định theo bảng (không cộng thời gian từng tiêu chí như nhiều cổng); không cần quản lý duyệt; đổi hàng tại chỗ (không đo ngày chờ bưu điện).
+**Giả định kịch bản điển hình:** mang đủ SP (+ quà nếu cần) lần đầu; **một** lần xét điều kiện đổi trả theo bảng; đổi hàng tại chỗ (không đo ngày chờ bưu điện).
 
 | Giai đoạn / bước | Loại | Thấp nhất | Điển hình | Cao nhất (phút) |
 |------------------|------|-----------|-----------|-----------------|
-| Tiếp nhận + kiểm hồ sơ | Xử lý | 3 | 7 | 15 |
-| Thẩm định theo bảng chính sách | Xử lý | 5 | 12 | 25 |
-| Quản lý duyệt (nếu có) | Chờ | 0 | 0 | 30 |
+| Tiếp nhận + nhận/kiểm SP | Xử lý | 3 | 8 | 18 |
+| Xét điều kiện đổi trả theo bảng chính sách | Xử lý | 4 | 10 | 20 |
 | Đổi hàng (kèm đối chiếu tem / tồn) | Xử lý | 3 | 8 | 20 |
-| Ghi nhận xử lý hàng trả | Xử lý | 2 | 5 | 10 |
-| **Tổng tại cửa hàng** | | **13** | **~32** | **~100** |
+| Ghi nhận xử lý hàng trả | Xử lý | 2 | 4 | 10 |
+| **Tổng tại cửa hàng** | | **12** | **~30** | **~68** |
 
-Điển hình (không duyệt quản lý): thời gian xử lý ≈ 7+12+8+5 = **32 phút**; thời gian chờ ≈ **0**; hiệu suất thời gian chu kỳ ≈ **~100%** trên nhánh thuận (ước lượng). Nếu có tranh chấp, cộng thêm phút chờ quản lý → tổng điển hình có duyệt ≈ **37 phút**, hiệu suất ≈ 32/37 ≈ **86%**.
+Điển hình nhánh thuận: thời gian xử lý ≈ 8+10+8+4 = **30 phút**; chờ ≈ **0**; hiệu suất chu kỳ ≈ **~100%** (ước lượng). Chi tiết gói B4: [return-to-resolve/](./return-to-resolve/).
 
 | Chỉ số | Mục tiêu gợi ý (chưa đo nội bộ) |
 |--------|----------------------------------|
@@ -367,7 +366,7 @@ Cam kết NowFree theo **giờ nhận dự kiến** (thường cửa sổ khoả
 
 | Hạng mục chi phí | Ước lượng |
 |------------------|-----------|
-| Nhân sự điển hình đổi tại cửa hàng (nhánh thuận) | ~32 phút xử lý × 1.333 ≈ **43.000đ** |
+| Nhân sự điển hình đổi tại cửa hàng (nhánh thuận) | ~30 phút xử lý × 1.333 ≈ **40.000đ** |
 | Gửi hàng từ tỉnh | 20.000–40.000đ / yêu cầu *(ngoài bảng phút tại quầy)* |
 | Hàng không bán lại được | tùy trường hợp |
 

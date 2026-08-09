@@ -89,9 +89,9 @@ hasaki-research-notes/
 | Mã | Tên tiếng Việt | Chuỗi đầu–cuối (EN) | File hướng dẫn vẽ |
 |----|----------------|---------------------|-------------------|
 | B2 | Xử lý đơn hàng online và giao hàng (gồm giao nhanh 2 giờ và giao thường) | *Order-to-Delivery* | [core_bpmn.md](./03-core/core_bpmn.md) — phần A |
-| B4 | Đổi trả hoặc hoàn tiền | *Return-to-Resolve* | [core_bpmn.md](./03-core/core_bpmn.md) — phần B |
+| B4 | Đổi trả hoặc hoàn tiền | *Return-to-Resolve* | [core_bpmn.md](./03-core/core_bpmn.md) — phần B · gói [return-to-resolve](./03-core/return-to-resolve/) |
 
-File `.bpmn` nhóm tự vẽ trên Camunda Modeler hoặc bpmn.io theo hướng dẫn trên.
+File `.bpmn`: mở bằng Camunda Modeler hoặc bpmn.io. B4 đã có bản trong `03-core/return-to-resolve/`. Cài skill BPMN / c8ctl: [README-SKILL.md](./README-SKILL.md).
 
 ---
 

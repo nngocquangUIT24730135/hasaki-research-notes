@@ -25,7 +25,7 @@
 | Chu kỳ xử lý đơn: tạo đơn → sẵn sàng soạn → soạn–đóng gói–bàn giao → giao đến khách (*order cycle*) | B2 | Đo thời gian chu kỳ (*cycle time*) từ sau Đặt hàng (không gồm xem hàng trên ứng dụng); chia giai đoạn trên sơ đồ |
 | Giao trong ngày / vài giờ | B2 NowFree | Giờ cắt đơn, hàng đợi ưu tiên, cửa sổ lấy hàng của đơn vị giao, cam kết và bù đắp |
 | Lấy hàng từ cửa hàng giao đơn online | B2 | Tồn khả dụng → soạn → đóng gói → giao → xác nhận đã giao |
-| Đổi trả ngành mỹ phẩm | B4 | Tiếp nhận → thẩm định → nhận hàng → kiểm tra → xử lý hàng trả → đổi hoặc hoàn |
+| Đổi trả ngành mỹ phẩm | B4 | Tiếp nhận → xét điều kiện đổi trả → nhận hàng → kiểm tra → xử lý hàng trả → đổi hoặc hoàn |
 
 ---
 
@@ -166,7 +166,7 @@ Chi tiết danh sách hoạt động và cổng B2: [core_bpmn.md](./core_bpmn.m
 | **Vấn đề** | Sau khi mua, khách muốn đổi/trả; Hasaki phải áp dụng cửa sổ 30 ngày và điều kiện tem/hình thức (đặc thù mỹ phẩm) để bảo vệ biên lợi nhuận và tuân thủ. |
 | **Giá trị với khách** | Có kết luận rõ: đổi / hoàn / từ chối có lý do trong thời hạn. |
 | **Giá trị với doanh nghiệp** | Giữ niềm tin; giảm lạm dụng; tối ưu xử lý hàng trả; kiểm soát chi phí thu hồi hàng. |
-| **Trong phạm vi** | Tiếp nhận → thẩm định → nhận hàng → quyết **đổi hàng** hoặc **trả và hoàn** → xử lý hàng trả. |
+| **Trong phạm vi** | Tiếp nhận → xét điều kiện đổi trả → nhận hàng → quyết **đổi hàng** hoặc **trả và hoàn** → xử lý hàng trả. |
 | **Ngoài phạm vi** | Khiếu nại không phải đổi trả (B5); đơn đang giao (B2); bảo hành ngoài chính sách Hasaki. |
 | **Tên chuỗi đầu–cuối** | Tiếng Việt: *Đổi trả hoặc hoàn tiền*; tiếng Anh: *Return-to-Resolve* (không dùng *Return-to-Refund*). |
 
@@ -182,7 +182,7 @@ Chi tiết danh sách hoạt động và cổng B2: [core_bpmn.md](./core_bpmn.m
 ## II.3. Sáu giai đoạn đổi trả ngành — ánh xạ Hasaki
 
 ```text
-1. Tiếp nhận → 2. Thẩm định điều kiện
+1. Tiếp nhận → 2. Xét điều kiện đổi trả
 → 3. Đưa hàng về (mang tới cửa hàng / gửi bưu điện) → 4. Nhận và kiểm tra
 → 5. Xử lý hàng trả (bán lại / loại / trả nhà cung cấp)
 → 6. Kết toán (đổi hàng / hoàn tiền / từ chối)
@@ -191,40 +191,40 @@ Chi tiết danh sách hoạt động và cổng B2: [core_bpmn.md](./core_bpmn.m
 | Giai đoạn | Thực hành ngành | Thông tin công bố Hasaki | Suy luận |
 |-----------|-----------------|--------------------------|----------|
 | Tiếp nhận | Cổng tự phục vụ, lý do chuẩn | Báo nhân viên + lý do + số điện thoại / địa chỉ; Thành phố Hồ Chí Minh ưu tiên cửa hàng; tỉnh gửi bưu điện | Cổng chọn kênh tiếp nhận |
-| Thẩm định | Quy tắc theo cửa sổ thời gian, vệ sinh, loại trừ | Bảng 30 ngày; lỗi nhà sản xuất / vận chuyển / cận hạn / soạn sai; loại trừ khuyến mãi đặc biệt, quà, tem, đã dùng… | **Một** hoạt động thẩm định + bảng quyết định; cổng X3 = Đạt / Từ chối |
+| Xét điều kiện đổi trả | Quy tắc theo cửa sổ thời gian, vệ sinh, loại trừ | Bảng 30 ngày; lỗi nhà sản xuất / vận chuyển / cận hạn / soạn sai; loại trừ khuyến mãi đặc biệt, quà, tem, đã dùng… | **Một** hoạt động xét điều kiện đổi trả + bảng quyết định; cổng X3 = Đạt / Từ chối |
 | Vận chuyển chiều ngược | Nhãn gửi, đơn vị vận chuyển | Tự mang hoặc tự gửi + báo mã | Khách mang/gửi hàng |
-| Kiểm tra | Tem, lô, còn bán được không | “Nguyên hộp, tem, chưa dùng”; lỗi nhà sản xuất / vận chuyển | Tại cửa hàng thường **gộp trong thẩm định**; gửi bưu điện: hoạt động nhận rồi đối chiếu |
+| Kiểm tra | Tem, lô, còn bán được không | “Nguyên hộp, tem, chưa dùng”; lỗi nhà sản xuất / vận chuyển | Tại cửa hàng thường **gộp trong xét điều kiện đổi trả**; gửi bưu điện: hoạt động nhận rồi đối chiếu |
 | Xử lý hàng trả | Bán lại hoặc hủy (hàng đã mở thường không bán lại) | Không công bố chi tiết | Nên có trên sơ đồ sau khi chấp nhận |
-| Kết toán | Ưu tiên đổi hơn hoàn thuần | Đổi mới; trả không phí nếu lỗi nhà sản xuất; hoàn theo tiền mặt / chuyển khoản / cổng thanh toán / phiếu quà | Cổng đổi/trả và hình thức hoàn |
+| Kết toán | Ưu tiên đổi hơn hoàn thuần | Đổi mới; trả không phí nếu lỗi nhà sản xuất; hoàn theo tiền mặt / CK / VNpay (hoặc chuyển sang đơn sau) theo trang chính sách | Cổng đổi/trả; một activity hoàn |
 
 **Đặc thù mỹ phẩm:** hàng đã mở hoặc mất tem thường **không** đưa lại kệ bán vì vệ sinh. Chính sách Hasaki phản ánh qua điều kiện “chưa sử dụng / không bóc tem” với trường hợp đổi ý; trường hợp lỗi nhà sản xuất vẫn được đổi/trả.
 
 ## II.4. Danh mục quy tắc nghiệp vụ (*business rules*)
 
-Tiêu chí trong bảng 30 ngày (QĐ-B4-01 … 06) gắn **hoạt động thẩm định** và bảng quyết định §II.5 — không mỗi tiêu chí một cổng XOR. Cột “Cổng / chỗ trên sơ đồ” chỉ ghi khi luồng thật sự rẽ nhánh.
+Tiêu chí trong bảng 30 ngày (QĐ-B4-01 … 06) gắn **hoạt động xét điều kiện đổi trả** và bảng quyết định §II.5 — không mỗi tiêu chí một cổng XOR. Cột “Cổng / chỗ trên sơ đồ” chỉ ghi khi luồng thật sự rẽ nhánh.
 
 | Mã | Quy tắc | Nguồn | Cổng / chỗ trên sơ đồ |
 |----|---------|-------|------------------------|
-| QĐ-B4-01 | Cửa sổ 30 ngày từ mua hoặc nhận hàng (từ 01/06/2024) | Công bố | Trong hoạt động thẩm định (§II.5) |
-| QĐ-B4-02 | Phải mua từ Hasaki | Công bố | Trong hoạt động thẩm định (§II.5) |
-| QĐ-B4-03 | Loại trừ: quà tặng, khuyến mãi đặc biệt, quá hạn, bóc tem, đã dùng, hỏng bao bì do khách | Công bố | Trong hoạt động thẩm định (§II.5) |
-| QĐ-B4-04 | Lỗi người dùng → không hỗ trợ | Công bố | Trong hoạt động thẩm định (§II.5) |
-| QĐ-B4-05 | Lỗi nhà sản xuất / vận chuyển / cận–hết hạn / soạn sai → đổi mới hoặc trả không phí (trong hạn) | Công bố | Thẩm định đạt → X5 Đổi hoặc Trả |
-| QĐ-B4-06 | Không lỗi (đổi ý) trong hạn + đủ hình thức → đổi mới | Công bố | Thẩm định đạt → X5 Đổi |
-| QĐ-B4-07 | Đổi sản phẩm chính → mang quà tặng kèm | Công bố | X2 hồ sơ đủ / bổ sung |
+| QĐ-B4-01 | Cửa sổ 30 ngày từ mua hoặc nhận hàng (từ 01/06/2024) | Công bố | Trong hoạt động xét điều kiện đổi trả (§II.5) |
+| QĐ-B4-02 | Phải mua từ Hasaki | Công bố | Trong hoạt động xét điều kiện đổi trả (§II.5) |
+| QĐ-B4-03 | Loại trừ: quà tặng, khuyến mãi đặc biệt, quá hạn, bóc tem, đã dùng, hỏng bao bì do khách | Công bố | Trong hoạt động xét điều kiện đổi trả (§II.5) |
+| QĐ-B4-04 | Lỗi người dùng → không hỗ trợ | Công bố | Trong hoạt động xét điều kiện đổi trả (§II.5) |
+| QĐ-B4-05 | Lỗi nhà sản xuất / vận chuyển / cận–hết hạn / soạn sai → đổi mới hoặc trả không phí (trong hạn) | Công bố | Xét điều kiện đổi trả đạt → X5 Đổi hoặc Trả |
+| QĐ-B4-06 | Không lỗi (đổi ý) trong hạn + đủ hình thức → đổi mới | Công bố | Xét điều kiện đổi trả đạt → X5 Đổi |
+| QĐ-B4-07 | Đổi sản phẩm chính → mang quà tặng kèm | Công bố | Trong nhận hàng / xét điều kiện đổi trả (không phải cổng “hồ sơ”) |
 | QĐ-B4-08 | Thành phố Hồ Chí Minh khuyến khích cửa hàng; tỉnh gửi bưu điện | Công bố | X1 |
-| QĐ-B4-09 | Hoàn tiền mặt nếu đã trả tiền mặt tại cửa hàng | Công bố | X7 |
-| QĐ-B4-10 | Chuyển khoản 3–5 ngày làm việc nếu trả bằng thẻ ngân hàng | Công bố | X7 |
-| QĐ-B4-11 | Cổng thanh toán: 3–8 ngày thẻ nội địa; 15–90 ngày thẻ quốc tế; hoặc trừ đơn sau | Công bố | X7 |
-| QĐ-B4-12 | Phiếu quà → chuyển mã sang đơn sau | Công bố | X7 |
-| QĐ-B4-13 | Trả tại nhà: hoàn sau khi Hasaki nhận được hàng | Công bố | Thứ tự: nhận hàng trước hoạt động hoàn tiền |
-| QĐ-B4-14 | Đổi hàng cần còn tồn sản phẩm thay thế | Suy luận ngành | X6 |
-| QĐ-B4-15 | Tranh chấp / ngoại lệ → quản lý duyệt | Suy luận vận hành | X4 |
+| QĐ-B4-09 | Hoàn tiền mặt nếu đã trả tiền mặt tại cửa hàng | Công bố | Activity hoàn theo hình thức đã TT |
+| QĐ-B4-10 | Chuyển khoản 3–5 ngày làm việc nếu trả bằng thẻ ngân hàng | Công bố | Activity hoàn (chú thích thời hạn) |
+| QĐ-B4-11 | VNpay: 3–8 ngày thẻ nội địa; 15–90 ngày thẻ Visa; hoặc chuyển thanh toán cho đơn hàng tiếp theo | Công bố | Activity hoàn (chú thích thời hạn) |
+| QĐ-B4-12 | *(Không dùng)* Trang đổi trả không mô tả hoàn bằng mã phiếu quà | — | Không vẽ |
+| QĐ-B4-13 | Trả tại nhà: chuyển khoản sau khi Hasaki nhận được hàng; online → hoàn vào tài khoản đã thanh toán | Công bố | Thứ tự: nhận hàng trước hoạt động hoàn tiền |
+| QĐ-B4-14 | Đổi hàng: kiểm tồn; hết hàng → thông báo → khách chọn SP khác hoặc trả–hoàn (**không** khẳng định Hasaki bắt buộc hoàn) | Suy luận ngành | X4–X5 (`return-to-resolve` / `core_bpmn` phần B) |
+| QĐ-B4-15 | Tranh chấp / ngoại lệ → quản lý duyệt | Suy luận vận hành — **chưa công bố** | Không vẽ cổng; ghi phỏng vấn / chú thích |
 | QĐ-B4-16 | Sau nhận: bán lại nếu còn điều kiện; không thì loại | Suy luận ngành mỹ phẩm | Hoạt động xử lý hàng trả |
 
-## II.5. Bảng quyết định thẩm định (*decision table* — rút gọn)
+## II.5. Bảng quyết định xét điều kiện đổi trả (*decision table* — rút gọn)
 
-Dùng **trong** hoạt động *Thẩm định theo chính sách đổi trả* trên sơ đồ. Kết quả bảng → cổng X3 (Đạt / Từ chối), không vẽ mỗi cột thành một cổng.
+Dùng **trong** hoạt động *Xét điều kiện đổi trả theo chính sách 30 ngày* trên sơ đồ. Kết quả bảng → cổng sau bước này (không hỗ trợ / chỉ đổi / đổi hoặc trả), không vẽ mỗi cột thành một cổng.
 
 | Trong 30 ngày? | Từ Hasaki? | Loại trừ? | Ai gây lỗi? | Hình thức / lỗi nhà sản xuất–vận chuyển? | Kết quả |
 |----------------|------------|-----------|-------------|------------------------------------------|---------|
@@ -240,7 +240,7 @@ Dùng **trong** hoạt động *Thẩm định theo chính sách đổi trả* t
 
 | Nhóm việc | Nhân viên / chăm sóc khách hàng | Quản lý | Kho | Kế toán | Khách |
 |-----------|----------------------------------|---------|-----|---------|-------|
-| Tiếp nhận và thẩm định | Chịu trách nhiệm chính / thực hiện | Được hỏi | — | — | Thực hiện |
+| Tiếp nhận và xét điều kiện đổi trả | Chịu trách nhiệm chính / thực hiện | Được hỏi | — | — | Thực hiện |
 | Duyệt ngoại lệ | Thực hiện | Chịu trách nhiệm chính | — | — | Được hỏi |
 | Nhận / xuất hàng đổi | Được hỏi | — | Chịu trách nhiệm chính | — | Thực hiện (mang/gửi) |
 | Hoàn tiền | Được hỏi | Được thông báo | Được thông báo | Chịu trách nhiệm chính | Được thông báo |
@@ -249,7 +249,7 @@ Dùng **trong** hoạt động *Thẩm định theo chính sách đổi trả* t
 ## II.7. Trạng thái yêu cầu đổi trả
 
 ```text
-Đã gửi yêu cầu → Đang thẩm định → (Từ chối | Được chấp nhận)
+Đã gửi yêu cầu → Đang xét điều kiện đổi trả → (Từ chối | Được chấp nhận)
 Được chấp nhận → Chờ khách gửi/mang hàng → Đã nhận → Đã kiểm tra
   → (Đổi hàng xong | Hoàn tiền xong)
 Đã kiểm tra → Đã xử lý hàng trả (song song / ghi nhận)
@@ -261,7 +261,7 @@ Sự kiện kết thúc trên sơ đồ: **Từ chối** | **Đổi hàng xong**
 
 | Mã | Tình huống | Xử lý |
 |----|------------|-------|
-| N1 | Thiếu chứng từ / thiếu quà kèm | Yêu cầu bổ sung rồi thẩm định lại |
+| N1 | Thiếu chứng từ / thiếu quà kèm | Yêu cầu bổ sung rồi xét điều kiện đổi trả lại |
 | N2 | Không còn hàng để đổi | Đề xuất trả tiền hoặc chờ hàng |
 | N3 | Khách tranh chấp khi bị từ chối | Chuyển quản lý |
 | N4 | Hoàn tiền cổng chậm / lỗi | Thử lại + thông báo thời hạn |
@@ -280,11 +280,11 @@ Sự kiện kết thúc trên sơ đồ: **Từ chối** | **Đổi hàng xong**
 
 ## II.10. Quyết định khi vẽ sơ đồ
 
-1. Thẩm định điều kiện **trước** khi tốn công vận chuyển chiều ngược khi có thể.  
-2. **Một** hoạt động thẩm định + bảng §II.5; cổng sau thẩm định chỉ hỏi Đạt / Từ chối — không xẻ 30 ngày / tem / loại trừ thành chuỗi XOR.  
+1. Xét điều kiện đổi trả **trước** khi tốn công vận chuyển chiều ngược khi có thể.  
+2. **Một** hoạt động xét điều kiện đổi trả + bảng §II.5; cổng sau xét điều kiện đổi trả chỉ hỏi Đạt / Từ chối — không xẻ 30 ngày / tem / loại trừ thành chuỗi XOR.  
 3. Tách nhánh **Đổi** và **Trả** sau khi đạt điều kiện.  
 4. Có bước xử lý hàng trả sau khi nhận — ghi chú suy luận ngành.  
-5. Cổng hình thức hoàn bám **cách khách đã thanh toán**, không gộp một việc “hoàn tiền” chung.  
+5. Hình thức hoàn bám trang Hasaki (tiền mặt / CK / VNpay); **một** activity hoàn, không xẻ cổng theo kênh và không thêm mã phiếu quà.  
 6. Có cổng kênh tiếp nhận (cửa hàng / gửi tỉnh) và vòng bổ sung hồ sơ nếu thiếu chứng từ / quà kèm.  
 7. Ưu tiên đúng nghiệp vụ hơn số cổng; rubik >7 không phải lý do để tách checklist.
 
