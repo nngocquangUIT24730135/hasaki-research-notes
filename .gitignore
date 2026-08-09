@@ -1,14 +1,60 @@
-# OS / editor
+# OS
 .DS_Store
 Thumbs.db
 Desktop.ini
-*.swp
-*~
+ehthumbs.db
+
+# Editors / IDEs
 .idea/
 .vscode/
 *.code-workspace
+*.swp
+*.swo
+*~
+
+# Secrets / local env
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Dependencies
+node_modules/
+.agents/skills/**/node_modules/
+
+# Build / cache / coverage
+dist/
+build/
+out/
+coverage/
+.cache/
+.parcel-cache/
+.turbo/
+*.tsbuildinfo
+.nyc_output/
+
+# Python (local tooling / scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+.env/
+*.egg-info/
 
 # Local / temp
 *.tmp
 *.bak
+*.orig
 ~$*
+*.local
+
+# Optional local override (keep example tracked if added later)
+.gitignore.local

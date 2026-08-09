@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "bpmn": {
+      "source": "architawr/claude-bpmn-skill",
+      "sourceType": "github",
+      "skillPath": "skills/bpmn/SKILL.md",
+      "computedHash": "1158f6f0e09e6a347d4bec77dec6f262f3c29600e9f355274ba3e77e0b0c0123"
+    },
+    "camunda-bpmn": {
+      "source": "camunda/skills",
+      "sourceType": "github",
+      "skillPath": "skills/camunda-bpmn/SKILL.md",
+      "computedHash": "e6568b8cb244060a167915c0cb454acbb579b904bdfbcdcfcbe9989d168eefd8"
+    }
+  }
+}
