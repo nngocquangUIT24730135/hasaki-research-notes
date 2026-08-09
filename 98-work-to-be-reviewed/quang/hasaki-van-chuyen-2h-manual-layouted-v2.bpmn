@@ -1,0 +1,809 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_HasakiVanChuyen2H" targetNamespace="http://hasaki.vn/bpmn/van-chuyen-2h">
+  <bpmn:collaboration id="Collab_VanChuyen2H">
+    <bpmn:participant id="Pool_KhachHang" name="Khách hàng" processRef="Process_KhachHang" />
+    <bpmn:participant id="Pool_Hasaki" name="Hasaki — Quy trình giao hàng 2H" processRef="Process_Hasaki" />
+    <bpmn:messageFlow id="Msg_DatHang" name="Đơn hàng 2H" sourceRef="Task_KH_DatHang" targetRef="Start_DonHang2H" />
+    <bpmn:messageFlow id="Msg_GoiXacNhan" name="Gọi xác nhận địa chỉ &#38; giờ giao" sourceRef="Task_GoiXacNhan" targetRef="Event_KH_NhanCuocGoi" />
+    <bpmn:messageFlow id="Msg_BaoHetHang" name="Thông báo hết hàng / hủy" sourceRef="Task_XuLyHetHang" targetRef="Event_KH_NhanThongBao" />
+    <bpmn:messageFlow id="Msg_GiaoHang" name="Giao hàng" sourceRef="Task_GiaoHang" targetRef="Event_KH_NhanHang" />
+    <bpmn:messageFlow id="Msg_LienLacGiao" name="Liên hệ giao hàng" sourceRef="Task_GiaoHang" targetRef="Event_KH_ShipperGoi" />
+    <bpmn:messageFlow id="Msg_HenGiaoLai" name="Hẹn giao lại" sourceRef="Task_LienHeHenGiaoLai" targetRef="Event_KH_HenGiaoLai" />
+    <bpmn:messageFlow id="Msg_HuyHoanTien" name="Thông báo hủy đơn &#38; hoàn tiền" sourceRef="Task_HuyVaHoanTien" targetRef="Event_KH_HuyHoanTien" />
+    <bpmn:messageFlow id="Msg_Phieu100K" name="Cộng phiếu 100K vào tài khoản" sourceRef="Task_CapPhieu100K" targetRef="Task_KH_NhanPhieu" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_KhachHang" name="Khách hàng" isExecutable="false">
+    <bpmn:startEvent id="Start_KH" name="Muốn nhận hàng nhanh trong ngày" />
+    <bpmn:task id="Task_KH_DatHang" name="Đặt đơn hàng 2H trên App" />
+    <bpmn:eventBasedGateway id="Gw_KH_ChoPhanHoi" name="Chờ phản hồi từ Hasaki" />
+    <bpmn:intermediateCatchEvent id="Event_KH_NhanCuocGoi" name="Nhận cuộc gọi xác nhận địa chỉ &#38; giờ giao">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="Event_KH_NhanThongBao" name="Nhận thông báo hết hàng / hủy">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:task id="Task_KH_TraLoiCuocGoi" name="Xác nhận địa chỉ/giờ hoặc hẹn lại muộn hơn" />
+    <bpmn:eventBasedGateway id="Gw_KH_ChoGiao" name="Chờ giao hàng" />
+    <bpmn:intermediateCatchEvent id="Event_KH_ShipperGoi" name="Shipper liên hệ (không nhận được lần này)">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:eventBasedGateway id="Gw_KH_ChoSauThatBai" name="Chờ xử lý sau giao thất bại" />
+    <bpmn:intermediateCatchEvent id="Event_KH_HenGiaoLai" name="Nhận lịch hẹn giao lại">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="Event_KH_HuyHoanTien" name="Nhận thông báo hủy &#38; hoàn tiền">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="Event_KH_NhanHang" name="Nhận hàng thành công">
+      <bpmn:messageEventDefinition />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="Gw_KH_CoPhieu" name="Tài khoản được cộng phiếu 100K?" default="Flow_KH_KhongPhieu" />
+    <bpmn:task id="Task_KH_NhanPhieu" name="Nhận phiếu 100K trên tài khoản App/Website" />
+    <bpmn:endEvent id="End_KH_ThanhCong" name="Hoàn tất đơn 2H" />
+    <bpmn:endEvent id="End_KH_Huy" name="Đơn bị hủy" />
+    <bpmn:endEvent id="End_KH_HuyHoanTien" name="Đơn hủy — đã được hoàn tiền" />
+    <bpmn:sequenceFlow id="Flow_KH_1" sourceRef="Start_KH" targetRef="Task_KH_DatHang" />
+    <bpmn:sequenceFlow id="Flow_KH_2" sourceRef="Task_KH_DatHang" targetRef="Gw_KH_ChoPhanHoi" />
+    <bpmn:sequenceFlow id="Flow_KH_3" sourceRef="Gw_KH_ChoPhanHoi" targetRef="Event_KH_NhanCuocGoi" />
+    <bpmn:sequenceFlow id="Flow_KH_4" sourceRef="Gw_KH_ChoPhanHoi" targetRef="Event_KH_NhanThongBao" />
+    <bpmn:sequenceFlow id="Flow_KH_5" sourceRef="Event_KH_NhanThongBao" targetRef="End_KH_Huy" />
+    <bpmn:sequenceFlow id="Flow_KH_6" sourceRef="Event_KH_NhanCuocGoi" targetRef="Task_KH_TraLoiCuocGoi" />
+    <bpmn:sequenceFlow id="Flow_KH_7" sourceRef="Task_KH_TraLoiCuocGoi" targetRef="Gw_KH_ChoGiao" />
+    <bpmn:sequenceFlow id="Flow_KH_8" sourceRef="Gw_KH_ChoGiao" targetRef="Event_KH_ShipperGoi" />
+    <bpmn:sequenceFlow id="Flow_KH_9" sourceRef="Gw_KH_ChoGiao" targetRef="Event_KH_NhanHang" />
+    <bpmn:sequenceFlow id="Flow_KH_10" sourceRef="Event_KH_ShipperGoi" targetRef="Gw_KH_ChoSauThatBai" />
+    <bpmn:sequenceFlow id="Flow_KH_11" sourceRef="Gw_KH_ChoSauThatBai" targetRef="Event_KH_HenGiaoLai" />
+    <bpmn:sequenceFlow id="Flow_KH_12" sourceRef="Gw_KH_ChoSauThatBai" targetRef="Event_KH_HuyHoanTien" />
+    <bpmn:sequenceFlow id="Flow_KH_13" sourceRef="Event_KH_HenGiaoLai" targetRef="Gw_KH_ChoGiao" />
+    <bpmn:sequenceFlow id="Flow_KH_14" sourceRef="Event_KH_HuyHoanTien" targetRef="End_KH_HuyHoanTien" />
+    <bpmn:sequenceFlow id="Flow_KH_15" sourceRef="Event_KH_NhanHang" targetRef="Gw_KH_CoPhieu" />
+    <bpmn:sequenceFlow id="Flow_KH_CoPhieu" name="có" sourceRef="Gw_KH_CoPhieu" targetRef="Task_KH_NhanPhieu">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">duocPhieu100K == true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_KH_KhongPhieu" name="không" sourceRef="Gw_KH_CoPhieu" targetRef="End_KH_ThanhCong" />
+    <bpmn:sequenceFlow id="Flow_KH_16" sourceRef="Task_KH_NhanPhieu" targetRef="End_KH_ThanhCong" />
+  </bpmn:process>
+  <bpmn:process id="Process_Hasaki" name="Hasaki giao hàng 2H" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_Hasaki">
+      <bpmn:lane id="Lane_HeThong" name="Hệ thống">
+        <bpmn:flowNodeRef>Start_DonHang2H</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PhanCongCuaHang</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_LayETA</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Join_SauXacNhanLich</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Join_TruocGiao</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gw_DungHan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gw_DuDieuKienDenBu</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CapPhieu100K</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_HuyVaHoanTien</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_GiaoDungHan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_GiaoTreDaDenBu</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_GiaoTreMienTru</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_HuyHetHang</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End_HuyHoanTien</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_NVCuaHang" name="Nhân viên cửa hàng / kho gần nhất">
+        <bpmn:flowNodeRef>Task_CheckTonThucTe</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gw_DuTon</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_XuLyHetHang</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_GoiXacNhan</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gw_KetQuaXacNhanLich</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_GhiNhanHenLai</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_GhiNhanChuaXacNhanLich</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SoanDongGoi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_BanGiaoShipper</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_HoanHangVeCH</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_LienHeHenGiaoLai</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gw_GiaoLaiHayHuy</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Shipper" name="Shipper">
+        <bpmn:flowNodeRef>Task_GiaoHang</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gw_KetQuaGiao</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_DonHang2H" name="Đơn hàng 2H được đặt">
+      <bpmn:messageEventDefinition />
+    </bpmn:startEvent>
+    <bpmn:task id="Task_PhanCongCuaHang" name="Phân công cửa hàng / kho gần nhất" />
+    <bpmn:task id="Task_LayETA" name="Gắn ETA đã chốt theo giờ đặt" />
+    <bpmn:task id="Task_CheckTonThucTe" name="Kiểm tra tồn kho thực tế tại cửa hàng" />
+    <bpmn:exclusiveGateway id="Gw_DuTon" name="Đủ tồn thực tế?" default="Flow_HetHang" />
+    <bpmn:task id="Task_XuLyHetHang" name="Thông báo khách &#38; hủy đơn (hết hàng thực tế)" />
+    <bpmn:endEvent id="End_HuyHetHang" name="Hủy đơn — hết hàng thực tế" />
+    <bpmn:task id="Task_GoiXacNhan" name="Gọi xác nhận địa chỉ và thời gian giao" />
+    <bpmn:exclusiveGateway id="Gw_KetQuaXacNhanLich" name="Kết quả xác nhận lịch giao?" default="Flow_KhongLienLac" />
+    <bpmn:task id="Task_GhiNhanHenLai" name="Ghi nhận khách hẹn lại (miễn trừ voucher)" />
+    <bpmn:task id="Task_GhiNhanChuaXacNhanLich" name="Ghi nhận chưa xác nhận lịch — fulfill theo thông tin đơn" />
+    <bpmn:exclusiveGateway id="Join_SauXacNhanLich" name="" />
+    <bpmn:task id="Task_SoanDongGoi" name="Soạn hàng và đóng gói" />
+    <bpmn:task id="Task_BanGiaoShipper" name="Bàn giao đơn cho shipper" />
+    <bpmn:exclusiveGateway id="Join_TruocGiao" name="" />
+    <bpmn:task id="Task_GiaoHang" name="Giao hàng (gọi khách; ghi log nếu không liên hệ được)" />
+    <bpmn:exclusiveGateway id="Gw_KetQuaGiao" name="Giao hàng thành công?" default="Flow_GiaoThatBai" />
+    <bpmn:task id="Task_HoanHangVeCH" name="Hoàn hàng về cửa hàng / ghi nhận giao thất bại" />
+    <bpmn:task id="Task_LienHeHenGiaoLai" name="Liên hệ khách để hẹn giao lại (trong 3 ngày)" />
+    <bpmn:exclusiveGateway id="Gw_GiaoLaiHayHuy" name="Liên hệ được để giao lại?" default="Flow_HetHanHuy" />
+    <bpmn:task id="Task_HuyVaHoanTien" name="Hủy đơn &#38; hoàn tiền đã thanh toán (trong 30 ngày)" />
+    <bpmn:endEvent id="End_HuyHoanTien" name="Đã hủy đơn và hoàn tiền" />
+    <bpmn:exclusiveGateway id="Gw_DungHan" name="Giao đúng hạn ETA gốc?" default="Flow_Tre" />
+    <bpmn:endEvent id="End_GiaoDungHan" name="Giao thành công đúng hạn" />
+    <bpmn:exclusiveGateway id="Gw_DuDieuKienDenBu" name="Đủ điều kiện phiếu 100K?" default="Flow_MienTru" />
+    <bpmn:task id="Task_CapPhieu100K" name="Cộng phiếu 100K vào tài khoản App/Website" />
+    <bpmn:endEvent id="End_GiaoTreDaDenBu" name="Giao trễ — đã cộng phiếu vào tài khoản" />
+    <bpmn:endEvent id="End_GiaoTreMienTru" name="Giao trễ — miễn trừ đền bù" />
+    <bpmn:sequenceFlow id="Flow_H_1" sourceRef="Start_DonHang2H" targetRef="Task_PhanCongCuaHang" />
+    <bpmn:sequenceFlow id="Flow_H_2" sourceRef="Task_PhanCongCuaHang" targetRef="Task_LayETA" />
+    <bpmn:sequenceFlow id="Flow_H_3" sourceRef="Task_LayETA" targetRef="Task_CheckTonThucTe" />
+    <bpmn:sequenceFlow id="Flow_H_4" sourceRef="Task_CheckTonThucTe" targetRef="Gw_DuTon" />
+    <bpmn:sequenceFlow id="Flow_DuTon" name="đủ" sourceRef="Gw_DuTon" targetRef="Task_GoiXacNhan">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">duTonThucTe == true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_HetHang" name="không đủ" sourceRef="Gw_DuTon" targetRef="Task_XuLyHetHang" />
+    <bpmn:sequenceFlow id="Flow_H_5" sourceRef="Task_XuLyHetHang" targetRef="End_HuyHetHang" />
+    <bpmn:sequenceFlow id="Flow_H_6" sourceRef="Task_GoiXacNhan" targetRef="Gw_KetQuaXacNhanLich" />
+    <bpmn:sequenceFlow id="Flow_LichOK" name="xác nhận địa chỉ &#38; giữ giờ giao" sourceRef="Gw_KetQuaXacNhanLich" targetRef="Join_SauXacNhanLich">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">giuLichGiaoGoc == true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_HenLai" name="khách hẹn lại muộn hơn" sourceRef="Gw_KetQuaXacNhanLich" targetRef="Task_GhiNhanHenLai">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">khachHenLaiMuonHon == true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_KhongLienLac" name="không liên lạc được" sourceRef="Gw_KetQuaXacNhanLich" targetRef="Task_GhiNhanChuaXacNhanLich" />
+    <bpmn:sequenceFlow id="Flow_H_6b" sourceRef="Task_GhiNhanHenLai" targetRef="Join_SauXacNhanLich" />
+    <bpmn:sequenceFlow id="Flow_H_6c" sourceRef="Task_GhiNhanChuaXacNhanLich" targetRef="Join_SauXacNhanLich" />
+    <bpmn:sequenceFlow id="Flow_H_7" sourceRef="Join_SauXacNhanLich" targetRef="Task_SoanDongGoi" />
+    <bpmn:sequenceFlow id="Flow_H_8" sourceRef="Task_SoanDongGoi" targetRef="Task_BanGiaoShipper" />
+    <bpmn:sequenceFlow id="Flow_H_9" sourceRef="Task_BanGiaoShipper" targetRef="Join_TruocGiao" />
+    <bpmn:sequenceFlow id="Flow_H_10" sourceRef="Join_TruocGiao" targetRef="Task_GiaoHang" />
+    <bpmn:sequenceFlow id="Flow_H_11" sourceRef="Task_GiaoHang" targetRef="Gw_KetQuaGiao" />
+    <bpmn:sequenceFlow id="Flow_GiaoOK" name="thành công" sourceRef="Gw_KetQuaGiao" targetRef="Gw_DungHan">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">trangThaiGiao == "Giao hang thanh cong"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_GiaoThatBai" name="không liên hệ được / giao thất bại" sourceRef="Gw_KetQuaGiao" targetRef="Task_HoanHangVeCH" />
+    <bpmn:sequenceFlow id="Flow_H_12" sourceRef="Task_HoanHangVeCH" targetRef="Task_LienHeHenGiaoLai" />
+    <bpmn:sequenceFlow id="Flow_H_13" sourceRef="Task_LienHeHenGiaoLai" targetRef="Gw_GiaoLaiHayHuy" />
+    <bpmn:sequenceFlow id="Flow_GiaoLai" name="hẹn được — giao lại" sourceRef="Gw_GiaoLaiHayHuy" targetRef="Join_TruocGiao">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">henGiaoLaiThanhCong == true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_HetHanHuy" name="hết 3 ngày vẫn không liên lạc được" sourceRef="Gw_GiaoLaiHayHuy" targetRef="Task_HuyVaHoanTien" />
+    <bpmn:sequenceFlow id="Flow_H_14" sourceRef="Task_HuyVaHoanTien" targetRef="End_HuyHoanTien" />
+    <bpmn:sequenceFlow id="Flow_DungHan" name="đúng hạn" sourceRef="Gw_DungHan" targetRef="End_GiaoDungHan">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">giaoDungHan == true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Tre" name="trễ hơn ETA gốc" sourceRef="Gw_DungHan" targetRef="Gw_DuDieuKienDenBu" />
+    <bpmn:sequenceFlow id="Flow_DenBuYes" name="đủ điều kiện" sourceRef="Gw_DuDieuKienDenBu" targetRef="Task_CapPhieu100K">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">nowFreeMienPhi == true &amp;&amp; khachHenLaiMuonHon == false &amp;&amp; daGiaoLaiSauKhongLienHe == false &amp;&amp; khongBatKhaKhang == true &amp;&amp; khongLoiNguoiNhan == true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_MienTru" name="miễn trừ" sourceRef="Gw_DuDieuKienDenBu" targetRef="End_GiaoTreMienTru" />
+    <bpmn:sequenceFlow id="Flow_H_15" sourceRef="Task_CapPhieu100K" targetRef="End_GiaoTreDaDenBu" />
+    <bpmn:textAnnotation id="Note_Trigger">
+      <bpmn:text>Trigger: đơn đã được App cho phép chọn 2H. Phí &amp; ETA gốc đã chốt lúc đặt.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Assoc_NoteTrigger" sourceRef="Start_DonHang2H" targetRef="Note_Trigger" />
+    <bpmn:textAnnotation id="Note_CuocGoi">
+      <bpmn:text>NV gọi để xác nhận địa chỉ và thời gian giao. Không liên lạc được → ghi nhận + vẫn soạn/giao theo địa chỉ &amp; ETA trên đơn; shipper gọi lại khi giao. Khách hẹn lại muộn hơn → miễn trừ voucher.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Assoc_NoteCuocGoi" sourceRef="Task_GoiXacNhan" targetRef="Note_CuocGoi" />
+    <bpmn:textAnnotation id="Note_GiaoThatBai">
+      <bpmn:text>Theo quy trình giao hàng Hasaki: lần 1 không nhận được → liên hệ hẹn giao lại; không liên lạc được trong 3 ngày → hủy đơn và hoàn tiền đã thanh toán trong 30 ngày. Không liên hệ được khi giao = lỗi phía người nhận → không voucher 100K.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Assoc_NoteGiaoThatBai" sourceRef="Task_LienHeHenGiaoLai" targetRef="Note_GiaoThatBai" />
+    <bpmn:textAnnotation id="Note_Voucher">
+      <bpmn:text>Phiếu 100K cộng vào tài khoản App/Website. Không áp dụng nếu hẹn lại, giao lại sau không liên hệ được, bất khả kháng, hoặc lỗi người nhận.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Assoc_NoteVoucher" sourceRef="Task_CapPhieu100K" targetRef="Note_Voucher" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Collab_VanChuyen2H">
+    <bpmndi:BPMNPlane id="BPMNPlane_Collab_VanChuyen2H" bpmnElement="Collab_VanChuyen2H">
+      <bpmndi:BPMNShape id="BPMNShape_Pool_KhachHang" bpmnElement="Pool_KhachHang" isHorizontal="true">
+        <dc:Bounds x="2138" y="1926" width="1604" height="640" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Pool_Hasaki" bpmnElement="Pool_Hasaki" isHorizontal="true">
+        <dc:Bounds x="310" y="80" width="3432" height="1766" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_Msg_DatHang" bpmnElement="Msg_DatHang">
+        <di:waypoint x="2394" y="1966" />
+        <di:waypoint x="2394" y="1886" />
+        <di:waypoint x="398" y="1886" />
+        <di:waypoint x="398" y="218" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="784" y="1864" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Msg_GoiXacNhan" bpmnElement="Msg_GoiXacNhan">
+        <di:waypoint x="1316" y="1206" />
+        <di:waypoint x="1316" y="1886" />
+        <di:waypoint x="2712" y="1886" />
+        <di:waypoint x="2712" y="1988" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1321" y="1525" width="86" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Msg_BaoHetHang" bpmnElement="Msg_BaoHetHang">
+        <di:waypoint x="1286" y="1046" />
+        <di:waypoint x="1286" y="1066" />
+        <di:waypoint x="1246" y="1066" />
+        <di:waypoint x="1246" y="1886" />
+        <di:waypoint x="2750" y="1886" />
+        <di:waypoint x="2750" y="2148" />
+        <di:waypoint x="2750" y="2166" />
+        <di:waypoint x="2730" y="2166" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1173" y="1455" width="68" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Msg_GiaoHang" bpmnElement="Msg_GiaoHang">
+        <di:waypoint x="2566" y="1766" />
+        <di:waypoint x="2566" y="1886" />
+        <di:waypoint x="3160" y="1886" />
+        <di:waypoint x="3160" y="2308" />
+        <di:waypoint x="3160" y="2326" />
+        <di:waypoint x="3180" y="2326" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3089" y="2090" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Msg_LienLacGiao" bpmnElement="Msg_LienLacGiao">
+        <di:waypoint x="2566" y="1766" />
+        <di:waypoint x="2566" y="1886" />
+        <di:waypoint x="3198" y="1886" />
+        <di:waypoint x="3198" y="1988" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3203" y="1943" width="84" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Msg_HenGiaoLai" bpmnElement="Msg_HenGiaoLai">
+        <di:waypoint x="3116" y="1366" />
+        <di:waypoint x="3116" y="1886" />
+        <di:waypoint x="3516" y="1886" />
+        <di:waypoint x="3516" y="1988" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3215" y="1864" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Msg_HuyHoanTien" bpmnElement="Msg_HuyHoanTien">
+        <di:waypoint x="3516" y="530" />
+        <di:waypoint x="3516" y="550" />
+        <di:waypoint x="3554" y="550" />
+        <di:waypoint x="3554" y="2148" />
+        <di:waypoint x="3554" y="2166" />
+        <di:waypoint x="3534" y="2166" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3559" y="1328" width="66" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Msg_Phieu100K" bpmnElement="Msg_Phieu100K">
+        <di:waypoint x="3316" y="690" />
+        <di:waypoint x="3316" y="710" />
+        <di:waypoint x="3278" y="710" />
+        <di:waypoint x="3278" y="1371" />
+        <di:waypoint x="3316" y="1371" />
+        <di:waypoint x="3316" y="1886" />
+        <di:waypoint x="3586" y="1886" />
+        <di:waypoint x="3586" y="2426" />
+        <di:waypoint x="3546" y="2426" />
+        <di:waypoint x="3546" y="2446" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3321" y="1615" width="84" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_Start_KH" bpmnElement="Start_KH">
+        <dc:Bounds x="2208" y="1988" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2191" y="2029" width="71" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_KH_DatHang" bpmnElement="Task_KH_DatHang">
+        <dc:Bounds x="2344" y="1966" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Gw_KH_ChoPhanHoi" bpmnElement="Gw_KH_ChoPhanHoi" isMarkerVisible="true">
+        <dc:Bounds x="2544" y="1981" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2527" y="1948" width="84" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Event_KH_NhanCuocGoi" bpmnElement="Event_KH_NhanCuocGoi">
+        <dc:Bounds x="2694" y="1988" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2649" y="2029" width="86" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Event_KH_NhanThongBao" bpmnElement="Event_KH_NhanThongBao">
+        <dc:Bounds x="2694" y="2148" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2671" y="2189" width="82" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_KH_TraLoiCuocGoi" bpmnElement="Task_KH_TraLoiCuocGoi">
+        <dc:Bounds x="2830" y="1966" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Gw_KH_ChoGiao" bpmnElement="Gw_KH_ChoGiao" isMarkerVisible="true">
+        <dc:Bounds x="3030" y="1981" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3026" y="1948" width="59" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Event_KH_ShipperGoi" bpmnElement="Event_KH_ShipperGoi">
+        <dc:Bounds x="3180" y="1988" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3174" y="2069" width="89" height="56" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Gw_KH_ChoSauThatBai" bpmnElement="Gw_KH_ChoSauThatBai" isMarkerVisible="true">
+        <dc:Bounds x="3316" y="1981" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3297" y="1948" width="89" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Event_KH_HenGiaoLai" bpmnElement="Event_KH_HenGiaoLai">
+        <dc:Bounds x="3498" y="1988" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3455" y="2069" width="82" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Event_KH_HuyHoanTien" bpmnElement="Event_KH_HuyHoanTien">
+        <dc:Bounds x="3498" y="2148" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3480" y="2189" width="73" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Event_KH_NhanHang" bpmnElement="Event_KH_NhanHang">
+        <dc:Bounds x="3180" y="2308" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3163" y="2349" width="71" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Gw_KH_CoPhieu" bpmnElement="Gw_KH_CoPhieu" isMarkerVisible="true">
+        <dc:Bounds x="3316" y="2301" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3301" y="2356" width="80" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_KH_NhanPhieu" bpmnElement="Task_KH_NhanPhieu">
+        <dc:Bounds x="3466" y="2446" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_End_KH_ThanhCong" bpmnElement="End_KH_ThanhCong">
+        <dc:Bounds x="3666" y="2308" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3642" y="2275" width="84" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_End_KH_Huy" bpmnElement="End_KH_Huy">
+        <dc:Bounds x="2862" y="2148" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2846" y="2189" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_End_KH_HuyHoanTien" bpmnElement="End_KH_HuyHoanTien">
+        <dc:Bounds x="3666" y="2148" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3645" y="2189" width="79" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_1" bpmnElement="Flow_KH_1">
+        <di:waypoint x="2244" y="2006" />
+        <di:waypoint x="2344" y="2006" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_2" bpmnElement="Flow_KH_2">
+        <di:waypoint x="2444" y="2006" />
+        <di:waypoint x="2544" y="2006" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_3" bpmnElement="Flow_KH_3">
+        <di:waypoint x="2594" y="2006" />
+        <di:waypoint x="2694" y="2006" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_6" bpmnElement="Flow_KH_6">
+        <di:waypoint x="2730" y="2006" />
+        <di:waypoint x="2830" y="2006" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_7" bpmnElement="Flow_KH_7">
+        <di:waypoint x="2930" y="2006" />
+        <di:waypoint x="3030" y="2006" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_8" bpmnElement="Flow_KH_8">
+        <di:waypoint x="3080" y="2006" />
+        <di:waypoint x="3180" y="2006" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_10" bpmnElement="Flow_KH_10">
+        <di:waypoint x="3216" y="2006" />
+        <di:waypoint x="3316" y="2006" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_11" bpmnElement="Flow_KH_11">
+        <di:waypoint x="3366" y="2006" />
+        <di:waypoint x="3498" y="2006" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_13" bpmnElement="Flow_KH_13">
+        <di:waypoint x="3516" y="2024" />
+        <di:waypoint x="3516" y="2051" />
+        <di:waypoint x="3055" y="2051" />
+        <di:waypoint x="3055" y="2031" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_KhongPhieu" bpmnElement="Flow_KH_KhongPhieu">
+        <di:waypoint x="3366" y="2326" />
+        <di:waypoint x="3666" y="2326" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3592" y="2304" width="39" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_4" bpmnElement="Flow_KH_4">
+        <di:waypoint x="2569" y="2031" />
+        <di:waypoint x="2569" y="2128" />
+        <di:waypoint x="2712" y="2128" />
+        <di:waypoint x="2712" y="2148" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_5" bpmnElement="Flow_KH_5">
+        <di:waypoint x="2730" y="2166" />
+        <di:waypoint x="2862" y="2166" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_9" bpmnElement="Flow_KH_9">
+        <di:waypoint x="3055" y="2031" />
+        <di:waypoint x="3055" y="2326" />
+        <di:waypoint x="3180" y="2326" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_12" bpmnElement="Flow_KH_12">
+        <di:waypoint x="3341" y="2031" />
+        <di:waypoint x="3341" y="2166" />
+        <di:waypoint x="3498" y="2166" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_14" bpmnElement="Flow_KH_14">
+        <di:waypoint x="3534" y="2166" />
+        <di:waypoint x="3666" y="2166" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_15" bpmnElement="Flow_KH_15">
+        <di:waypoint x="3216" y="2326" />
+        <di:waypoint x="3316" y="2326" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_CoPhieu" bpmnElement="Flow_KH_CoPhieu">
+        <di:waypoint x="3366" y="2326" />
+        <di:waypoint x="3516" y="2326" />
+        <di:waypoint x="3516" y="2446" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3522" y="2379" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KH_16" bpmnElement="Flow_KH_16">
+        <di:waypoint x="3566" y="2486" />
+        <di:waypoint x="3684" y="2486" />
+        <di:waypoint x="3684" y="2344" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_Lane_HeThong" bpmnElement="Lane_HeThong" isHorizontal="true">
+        <dc:Bounds x="340" y="80" width="3402" height="806" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Lane_NVCuaHang" bpmnElement="Lane_NVCuaHang" isHorizontal="true">
+        <dc:Bounds x="340" y="886" width="3402" height="720" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Lane_Shipper" bpmnElement="Lane_Shipper" isHorizontal="true">
+        <dc:Bounds x="340" y="1606" width="3402" height="240" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Start_DonHang2H" bpmnElement="Start_DonHang2H">
+        <dc:Bounds x="380" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="360" y="149" width="77" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_PhanCongCuaHang" bpmnElement="Task_PhanCongCuaHang">
+        <dc:Bounds x="516" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_LayETA" bpmnElement="Task_LayETA">
+        <dc:Bounds x="716" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_CheckTonThucTe" bpmnElement="Task_CheckTonThucTe">
+        <dc:Bounds x="916" y="966" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Gw_DuTon" bpmnElement="Gw_DuTon" isMarkerVisible="true">
+        <dc:Bounds x="1116" y="981" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1104" y="948" width="75" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_XuLyHetHang" bpmnElement="Task_XuLyHetHang">
+        <dc:Bounds x="1266" y="966" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_End_HuyHetHang" bpmnElement="End_HuyHetHang">
+        <dc:Bounds x="1473" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1447" y="149" width="88" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_GoiXacNhan" bpmnElement="Task_GoiXacNhan">
+        <dc:Bounds x="1266" y="1126" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Gw_KetQuaXacNhanLich" bpmnElement="Gw_KetQuaXacNhanLich" isMarkerVisible="true">
+        <dc:Bounds x="1466" y="1141" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1453" y="1196" width="77" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_GhiNhanHenLai" bpmnElement="Task_GhiNhanHenLai">
+        <dc:Bounds x="1616" y="1446" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Join_SauXacNhanLich" bpmnElement="Join_SauXacNhanLich" isMarkerVisible="true">
+        <dc:Bounds x="1816" y="465" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_GhiNhanChuaXacNhanLich" bpmnElement="Task_GhiNhanChuaXacNhanLich">
+        <dc:Bounds x="1616" y="1286" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_SoanDongGoi" bpmnElement="Task_SoanDongGoi">
+        <dc:Bounds x="1966" y="1286" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_BanGiaoShipper" bpmnElement="Task_BanGiaoShipper">
+        <dc:Bounds x="2166" y="1286" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Join_TruocGiao" bpmnElement="Join_TruocGiao" isMarkerVisible="true">
+        <dc:Bounds x="2366" y="465" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_GiaoHang" bpmnElement="Task_GiaoHang">
+        <dc:Bounds x="2516" y="1686" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Gw_KetQuaGiao" bpmnElement="Gw_KetQuaGiao" isMarkerVisible="true">
+        <dc:Bounds x="2716" y="1701" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2702" y="1756" width="78" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_HoanHangVeCH" bpmnElement="Task_HoanHangVeCH">
+        <dc:Bounds x="2866" y="1286" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_LienHeHenGiaoLai" bpmnElement="Task_LienHeHenGiaoLai">
+        <dc:Bounds x="3066" y="1286" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Gw_GiaoLaiHayHuy" bpmnElement="Gw_GiaoLaiHayHuy" isMarkerVisible="true">
+        <dc:Bounds x="3291" y="1301" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3334" y="1356" width="84" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_HuyVaHoanTien" bpmnElement="Task_HuyVaHoanTien">
+        <dc:Bounds x="3466" y="450" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_End_HuyHoanTien" bpmnElement="End_HuyHoanTien">
+        <dc:Bounds x="3666" y="472" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3641" y="513" width="86" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Gw_DungHan" bpmnElement="Gw_DungHan" isMarkerVisible="true">
+        <dc:Bounds x="2891" y="320" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2872" y="287" width="88" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_End_GiaoDungHan" bpmnElement="End_GiaoDungHan">
+        <dc:Bounds x="3098" y="770" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3072" y="811" width="89" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Gw_DuDieuKienDenBu" bpmnElement="Gw_DuDieuKienDenBu" isMarkerVisible="true">
+        <dc:Bounds x="3091" y="320" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3075" y="287" width="82" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_CapPhieu100K" bpmnElement="Task_CapPhieu100K">
+        <dc:Bounds x="3266" y="610" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_End_GiaoTreDaDenBu" bpmnElement="End_GiaoTreDaDenBu">
+        <dc:Bounds x="3498" y="632" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3452" y="673" width="89" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_End_GiaoTreMienTru" bpmnElement="End_GiaoTreMienTru">
+        <dc:Bounds x="3298" y="327" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3274" y="280" width="85" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Note_GiaoThatBai" bpmnElement="Note_GiaoThatBai">
+        <dc:Bounds x="2966" y="1162" width="300" height="104" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Note_Voucher" bpmnElement="Note_Voucher">
+        <dc:Bounds x="3266" y="374" width="100" height="216" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Note_CuocGoi" bpmnElement="Note_CuocGoi">
+        <dc:Bounds x="1166" y="1058" width="340" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Note_Trigger" bpmnElement="Note_Trigger">
+        <dc:Bounds x="80" y="169" width="220" height="62" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_1" bpmnElement="Flow_H_1">
+        <di:waypoint x="416" y="200" />
+        <di:waypoint x="516" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_2" bpmnElement="Flow_H_2">
+        <di:waypoint x="616" y="200" />
+        <di:waypoint x="716" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_3" bpmnElement="Flow_H_3">
+        <di:waypoint x="816" y="200" />
+        <di:waypoint x="966" y="200" />
+        <di:waypoint x="966" y="966" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_4" bpmnElement="Flow_H_4">
+        <di:waypoint x="1016" y="1006" />
+        <di:waypoint x="1116" y="1006" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_HetHang" bpmnElement="Flow_HetHang">
+        <di:waypoint x="1166" y="1006" />
+        <di:waypoint x="1266" y="1006" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1188" y="1014" width="57" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_5" bpmnElement="Flow_H_5">
+        <di:waypoint x="1366" y="1006" />
+        <di:waypoint x="1491" y="1006" />
+        <di:waypoint x="1491" y="218" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_KhongLienLac" bpmnElement="Flow_KhongLienLac">
+        <di:waypoint x="1516" y="1166" />
+        <di:waypoint x="1666" y="1166" />
+        <di:waypoint x="1666" y="1286" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1671" y="1175" width="71" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_6c" bpmnElement="Flow_H_6c">
+        <di:waypoint x="1716" y="1326" />
+        <di:waypoint x="1841" y="1326" />
+        <di:waypoint x="1841" y="515" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_GiaoThatBai" bpmnElement="Flow_GiaoThatBai">
+        <di:waypoint x="2766" y="1726" />
+        <di:waypoint x="2916" y="1726" />
+        <di:waypoint x="2916" y="1366" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2797" y="1679" width="89" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_12" bpmnElement="Flow_H_12">
+        <di:waypoint x="2966" y="1326" />
+        <di:waypoint x="3066" y="1326" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_13" bpmnElement="Flow_H_13">
+        <di:waypoint x="3166" y="1326" />
+        <di:waypoint x="3291" y="1326" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_HetHanHuy" bpmnElement="Flow_HetHanHuy">
+        <di:waypoint x="3341" y="1326" />
+        <di:waypoint x="3386" y="1326" />
+        <di:waypoint x="3386" y="550" />
+        <di:waypoint x="3486" y="550" />
+        <di:waypoint x="3486" y="530" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3391" y="917" width="89" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_14" bpmnElement="Flow_H_14">
+        <di:waypoint x="3566" y="490" />
+        <di:waypoint x="3666" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_Tre" bpmnElement="Flow_Tre">
+        <di:waypoint x="2941" y="345" />
+        <di:waypoint x="3091" y="345" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2980" y="312" width="81" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_MienTru" bpmnElement="Flow_MienTru">
+        <di:waypoint x="3141" y="345" />
+        <di:waypoint x="3298" y="345" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3190" y="323" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_DuTon" bpmnElement="Flow_DuTon">
+        <di:waypoint x="1141" y="1031" />
+        <di:waypoint x="1141" y="1166" />
+        <di:waypoint x="1266" y="1166" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1117" y="1092" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_6" bpmnElement="Flow_H_6">
+        <di:waypoint x="1366" y="1166" />
+        <di:waypoint x="1466" y="1166" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_LichOK" bpmnElement="Flow_LichOK">
+        <di:waypoint x="1516" y="1166" />
+        <di:waypoint x="1841" y="1166" />
+        <di:waypoint x="1841" y="515" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1711" y="1119" width="86" height="42" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_HenLai" bpmnElement="Flow_HenLai">
+        <di:waypoint x="1516" y="1166" />
+        <di:waypoint x="1666" y="1166" />
+        <di:waypoint x="1666" y="1446" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1671" y="1292" width="89" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_6b" bpmnElement="Flow_H_6b">
+        <di:waypoint x="1716" y="1486" />
+        <di:waypoint x="1841" y="1486" />
+        <di:waypoint x="1841" y="515" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_7" bpmnElement="Flow_H_7">
+        <di:waypoint x="1866" y="490" />
+        <di:waypoint x="2016" y="490" />
+        <di:waypoint x="2016" y="1286" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_8" bpmnElement="Flow_H_8">
+        <di:waypoint x="2066" y="1326" />
+        <di:waypoint x="2166" y="1326" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_9" bpmnElement="Flow_H_9">
+        <di:waypoint x="2266" y="1326" />
+        <di:waypoint x="2391" y="1326" />
+        <di:waypoint x="2391" y="515" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_10" bpmnElement="Flow_H_10">
+        <di:waypoint x="2391" y="515" />
+        <di:waypoint x="2391" y="1726" />
+        <di:waypoint x="2516" y="1726" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_11" bpmnElement="Flow_H_11">
+        <di:waypoint x="2616" y="1726" />
+        <di:waypoint x="2716" y="1726" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_GiaoOK" bpmnElement="Flow_GiaoOK">
+        <di:waypoint x="2741" y="1701" />
+        <di:waypoint x="2741" y="390" />
+        <di:waypoint x="2916" y="390" />
+        <di:waypoint x="2916" y="370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2793" y="368" width="71" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_DungHan" bpmnElement="Flow_DungHan">
+        <di:waypoint x="2941" y="345" />
+        <di:waypoint x="3029" y="345" />
+        <di:waypoint x="3029" y="790" />
+        <di:waypoint x="3078" y="790" />
+        <di:waypoint x="3078" y="788" />
+        <di:waypoint x="3098" y="788" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3005" y="798" width="57" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_DenBuYes" bpmnElement="Flow_DenBuYes">
+        <di:waypoint x="3116" y="370" />
+        <di:waypoint x="3116" y="650" />
+        <di:waypoint x="3266" y="650" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3121" y="503" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_H_15" bpmnElement="Flow_H_15">
+        <di:waypoint x="3366" y="650" />
+        <di:waypoint x="3498" y="650" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_GiaoLai" bpmnElement="Flow_GiaoLai">
+        <di:waypoint x="3316" y="1351" />
+        <di:waypoint x="3316" y="1386" />
+        <di:waypoint x="2391" y="1386" />
+        <di:waypoint x="2391" y="515" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2820" y="1391" width="68" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Assoc_NoteGiaoThatBai" bpmnElement="Assoc_NoteGiaoThatBai">
+        <di:waypoint x="3116" y="1286" />
+        <di:waypoint x="3116" y="1266" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Assoc_NoteVoucher" bpmnElement="Assoc_NoteVoucher">
+        <di:waypoint x="3316" y="610" />
+        <di:waypoint x="3316" y="590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Assoc_NoteCuocGoi" bpmnElement="Assoc_NoteCuocGoi">
+        <di:waypoint x="1316" y="1126" />
+        <di:waypoint x="1336" y="1106" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Assoc_NoteTrigger" bpmnElement="Assoc_NoteTrigger">
+        <di:waypoint x="380" y="200" />
+        <di:waypoint x="300" y="200" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
