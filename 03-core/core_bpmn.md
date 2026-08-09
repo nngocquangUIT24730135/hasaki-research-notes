@@ -6,7 +6,7 @@
 **Thiết kế đề xuất:** B2 khoảng **10** cổng (nhiều nhánh vận hành thật, kể cả 2H/thường); B4 khoảng **7** cổng có nghĩa (X1–X7) — nếu rubik cần >7 cổng trên sơ đồ đổi trả, cân nhắc chọn thêm quy trình khác thay vì ép checklist thành cổng.  
 **Phân tích nghiệp vụ chi tiết:** xem file [ba_model_b2_b4.md](./ba_model_b2_b4.md).  
 **Công cụ gợi ý:** Camunda Modeler hoặc bpmn.io.  
-**Tên file nên đặt:** `b2-xu-ly-don-hang-online.bpmn`, `b4-doi-tra-hoan-tien.bpmn`.
+**Tên file nên đặt:** `b2-xu-ly-don-hang-online.bpmn`, `b4-doi-tra-hoac-hoan-tien.bpmn`.
 
 ---
 
@@ -126,13 +126,13 @@ Không chọn 2 giờ → tạo đơn → soạn → giao → khách trả tiề
 
 ---
 
-# Phần B — Quy trình B4: Đổi trả sản phẩm và hoàn tiền
+# Phần B — Quy trình B4: Đổi trả hoặc hoàn tiền
 
 ## B.1. Hồ sơ quy trình (*process profile*)
 
 | Trường | Nội dung |
 |--------|----------|
-| Tên quy trình | Đổi trả sản phẩm và hoàn tiền (*Return-to-Refund*) |
+| Tên quy trình | Đổi trả hoặc hoàn tiền (*Return-to-Resolve*) |
 | Khách hàng của quy trình (*process customer*) | Khách yêu cầu đổi hoặc trả hàng |
 | Sự kiện kích hoạt (*trigger*) | Yêu cầu đổi trả được tiếp nhận |
 | Đối tượng theo dõi (*case*) | Một yêu cầu đổi–trả |

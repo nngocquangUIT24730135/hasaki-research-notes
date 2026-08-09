@@ -43,7 +43,7 @@ hasaki-research-notes/
 | Mã | Tên tiếng Việt | File hướng dẫn vẽ |
 |----|----------------|-------------------|
 | B2 | Xử lý đơn hàng trực tuyến và giao hàng (gồm giao nhanh 2 giờ) | [core_bpmn.md](./03-core/core_bpmn.md) — phần A |
-| B4 | Đổi trả sản phẩm và hoàn tiền | [core_bpmn.md](./03-core/core_bpmn.md) — phần B |
+| B4 | Đổi trả hoặc hoàn tiền (*Return-to-Resolve*) | [core_bpmn.md](./03-core/core_bpmn.md) — phần B |
 
 File sơ đồ BPMN (định dạng `.bpmn`) nhóm tự vẽ trên Camunda Modeler hoặc bpmn.io theo hướng dẫn trên.
 

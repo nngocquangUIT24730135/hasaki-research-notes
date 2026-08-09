@@ -3,7 +3,7 @@
 **Mục đích:** giúp người chưa từng mua hàng tại Hasaki hình dung doanh nghiệp vận hành thế nào qua **câu chuyện**, trước khi đọc sơ đồ BPMN hay bảng phân tích.  
 **Hai quy trình được kể:**  
 - **B2** (*Order-to-Delivery*) — Từ lúc khách **bấm Đặt hàng** trên website/ứng dụng đến khi nhận hàng (kể cả giao nhanh 2 giờ). Thời gian xem / lựa hàng trước đó không thuộc quy trình vận hành đơn.  
-- **B4** (*Return-to-Refund*) — Từ lúc muốn đổi/trả đến khi đổi hàng, hoàn tiền, hoặc bị từ chối theo chính sách.  
+- **B4** — Đổi trả hoặc hoàn tiền (*Return-to-Resolve*): từ lúc muốn đổi/trả đến khi đổi hàng, hoàn tiền, hoặc bị từ chối theo chính sách.  
 
 **Nguồn chính sách đổi trả:** [Đổi trả – hoàn tiền](https://hotro.hasaki.vn/doi-tra-hoan-tien.html)  
 **Nguồn đặt hàng / giao 2 giờ / giao hàng:** trang hỗ trợ Hasaki (đặt hàng, vận chuyển 2 giờ, quy trình giao hàng).  
@@ -130,7 +130,7 @@ Mỗi dòng trên là **một kết quả có thể** của hoạt động thẩ
                            │
          Nếu sau đó phát hiện sai tông / lỗi / muốn đổi…
                            ▼
-     ┌─────────── B4: Đổi trả & hoàn tiền ──────────────┐
+     ┌─────────── B4: Đổi trả hoặc hoàn tiền ───────────┐
      │  Tiếp nhận → Thẩm định 30 ngày → Nhận/kiểm hàng  │
      │  → Đổi mới  /  Hoàn tiền  /  Từ chối              │
      └──────────────────────────────────────────────────┘

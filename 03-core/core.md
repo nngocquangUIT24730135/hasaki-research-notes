@@ -26,7 +26,7 @@
 | Mã | Tên | Lý do chọn |
 |----|-----|------------|
 | B2 | Xử lý đơn hàng trực tuyến và giao hàng (gồm giao nhanh 2 giờ) | Đặc trưng Hasaki; nhiều nhánh quyết định; đủ chính sách công bố |
-| B4 | Đổi trả sản phẩm và hoàn tiền (30 ngày) | Chính sách rõ; nhiều điều kiện; phù hợp phân tích định tính và định lượng |
+| B4 | Đổi trả hoặc hoàn tiền (30 ngày) | Chính sách rõ; nhiều điều kiện; phù hợp phân tích định tính và định lượng |
 
 ---
 
@@ -44,7 +44,7 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 │  B1 Bán hàng và tư vấn tại cửa hàng                         │
 │  B2 Đơn online và giao hàng (kể cả 2 giờ)  ← vẽ sơ đồ + PT  │
 │  B3 Đặt lịch và thực hiện Clinic / Spa                      │
-│  B4 Đổi trả và hoàn tiền                   ← vẽ sơ đồ + PT  │
+│  B4 Đổi trả hoặc hoàn tiền (*Return-to-Resolve*) ← vẽ + PT │
 │  B5 Chăm sóc khách hàng và khiếu nại                        │
 └────────────────────────────┬────────────────────────────────┘
 ┌────────────────────────────▼────────────────────────────────┐
@@ -122,7 +122,7 @@ Quy trình **cốt lõi** tạo và giao giá trị trực tiếp cho khách hà
 
 ---
 
-### B4. Đổi trả sản phẩm và hoàn tiền
+### B4. Đổi trả hoặc hoàn tiền (*Return-to-Resolve*)
 
 | Trường | Nội dung |
 |--------|----------|

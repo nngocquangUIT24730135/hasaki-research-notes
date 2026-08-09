@@ -157,7 +157,7 @@ Chi tiết danh sách hoạt động và cổng B2: [core_bpmn.md](./core_bpmn.m
 
 ---
 
-# Phần II — Quy trình B4: Đổi trả và hoàn tiền
+# Phần II — Quy trình B4: Đổi trả hoặc hoàn tiền (*Return-to-Resolve*)
 
 ## II.1. Mục đích nghiệp vụ
 
@@ -166,8 +166,9 @@ Chi tiết danh sách hoạt động và cổng B2: [core_bpmn.md](./core_bpmn.m
 | **Vấn đề** | Sau khi mua, khách muốn đổi/trả; Hasaki phải áp dụng cửa sổ 30 ngày và điều kiện tem/hình thức (đặc thù mỹ phẩm) để bảo vệ biên lợi nhuận và tuân thủ. |
 | **Giá trị với khách** | Có kết luận rõ: đổi / hoàn / từ chối có lý do trong thời hạn. |
 | **Giá trị với doanh nghiệp** | Giữ niềm tin; giảm lạm dụng; tối ưu xử lý hàng trả; kiểm soát chi phí thu hồi hàng. |
-| **Trong phạm vi** | Tiếp nhận → thẩm định → nhận hàng → quyết đổi/trả → hoàn tiền → xử lý hàng trả. |
+| **Trong phạm vi** | Tiếp nhận → thẩm định → nhận hàng → quyết **đổi hàng** hoặc **trả và hoàn** → xử lý hàng trả. |
 | **Ngoài phạm vi** | Khiếu nại không phải đổi trả (B5); đơn đang giao (B2); bảo hành ngoài chính sách Hasaki. |
+| **Tên chuỗi đầu–cuối** | Tiếng Việt: *Đổi trả hoặc hoàn tiền*; tiếng Anh: *Return-to-Resolve* (không dùng *Return-to-Refund*). |
 
 ## II.2. Bảng nhà cung cấp – đầu vào – quy trình – đầu ra – khách hàng (*SIPOC*)
 

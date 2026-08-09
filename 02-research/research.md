@@ -181,7 +181,7 @@ Cổng nhà cung cấp Hasaki công bố bốn bước: đăng ký → xác th�
 | B1 | Bán hàng và tư vấn tại cửa hàng (*Visit-to-Cash*) | Khách tại cửa hàng | Giao dịch hoàn tất, hoặc chỉ tư vấn |
 | B2 | Xử lý đơn hàng online và giao hàng — gồm giao nhanh 2 giờ và giao thường (*Order-to-Delivery*) | Khách đặt trên kênh của Hasaki | Giao thành công, hoặc hủy có kiểm soát (+ hoàn tiền nếu cần) |
 | B3 | Đặt lịch và thực hiện dịch vụ Clinic / Spa (*Appointment-to-Service*) | Khách dùng dịch vụ | Liệu trình xong và thanh toán; hoặc dời / hủy |
-| B4 | Đổi trả và hoàn tiền (*Return-to-Refund*) | Khách yêu cầu đổi / trả | Đổi, hoàn, hoặc từ chối theo điều kiện |
+| B4 | Đổi trả hoặc hoàn tiền (*Return-to-Resolve*) | Khách yêu cầu đổi / trả | Đổi hàng, hoàn tiền, hoặc từ chối theo điều kiện |
 | B5 | Chăm sóc khách hàng và khiếu nại (*Issue-to-Resolution*) | Khách cần hỗ trợ | Yêu cầu được đóng, hoặc chuyển cấp cao hơn |
 
 #### C. Quy trình hỗ trợ (Support Processes)
@@ -206,7 +206,7 @@ Cổng nhà cung cấp Hasaki công bố bốn bước: đăng ký → xác th�
 │ B1 Bán tại cửa hàng (*Visit-to-Cash*)               │
 │ B2 Đơn online & giao 2H/thường (*Order-to-Delivery*)│
 │ B3 Clinic / Spa (*Appointment-to-Service*)          │
-│ B4 Đổi trả & hoàn tiền (*Return-to-Refund*)         │
+│ B4 Đổi trả hoặc hoàn tiền (*Return-to-Resolve*)     │
 │ B5 CSKH & khiếu nại (*Issue-to-Resolution*)         │
 └─────────────────────────────────────────────────────┘
 ┌─────────────── HỖ TRỢ (Support) ────────────────────┐
@@ -288,7 +288,9 @@ Chính sách công bố liên quan: option 2 giờ / 48 giờ tại nội thành
 
 Khi vẽ sơ đồ, vẫn có thể hiện giai đoạn **cam kết giao** (bước trên màn hình đặt hàng + kiểm hệ thống quanh lúc đặt) để đủ cổng điều kiện, rồi **tạo đơn và sẵn sàng soạn → soạn–đóng gói–bàn giao → giao đến khách (nhánh 2 giờ hoặc giao thường) → xử lý ngoại lệ**. Cam kết trên BPMN giúp hiểu quy tắc; **định lượng chỉ trên lần chạy đã Đặt hàng**. Các bước xếp ưu tiên đơn 2 giờ, xác nhận tồn lúc soạn là *suy luận chuẩn ngành* — xem [ba_model_b2_b4.md](../03-core/ba_model_b2_b4.md).
 
-**B4 — Đổi trả sản phẩm và hoàn tiền (*Return-to-Refund*)**
+**B4 — Đổi trả hoặc hoàn tiền (*Return-to-Resolve*)**
+
+> Tên tiếng Việt dùng **hoặc** vì sau thẩm định có thể **đổi hàng** hoặc **hoàn tiền** (hoặc từ chối). Chuỗi đầu–cuối tiếng Anh: *Return-to-Resolve* (không dùng *Return-to-Refund* — tránh hiểu nhầm quy trình chỉ để hoàn tiền).
 
 | Thuộc tính | Nội dung |
 |------------|----------|
