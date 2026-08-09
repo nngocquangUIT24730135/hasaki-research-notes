@@ -40,6 +40,53 @@ Theo Word: dưới **Heading 2** *Nhóm quy trình quản lý* có đúng **5 He
 | Tài chính xuất hiện hai “vỏ” | M2 (quản lý, trống) vs Heading mô hình hóa hỗ trợ *Kế toán, tài chính và pháp lý* |
 | Chương phân tích | Chỉ 2 Heading 2: tiếp thị–bán online và tiếp nhận–xử lý đơn — **không** phân tích M1/M2 |
 
+### Tên chuẩn trong thực tế — M1 và M3
+
+Hai mục dưới đây là phần đã thảo luận để Ngọc đặt tên và xếp nhóm cho đúng hơn (không bắt buộc copy nguyên văn vào bài, nhưng nên chọn **một** tên tiếng Việt ổn định + ghi chú tiếng Anh nếu cần).
+
+#### M1 — Chiến lược kinh doanh & bán hàng / Quản lý chiến lược bán hàng
+
+Trong thực tế đây thường là quy trình **hoạch định** cấp doanh nghiệp / thương mại, không phải luồng bán từng đơn.
+
+| Tên thường gặp | Phạm vi điển hình |
+|----------------|-------------------|
+| Hoạch định chiến lược kinh doanh (*strategic planning*) | Định hướng dài hạn, mục tiêu, ngân sách tổng |
+| Hoạch định bán hàng / kế hoạch thương mại (*sales planning*, *commercial planning*) | Chỉ tiêu doanh số theo kênh, vùng, nhóm hàng |
+| Hoạch định và mở rộng mạng lưới (*Strategy-to-Expansion*, *store network planning*) | Mở / đóng cửa hàng, clinic, phân bổ chỉ tiêu chuỗi — gần **A1** trong `research.md` |
+| Chuỗi đầu–cuối hay dùng | *Strategy-to-Plan*, *Plan-to-Target*, hoặc *Strategy-to-Expansion* |
+
+| Thuộc tính | Gợi ý |
+|------------|--------|
+| Xếp nhóm | **Quy trình quản lý** |
+| Khách hàng của quy trình | Ban lãnh đạo / giám đốc khối / cửa hàng (nội bộ) |
+| Đối tượng theo dõi | Một kỳ kế hoạch (quý/năm) **hoặc** một đề án mở điểm — không phải một khách / một đơn |
+| Kết quả đóng | Kế hoạch / chỉ tiêu / ngân sách **được duyệt** (hoặc trả về chỉnh) |
+| Trong phạm vi | Thu thập số liệu kỳ trước → phân tích / dự báo → đề xuất mục tiêu & ngân sách → thẩm định → phê duyệt |
+| Ngoài phạm vi | Chạy khuyến mãi; điều chuyển tồn; xử lý từng đơn; từng ticket CSKH |
+
+**Lưu ý với bài Ngọc:** tên M1 khi liệt kê và khi mô hình hóa đang **lệch nhau** một chút — nên thống nhất một tên. Nếu bám `research.md`, ưu tiên hướng **hoạch định chiến lược và mở rộng mạng** (A1) thay vì viết thành “lập chỉ tiêu rồi giao marketing–kho–IT triển khai hết” trong cùng một sơ đồ.
+
+#### M3 — Hiệu suất và KPI (*Performance & KPI Governance*)
+
+Không có một tên “chuẩn vàng” duy nhất như Order-to-Cash; trong thực tế / giáo trình BPM thường gần các tên sau:
+
+| Tên thường gặp | Nghĩa ngắn |
+|----------------|------------|
+| Quản trị hiệu suất / đánh giá hiệu suất (*performance management*) | Theo dõi – đánh giá – cải thiện kết quả theo chu kỳ |
+| Quản trị chỉ số / khung KPI–OKR (*KPI / performance measurement*) | Thiết lập, thu thập, review chỉ số |
+| Chuỗi đầu–cuối kiểu | *Measure-to-Improve* hoặc *Target-to-Review* |
+
+| Thuộc tính | Gợi ý |
+|------------|--------|
+| Xếp nhóm | Thường là **quy trình quản lý** (kiểm soát và điều chỉnh); **không** phải cốt lõi |
+| Khi nào lệch sang hỗ trợ | Nếu viết thành quy trình HR “đánh giá nhân sự – trả thưởng” chi tiết → dễ thành **hỗ trợ nhân sự** |
+| Trong `research.md` | A1–A4 **không** có mục KPI riêng; đo lường thường gắn chu kỳ A1 hoặc để ngoài như năng lực quản trị |
+| Đối tượng theo dõi | **Một kỳ đánh giá** (tháng/quý) — chọn một mức: theo khối **hoặc** theo cá nhân |
+| Kết quả đóng | Đạt thưởng / kế hoạch cải thiện / trả về chỉnh |
+| Ngoài phạm vi | Trả lương chi tiết; tuyển dụng; xử lý từng đơn hàng |
+
+**Lưu ý với bài Ngọc:** M3 **có thể giữ trong nhóm quản lý** nếu khóa đúng ranh giới như trên; không cần đổi sang cốt lõi.
+
 ---
 
 ## 1. Tóm tắt nhanh
