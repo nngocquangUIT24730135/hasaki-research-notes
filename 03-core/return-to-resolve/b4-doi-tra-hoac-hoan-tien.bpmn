@@ -1,354 +1,596 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_Hasaki_B4" targetNamespace="http://hasaki.vn/bpmn/b4-return-to-resolve" exporter="Cursor" exporterVersion="3.2">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_B4_L2" targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn:collaboration id="Collab_B4">
     <bpmn:participant id="Pool_Customer" name="Khách hàng" processRef="Process_Customer" />
     <bpmn:participant id="Pool_Hasaki" name="Hasaki" processRef="Process_Hasaki" />
-    <bpmn:messageFlow id="MF_WalkIn" name="Mang sản phẩm tới cửa hàng (không gọi trước)" sourceRef="T_C_BringDirect" targetRef="SE_H" />
-    <bpmn:messageFlow id="MF_Request" name="Liên hệ: mã đơn, tình trạng SP, lý do đổi trả" sourceRef="T_C_Contact" targetRef="SE_H" />
-    <bpmn:messageFlow id="MF_Guide" name="Xác nhận lý do + hướng dẫn bước tiếp theo" sourceRef="T_Staff_GuideAfterContact" targetRef="X_C2" />
-    <bpmn:messageFlow id="MF_ProductStore" name="Sản phẩm (+ quà kèm nếu đổi SP chính)" sourceRef="T_C_BringAfterContact" targetRef="T_Staff_ReceiveStore" />
-    <bpmn:messageFlow id="MF_Tracking" name="Mã vận đơn / thông tin chuyển phát" sourceRef="T_C_ReportTracking" targetRef="T_Staff_RecordTracking" />
-    <bpmn:messageFlow id="MF_ProductMail" name="Bưu phẩm đổi trả (+ quà kèm nếu có)" sourceRef="T_C_PackSend" targetRef="T_Wh_ReceiveMail" />
-    <bpmn:messageFlow id="MF_Reject" name="Thông báo không hỗ trợ đổi trả" sourceRef="T_Staff_Explain" targetRef="T_C_GetReject" />
-    <bpmn:messageFlow id="MF_OOS" name="Thông báo hết hàng sản phẩm muốn đổi" sourceRef="T_Staff_NotifyOOS" targetRef="T_C_ChooseAlt" />
-    <bpmn:messageFlow id="MF_Exchange" name="Sản phẩm đổi mới" sourceRef="T_Wh_Issue" targetRef="T_C_ReceiveOutcome" />
-    <bpmn:messageFlow id="MF_Refund" name="Tiền hoàn theo phương thức đã thanh toán" sourceRef="T_Acc_Refund" targetRef="T_C_ReceiveOutcome" />
+    <bpmn:messageFlow id="MF_WalkIn" name="Mang sản phẩm tới cửa hàng" sourceRef="T_C_BringDirect" targetRef="SE_H" />
+    <bpmn:messageFlow id="MF_Contact" name="Liên hệ tổng đài / fanpage" sourceRef="T_C_Contact" targetRef="SE_H" />
+    <bpmn:messageFlow id="MF_Guide" name="Hướng dẫn mang tới CH hoặc gửi hàng về đâu" sourceRef="T_H_Guide" targetRef="T_C_ReceiveGuide" />
+    <bpmn:messageFlow id="MF_BringAfter" name="Mang sản phẩm tới cửa hàng theo hướng dẫn" sourceRef="T_C_BringAfter" targetRef="T_H_ReceiveStoreAfter" />
+    <bpmn:messageFlow id="MF_Ship" name="Gửi hàng theo địa chỉ Hasaki chỉ định" sourceRef="T_C_Ship" targetRef="T_H_ReceiveMail" />
+    <bpmn:messageFlow id="MF_ProposePlan" name="Đề xuất phương án giải quyết" sourceRef="T_H_ConfirmPlan" targetRef="T_C_ConfirmPlan" />
+    <bpmn:messageFlow id="MF_AgreePlan" name="Xác nhận đồng ý phương án giải quyết" sourceRef="T_C_ConfirmPlan" targetRef="T_H_ConfirmPlan" />
+    <bpmn:messageFlow id="MF_Reject" name="Thông báo không hỗ trợ đổi trả" sourceRef="T_H_Explain" targetRef="T_C_GetReject" />
+    <bpmn:messageFlow id="MF_Refund" name="Hoàn tiền" sourceRef="T_H_Refund" targetRef="T_C_GetRefund" />
+    <bpmn:messageFlow id="MF_Exchange" name="Giao / gửi sản phẩm mới hoặc thay thế" sourceRef="T_H_Issue" targetRef="T_C_GetExchange" />
   </bpmn:collaboration>
   <bpmn:process id="Process_Customer" name="Yêu cầu đổi trả" isExecutable="false">
     <bpmn:startEvent id="SE_C" name="Nhu cầu đổi trả phát sinh">
-      <bpmn:outgoing>SF_C1</bpmn:outgoing>
+      <bpmn:outgoing>SF_C_1</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:exclusiveGateway id="X_C1" name="Đến cửa hàng luôn hay liên hệ trước?" default="SF_C_Direct">
-      <bpmn:documentation>Hai trường hợp: (1) mang sản phẩm đến cửa hàng trực tiếp, không gọi điện; (2) liên hệ tổng đài/CSKH trước rồi mới quyết định bước tiếp.</bpmn:documentation>
-      <bpmn:incoming>SF_C1</bpmn:incoming>
-      <bpmn:outgoing>SF_C_Direct</bpmn:outgoing>
+    <bpmn:exclusiveGateway id="X_C1" name="Mang tới cửa hàng luôn hay liên hệ trước?" default="SF_C_WalkIn">
+      <bpmn:incoming>SF_C_1</bpmn:incoming>
+      <bpmn:outgoing>SF_C_WalkIn</bpmn:outgoing>
       <bpmn:outgoing>SF_C_Contact</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="T_C_BringDirect" name="Mang sản phẩm tới cửa hàng (không gọi trước)">
-      <bpmn:documentation>Đổi sản phẩm chính: đem theo quà tặng kèm (website Hasaki).</bpmn:documentation>
-      <bpmn:incoming>SF_C_Direct</bpmn:incoming>
-      <bpmn:outgoing>SF_C_JoinIn1</bpmn:outgoing>
+    <bpmn:task id="T_C_BringDirect" name="Mang sản phẩm đến cửa hàng Hasaki">
+      <bpmn:incoming>SF_C_WalkIn</bpmn:incoming>
+      <bpmn:outgoing>SF_C_Join1</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="T_C_Contact" name="Liên hệ tổng đài / chăm sóc khách hàng">
-      <bpmn:documentation>Ví dụ tổng đài 1800 6324 hoặc kênh hỗ trợ Hasaki.vn: mã đơn, tình trạng SP, lý do đổi trả.</bpmn:documentation>
+    <bpmn:task id="T_C_Contact" name="Liên hệ tổng đài / fanpage để đổi trả online">
       <bpmn:incoming>SF_C_Contact</bpmn:incoming>
-      <bpmn:outgoing>SF_C2</bpmn:outgoing>
+      <bpmn:outgoing>SF_C_AfterContact</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:exclusiveGateway id="X_C2" name="Sau khi được hướng dẫn, mang tới cửa hàng hay gửi online?" default="SF_C_StoreAfter">
-      <bpmn:documentation>Sau liên hệ CSKH: khách có thể mang tới cửa hàng hoặc trả hàng online (gửi bưu điện).</bpmn:documentation>
-      <bpmn:incoming>SF_C2</bpmn:incoming>
-      <bpmn:outgoing>SF_C_StoreAfter</bpmn:outgoing>
-      <bpmn:outgoing>SF_C_Online</bpmn:outgoing>
+    <bpmn:task id="T_C_ReceiveGuide" name="Nhận hướng dẫn bước tiếp theo từ Hasaki">
+      <bpmn:incoming>SF_C_AfterContact</bpmn:incoming>
+      <bpmn:outgoing>SF_C_AfterGuide</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="X_C2" name="Mang tới cửa hàng hay gửi hàng?" default="SF_C_BringAfter">
+      <bpmn:incoming>SF_C_AfterGuide</bpmn:incoming>
+      <bpmn:outgoing>SF_C_BringAfter</bpmn:outgoing>
+      <bpmn:outgoing>SF_C_Ship</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="T_C_BringAfterContact" name="Mang sản phẩm tới cửa hàng theo hướng dẫn">
-      <bpmn:incoming>SF_C_StoreAfter</bpmn:incoming>
-      <bpmn:outgoing>SF_C_JoinIn2</bpmn:outgoing>
+    <bpmn:task id="T_C_BringAfter" name="Đồng ý mang sản phẩm đến cửa hàng">
+      <bpmn:incoming>SF_C_BringAfter</bpmn:incoming>
+      <bpmn:outgoing>SF_C_Join2</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="T_C_PackSend" name="Đóng gói và gửi bưu điện theo địa chỉ CSKH chỉ định">
-      <bpmn:documentation>Đóng gói kỹ, kèm quà nếu có; gửi về địa chỉ được chỉ định; giữ mã vận đơn.</bpmn:documentation>
-      <bpmn:incoming>SF_C_Online</bpmn:incoming>
-      <bpmn:outgoing>SF_C_Track</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:task id="T_C_ReportTracking" name="Báo mã vận đơn cho Hasaki">
-      <bpmn:incoming>SF_C_Track</bpmn:incoming>
-      <bpmn:outgoing>SF_C_JoinIn3</bpmn:outgoing>
+    <bpmn:task id="T_C_Ship" name="Gửi hàng theo hướng dẫn của Hasaki">
+      <bpmn:incoming>SF_C_Ship</bpmn:incoming>
+      <bpmn:outgoing>SF_C_Join3</bpmn:outgoing>
     </bpmn:task>
     <bpmn:exclusiveGateway id="GW_C_JoinChannel" name="">
-      <bpmn:incoming>SF_C_JoinIn1</bpmn:incoming>
-      <bpmn:incoming>SF_C_JoinIn2</bpmn:incoming>
-      <bpmn:incoming>SF_C_JoinIn3</bpmn:incoming>
-      <bpmn:outgoing>SF_C3</bpmn:outgoing>
+      <bpmn:incoming>SF_C_Join1</bpmn:incoming>
+      <bpmn:incoming>SF_C_Join2</bpmn:incoming>
+      <bpmn:incoming>SF_C_Join3</bpmn:incoming>
+      <bpmn:outgoing>SF_C_Wait</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="GW_C_Outcome" name="Kết quả xử lý?" default="SF_C_Reject">
-      <bpmn:incoming>SF_C3</bpmn:incoming>
+    <bpmn:task id="T_C_WaitReceive" name="Chờ Hasaki nhận và kiểm sản phẩm">
+      <bpmn:incoming>SF_C_Wait</bpmn:incoming>
+      <bpmn:outgoing>SF_C_ToConfirm</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_C_ConfirmPlan" name="Xác nhận phương án giải quyết với Hasaki">
+      <bpmn:incoming>SF_C_ToConfirm</bpmn:incoming>
+      <bpmn:outgoing>SF_C_ToOutcome</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="X_C3" name="Phương án đã thống nhất?" default="SF_C_Reject">
+      <bpmn:incoming>SF_C_ToOutcome</bpmn:incoming>
       <bpmn:outgoing>SF_C_Reject</bpmn:outgoing>
-      <bpmn:outgoing>SF_C_Ok</bpmn:outgoing>
-      <bpmn:outgoing>SF_C_OOS</bpmn:outgoing>
+      <bpmn:outgoing>SF_C_Refund</bpmn:outgoing>
+      <bpmn:outgoing>SF_C_Exchange</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:task id="T_C_GetReject" name="Nhận thông báo không hỗ trợ">
       <bpmn:incoming>SF_C_Reject</bpmn:incoming>
-      <bpmn:outgoing>SF_C4</bpmn:outgoing>
+      <bpmn:outgoing>SF_C_EndReject</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_C_GetRefund" name="Nhận tiền hoàn">
+      <bpmn:incoming>SF_C_Refund</bpmn:incoming>
+      <bpmn:outgoing>SF_C_EndRefund</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_C_GetExchange" name="Nhận sản phẩm mới / sản phẩm thay thế">
+      <bpmn:incoming>SF_C_Exchange</bpmn:incoming>
+      <bpmn:outgoing>SF_C_EndExchange</bpmn:outgoing>
     </bpmn:task>
     <bpmn:endEvent id="EE_C_Reject" name="Không được đổi trả">
-      <bpmn:incoming>SF_C4</bpmn:incoming>
+      <bpmn:incoming>SF_C_EndReject</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:task id="T_C_ChooseAlt" name="Chọn sản phẩm khác còn hàng hoặc trả hàng">
-      <bpmn:incoming>SF_C_OOS</bpmn:incoming>
-      <bpmn:outgoing>SF_C_Ok2</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:exclusiveGateway id="GW_C_JoinDone" name="">
-      <bpmn:incoming>SF_C_Ok</bpmn:incoming>
-      <bpmn:incoming>SF_C_Ok2</bpmn:incoming>
-      <bpmn:outgoing>SF_C_ToReceive</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:task id="T_C_ReceiveOutcome" name="Nhận hàng đổi mới hoặc nhận tiền hoàn">
-      <bpmn:incoming>SF_C_ToReceive</bpmn:incoming>
-      <bpmn:outgoing>SF_C5</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:endEvent id="EE_C_Done" name="Đổi trả đã xong">
-      <bpmn:incoming>SF_C5</bpmn:incoming>
+    <bpmn:endEvent id="EE_C_Refund" name="Hoàn tiền xong">
+      <bpmn:incoming>SF_C_EndRefund</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SF_C1" sourceRef="SE_C" targetRef="X_C1" />
-    <bpmn:sequenceFlow id="SF_C_Direct" name="Đến cửa hàng luôn (không gọi)" sourceRef="X_C1" targetRef="T_C_BringDirect" />
-    <bpmn:sequenceFlow id="SF_C_Contact" name="Liên hệ tổng đài / CSKH trước" sourceRef="X_C1" targetRef="T_C_Contact">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=cachBatDau = "lien_he_truoc"</bpmn:conditionExpression>
+    <bpmn:endEvent id="EE_C_Exchange" name="Đổi hàng xong">
+      <bpmn:incoming>SF_C_EndExchange</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SF_C_1" sourceRef="SE_C" targetRef="X_C1" />
+    <bpmn:sequenceFlow id="SF_C_WalkIn" name="(a) Mang tới cửa hàng luôn" sourceRef="X_C1" targetRef="T_C_BringDirect" />
+    <bpmn:sequenceFlow id="SF_C_Contact" name="(b) Liên hệ tổng đài / fanpage" sourceRef="X_C1" targetRef="T_C_Contact">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=kenhBatDau = "lien_he"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SF_C2" sourceRef="T_C_Contact" targetRef="X_C2" />
-    <bpmn:sequenceFlow id="SF_C_StoreAfter" name="Mang tới cửa hàng" sourceRef="X_C2" targetRef="T_C_BringAfterContact" />
-    <bpmn:sequenceFlow id="SF_C_Online" name="Trả hàng online" sourceRef="X_C2" targetRef="T_C_PackSend">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=kenhSauHuongDan = "online"</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="SF_C_AfterContact" sourceRef="T_C_Contact" targetRef="T_C_ReceiveGuide" />
+    <bpmn:sequenceFlow id="SF_C_AfterGuide" sourceRef="T_C_ReceiveGuide" targetRef="X_C2" />
+    <bpmn:sequenceFlow id="SF_C_BringAfter" name="(b1) Mang tới cửa hàng" sourceRef="X_C2" targetRef="T_C_BringAfter" />
+    <bpmn:sequenceFlow id="SF_C_Ship" name="(b2) Gửi hàng theo hướng dẫn" sourceRef="X_C2" targetRef="T_C_Ship">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=kenhSauHuongDan = "gui_hang"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SF_C_Track" sourceRef="T_C_PackSend" targetRef="T_C_ReportTracking" />
-    <bpmn:sequenceFlow id="SF_C_JoinIn1" sourceRef="T_C_BringDirect" targetRef="GW_C_JoinChannel" />
-    <bpmn:sequenceFlow id="SF_C_JoinIn2" sourceRef="T_C_BringAfterContact" targetRef="GW_C_JoinChannel" />
-    <bpmn:sequenceFlow id="SF_C_JoinIn3" sourceRef="T_C_ReportTracking" targetRef="GW_C_JoinChannel" />
-    <bpmn:sequenceFlow id="SF_C3" sourceRef="GW_C_JoinChannel" targetRef="GW_C_Outcome" />
-    <bpmn:sequenceFlow id="SF_C_Reject" name="Không hỗ trợ" sourceRef="GW_C_Outcome" targetRef="T_C_GetReject" />
-    <bpmn:sequenceFlow id="SF_C_Ok" name="Đổi hoặc hoàn xong" sourceRef="GW_C_Outcome" targetRef="GW_C_JoinDone">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=ketQuaXuLy = "doi_hoac_hoan_xong"</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="SF_C_Join1" sourceRef="T_C_BringDirect" targetRef="GW_C_JoinChannel" />
+    <bpmn:sequenceFlow id="SF_C_Join2" sourceRef="T_C_BringAfter" targetRef="GW_C_JoinChannel" />
+    <bpmn:sequenceFlow id="SF_C_Join3" sourceRef="T_C_Ship" targetRef="GW_C_JoinChannel" />
+    <bpmn:sequenceFlow id="SF_C_Wait" sourceRef="GW_C_JoinChannel" targetRef="T_C_WaitReceive" />
+    <bpmn:sequenceFlow id="SF_C_ToConfirm" sourceRef="T_C_WaitReceive" targetRef="T_C_ConfirmPlan" />
+    <bpmn:sequenceFlow id="SF_C_ToOutcome" sourceRef="T_C_ConfirmPlan" targetRef="X_C3" />
+    <bpmn:sequenceFlow id="SF_C_Reject" name="Không hỗ trợ" sourceRef="X_C3" targetRef="T_C_GetReject" />
+    <bpmn:sequenceFlow id="SF_C_Refund" name="Chốt hoàn tiền" sourceRef="X_C3" targetRef="T_C_GetRefund">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=phuongAn = "hoan_tien"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SF_C_OOS" name="Hết hàng muốn đổi" sourceRef="GW_C_Outcome" targetRef="T_C_ChooseAlt">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=ketQuaXuLy = "het_hang_muon_doi"</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="SF_C_Exchange" name="Chốt nhận sản phẩm thay thế" sourceRef="X_C3" targetRef="T_C_GetExchange">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=phuongAn = "doi_hang"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SF_C_Ok2" sourceRef="T_C_ChooseAlt" targetRef="GW_C_JoinDone" />
-    <bpmn:sequenceFlow id="SF_C_ToReceive" sourceRef="GW_C_JoinDone" targetRef="T_C_ReceiveOutcome" />
-    <bpmn:sequenceFlow id="SF_C4" sourceRef="T_C_GetReject" targetRef="EE_C_Reject" />
-    <bpmn:sequenceFlow id="SF_C5" sourceRef="T_C_ReceiveOutcome" targetRef="EE_C_Done" />
+    <bpmn:sequenceFlow id="SF_C_EndReject" sourceRef="T_C_GetReject" targetRef="EE_C_Reject" />
+    <bpmn:sequenceFlow id="SF_C_EndRefund" sourceRef="T_C_GetRefund" targetRef="EE_C_Refund" />
+    <bpmn:sequenceFlow id="SF_C_EndExchange" sourceRef="T_C_GetExchange" targetRef="EE_C_Exchange" />
   </bpmn:process>
   <bpmn:process id="Process_Hasaki" name="Đổi trả hoặc hoàn tiền" isExecutable="false">
-    <bpmn:laneSet id="LaneSet_Hasaki">
-      <bpmn:lane id="Lane_Staff" name="Nhân viên cửa hàng / Chăm sóc khách hàng">
+    <bpmn:laneSet id="LS_Hasaki">
+      <bpmn:lane id="Lane_Front" name="NV cửa hàng / CSKH">
         <bpmn:flowNodeRef>SE_H</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>X0</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Staff_IntakeWalkIn</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Staff_ReceiveStore</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Staff_IntakeContact</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Staff_GuideAfterContact</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_H_IntakeWalkIn</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_H_ReceiveStore</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_H_IntakeContact</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_H_Guide</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>X1</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Staff_ReceiveStoreAfter</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Staff_RecordTracking</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>GW_JoinReceive</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Staff_Assess</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_H_ReceiveStoreAfter</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>GW_H_JoinReceive</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_H_Assess</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_H_ConfirmPlan</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>X2</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Staff_Explain</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>EE_Reject</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Staff_CreateTicketEx</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Staff_CreateTicketBoth</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>X3</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>GW_JoinToExch</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Staff_NotifyOOS</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>X5</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>GW_JoinToRefund</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_H_Explain</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EE_H_Reject</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_Wh" name="Kho">
-        <bpmn:flowNodeRef>T_Wh_ReceiveMail</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Wh_CheckStock</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>X4</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Wh_Issue</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Wh_DispositionEx</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>EE_Exchange</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Wh_DispositionRf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_H_ReceiveMail</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_H_Issue</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EE_H_Exchange</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_Acc" name="Kế toán / Hoàn tiền">
-        <bpmn:flowNodeRef>T_Acc_CreateRefundOrder</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>T_Acc_Refund</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>EE_Refund</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>T_H_Refund</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EE_H_Refund</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="SE_H" name="Yêu cầu đổi trả được tiếp nhận">
-      <bpmn:outgoing>SF_H1</bpmn:outgoing>
+      <bpmn:outgoing>SF_H_1</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:exclusiveGateway id="X0" name="Khách đến cửa hàng luôn hay liên hệ CSKH trước?" default="SF_X0_WalkIn">
-      <bpmn:documentation>Hai trường hợp vào quy trình: walk-in (không gọi) hoặc liên hệ tổng đài/CSKH trước.</bpmn:documentation>
-      <bpmn:incoming>SF_H1</bpmn:incoming>
-      <bpmn:outgoing>SF_X0_WalkIn</bpmn:outgoing>
-      <bpmn:outgoing>SF_X0_Contact</bpmn:outgoing>
+    <bpmn:exclusiveGateway id="X0" name="Walk-in hay liên hệ trước?" default="SF_H_WalkIn">
+      <bpmn:incoming>SF_H_1</bpmn:incoming>
+      <bpmn:outgoing>SF_H_WalkIn</bpmn:outgoing>
+      <bpmn:outgoing>SF_H_Contact</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="T_Staff_IntakeWalkIn" name="Tiếp nhận khách mang hàng tới cửa hàng">
-      <bpmn:documentation>Khách đến trực tiếp, không gọi trước. Ghi nhận lý do + thông tin liên hệ tại quầy.</bpmn:documentation>
-      <bpmn:incoming>SF_X0_WalkIn</bpmn:incoming>
-      <bpmn:outgoing>SF_H2a</bpmn:outgoing>
+    <bpmn:task id="T_H_IntakeWalkIn" name="Tiếp nhận khách mang hàng tới cửa hàng">
+      <bpmn:incoming>SF_H_WalkIn</bpmn:incoming>
+      <bpmn:outgoing>SF_H_WalkIn2</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="T_Staff_ReceiveStore" name="Nhận và kiểm sản phẩm tại cửa hàng">
-      <bpmn:documentation>Website: nhân viên check lại sản phẩm; khách xem và lựa chọn đổi. Kiểm hàng bắt buộc trước khi xét điều kiện.</bpmn:documentation>
-      <bpmn:incoming>SF_H2a</bpmn:incoming>
-      <bpmn:outgoing>SF_H3a</bpmn:outgoing>
+    <bpmn:task id="T_H_ReceiveStore" name="Nhận và kiểm sản phẩm tại cửa hàng">
+      <bpmn:incoming>SF_H_WalkIn2</bpmn:incoming>
+      <bpmn:outgoing>SF_H_Join1</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="T_Staff_IntakeContact" name="Ghi nhận yêu cầu qua tổng đài / CSKH">
-      <bpmn:documentation>Website: khách thông báo lý do + địa chỉ + SĐT. Nhắc quà kèm nếu đổi sản phẩm chính.</bpmn:documentation>
-      <bpmn:incoming>SF_X0_Contact</bpmn:incoming>
-      <bpmn:outgoing>SF_H2b</bpmn:outgoing>
+    <bpmn:task id="T_H_IntakeContact" name="Ghi nhận yêu cầu qua tổng đài / fanpage">
+      <bpmn:incoming>SF_H_Contact</bpmn:incoming>
+      <bpmn:outgoing>SF_H_Guide</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="T_Staff_GuideAfterContact" name="Xác nhận lý do và hướng dẫn bước tiếp theo">
-      <bpmn:documentation>CSKH hướng dẫn: mang tới cửa hàng, hoặc đóng gói gửi bưu điện (địa chỉ chỉ định) rồi báo mã vận đơn.</bpmn:documentation>
-      <bpmn:incoming>SF_H2b</bpmn:incoming>
-      <bpmn:outgoing>SF_H2c</bpmn:outgoing>
+    <bpmn:task id="T_H_Guide" name="Xác nhận lý do và hướng dẫn bước tiếp theo">
+      <bpmn:incoming>SF_H_Guide</bpmn:incoming>
+      <bpmn:outgoing>SF_H_ToX1</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:exclusiveGateway id="X1" name="Khách mang tới cửa hàng hay trả hàng online?" default="SF_X1_Store">
-      <bpmn:documentation>Chỉ sau khi đã liên hệ CSKH. Không phân tỉnh/thành.</bpmn:documentation>
-      <bpmn:incoming>SF_H2c</bpmn:incoming>
-      <bpmn:outgoing>SF_X1_Store</bpmn:outgoing>
-      <bpmn:outgoing>SF_X1_Online</bpmn:outgoing>
+    <bpmn:exclusiveGateway id="X1" name="Khách mang tới CH hay gửi hàng?" default="SF_H_StoreAfter">
+      <bpmn:incoming>SF_H_ToX1</bpmn:incoming>
+      <bpmn:outgoing>SF_H_StoreAfter</bpmn:outgoing>
+      <bpmn:outgoing>SF_H_Mail</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="T_Staff_ReceiveStoreAfter" name="Nhận và kiểm sản phẩm tại cửa hàng">
-      <bpmn:documentation>Khách đã liên hệ trước, sau đó mang hàng tới cửa hàng. Kiểm hàng bắt buộc trước khi xét điều kiện.</bpmn:documentation>
-      <bpmn:incoming>SF_X1_Store</bpmn:incoming>
-      <bpmn:outgoing>SF_H3b</bpmn:outgoing>
+    <bpmn:task id="T_H_ReceiveStoreAfter" name="Nhận và kiểm sản phẩm tại cửa hàng">
+      <bpmn:incoming>SF_H_StoreAfter</bpmn:incoming>
+      <bpmn:outgoing>SF_H_Join2</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="T_Staff_RecordTracking" name="Ghi nhận mã vận đơn khách báo">
-      <bpmn:documentation>Website: khách liên hệ về mã bưu điện để Hasaki theo dõi.</bpmn:documentation>
-      <bpmn:incoming>SF_X1_Online</bpmn:incoming>
-      <bpmn:outgoing>SF_H3c1</bpmn:outgoing>
+    <bpmn:task id="T_H_ReceiveMail" name="Nhận và kiểm hàng khách gửi về">
+      <bpmn:incoming>SF_H_Mail</bpmn:incoming>
+      <bpmn:outgoing>SF_H_Join3</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="T_Wh_ReceiveMail" name="Nhận và kiểm sản phẩm gửi về">
-      <bpmn:documentation>Khi nhận bưu phẩm: kiểm hàng rồi mới xét điều kiện. Hoàn (nếu trả) sau khi nhận hàng.</bpmn:documentation>
-      <bpmn:incoming>SF_H3c1</bpmn:incoming>
-      <bpmn:outgoing>SF_H3c</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:exclusiveGateway id="GW_JoinReceive" name="">
-      <bpmn:incoming>SF_H3a</bpmn:incoming>
-      <bpmn:incoming>SF_H3b</bpmn:incoming>
-      <bpmn:incoming>SF_H3c</bpmn:incoming>
-      <bpmn:outgoing>SF_H4</bpmn:outgoing>
+    <bpmn:exclusiveGateway id="GW_H_JoinReceive" name="">
+      <bpmn:incoming>SF_H_Join1</bpmn:incoming>
+      <bpmn:incoming>SF_H_Join2</bpmn:incoming>
+      <bpmn:incoming>SF_H_Join3</bpmn:incoming>
+      <bpmn:outgoing>SF_H_Assess</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="T_Staff_Assess" name="Xét điều kiện đổi trả theo bảng chính sách 30 ngày">
-      <bpmn:documentation>Bảng Hasaki (01/06/2024): lỗi từ phía nhà cung cấp → Đổi mới — Trả không thu phí; lỗi từ phía người sử dụng → Không hỗ trợ đổi trả; sản phẩm không lỗi → Đổi mới. 31 ngày trở đi / không áp dụng → Không hỗ trợ đổi trả.</bpmn:documentation>
-      <bpmn:incoming>SF_H4</bpmn:incoming>
-      <bpmn:outgoing>SF_H5</bpmn:outgoing>
+    <bpmn:task id="T_H_Assess" name="Xét điều kiện đổi trả theo chính sách">
+      <bpmn:incoming>SF_H_Assess</bpmn:incoming>
+      <bpmn:outgoing>SF_H_Confirm</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:exclusiveGateway id="X2" name="Theo bảng chính sách 30 ngày, được hỗ trợ thế nào?" default="SF_X2_No">
-      <bpmn:incoming>SF_H5</bpmn:incoming>
-      <bpmn:outgoing>SF_X2_No</bpmn:outgoing>
-      <bpmn:outgoing>SF_X2_ExOnly</bpmn:outgoing>
-      <bpmn:outgoing>SF_X2_Both</bpmn:outgoing>
+    <bpmn:task id="T_H_ConfirmPlan" name="Xác nhận phương án giải quyết với khách hàng">
+      <bpmn:incoming>SF_H_Confirm</bpmn:incoming>
+      <bpmn:outgoing>SF_H_ToX2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="X2" name="Phương án đã thống nhất?" default="SF_H_Reject">
+      <bpmn:incoming>SF_H_ToX2</bpmn:incoming>
+      <bpmn:outgoing>SF_H_Reject</bpmn:outgoing>
+      <bpmn:outgoing>SF_H_Refund</bpmn:outgoing>
+      <bpmn:outgoing>SF_H_Exchange</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:task id="T_Staff_Explain" name="Giải thích lý do không hỗ trợ đổi trả">
-      <bpmn:incoming>SF_X2_No</bpmn:incoming>
-      <bpmn:outgoing>SF_H6</bpmn:outgoing>
+    <bpmn:task id="T_H_Explain" name="Giải thích lý do không hỗ trợ">
+      <bpmn:incoming>SF_H_Reject</bpmn:incoming>
+      <bpmn:outgoing>SF_H_EndReject</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:endEvent id="EE_Reject" name="Không hỗ trợ đổi trả">
-      <bpmn:incoming>SF_H6</bpmn:incoming>
+    <bpmn:task id="T_H_Refund" name="Thực hiện hoàn tiền">
+      <bpmn:incoming>SF_H_Refund</bpmn:incoming>
+      <bpmn:outgoing>SF_H_EndRefund</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T_H_Issue" name="Giao / gửi sản phẩm mới hoặc thay thế">
+      <bpmn:incoming>SF_H_Exchange</bpmn:incoming>
+      <bpmn:outgoing>SF_H_EndExchange</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EE_H_Reject" name="Không hỗ trợ đổi trả">
+      <bpmn:incoming>SF_H_EndReject</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:task id="T_Staff_CreateTicketEx" name="Cập nhật yêu cầu đổi trả trên hệ thống đơn hàng">
-      <bpmn:documentation>Suy luận vận hành.</bpmn:documentation>
-      <bpmn:incoming>SF_X2_ExOnly</bpmn:incoming>
-      <bpmn:outgoing>SF_H7ex</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:task id="T_Staff_CreateTicketBoth" name="Cập nhật yêu cầu đổi trả trên hệ thống đơn hàng">
-      <bpmn:incoming>SF_X2_Both</bpmn:incoming>
-      <bpmn:outgoing>SF_H7both</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:exclusiveGateway id="X3" name="Khách chọn đổi mới hay trả không thu phí?" default="SF_X3_Exch">
-      <bpmn:incoming>SF_H7both</bpmn:incoming>
-      <bpmn:outgoing>SF_X3_Exch</bpmn:outgoing>
-      <bpmn:outgoing>SF_X3_Refund</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="GW_JoinToExch" name="">
-      <bpmn:incoming>SF_H7ex</bpmn:incoming>
-      <bpmn:incoming>SF_X3_Exch</bpmn:incoming>
-      <bpmn:incoming>SF_X5_Other</bpmn:incoming>
-      <bpmn:outgoing>SF_H8</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:task id="T_Wh_CheckStock" name="Kiểm còn hàng sản phẩm khách muốn đổi">
-      <bpmn:documentation>Suy luận vận hành.</bpmn:documentation>
-      <bpmn:incoming>SF_H8</bpmn:incoming>
-      <bpmn:outgoing>SF_H9</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:exclusiveGateway id="X4" name="Sản phẩm muốn đổi còn hàng?" default="SF_X4_No">
-      <bpmn:incoming>SF_H9</bpmn:incoming>
-      <bpmn:outgoing>SF_X4_Yes</bpmn:outgoing>
-      <bpmn:outgoing>SF_X4_No</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:task id="T_Wh_Issue" name="Giao / gửi sản phẩm đổi mới cho khách">
-      <bpmn:incoming>SF_X4_Yes</bpmn:incoming>
-      <bpmn:outgoing>SF_H10</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:task id="T_Wh_DispositionEx" name="Xử lý hàng khách trả lại">
-      <bpmn:incoming>SF_H10</bpmn:incoming>
-      <bpmn:outgoing>SF_H11</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:endEvent id="EE_Exchange" name="Đổi mới hoàn tất">
-      <bpmn:incoming>SF_H11</bpmn:incoming>
+    <bpmn:endEvent id="EE_H_Refund" name="Hoàn tiền hoàn tất">
+      <bpmn:incoming>SF_H_EndRefund</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:task id="T_Staff_NotifyOOS" name="Thông báo sản phẩm muốn đổi đã hết hàng">
-      <bpmn:documentation>Suy luận: không khẳng định bắt buộc hoàn khi hết hàng.</bpmn:documentation>
-      <bpmn:incoming>SF_X4_No</bpmn:incoming>
-      <bpmn:outgoing>SF_H12</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:exclusiveGateway id="X5" name="Khách chọn phương án nào?" default="SF_X5_Return">
-      <bpmn:incoming>SF_H12</bpmn:incoming>
-      <bpmn:outgoing>SF_X5_Other</bpmn:outgoing>
-      <bpmn:outgoing>SF_X5_Return</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:exclusiveGateway id="GW_JoinToRefund" name="">
-      <bpmn:incoming>SF_X3_Refund</bpmn:incoming>
-      <bpmn:incoming>SF_X5_Return</bpmn:incoming>
-      <bpmn:outgoing>SF_H13</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:task id="T_Acc_CreateRefundOrder" name="Cập nhật yêu cầu hoàn tiền trên hệ thống đơn hàng">
-      <bpmn:incoming>SF_H13</bpmn:incoming>
-      <bpmn:outgoing>SF_H14</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:task id="T_Acc_Refund" name="Hoàn tiền theo phương thức trên chính sách Hasaki">
-      <bpmn:documentation>Theo website: chi nhánh (tiền mặt / CK 3–5 ngày / VNpay…); online/tại nhà hoàn sau khi nhận hàng. Không mã phiếu quà.</bpmn:documentation>
-      <bpmn:incoming>SF_H14</bpmn:incoming>
-      <bpmn:outgoing>SF_H15</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:task id="T_Wh_DispositionRf" name="Xử lý hàng khách trả lại sau hoàn">
-      <bpmn:incoming>SF_H15</bpmn:incoming>
-      <bpmn:outgoing>SF_H16</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:endEvent id="EE_Refund" name="Hoàn tiền hoàn tất">
-      <bpmn:incoming>SF_H16</bpmn:incoming>
+    <bpmn:endEvent id="EE_H_Exchange" name="Đổi hàng hoàn tất">
+      <bpmn:incoming>SF_H_EndExchange</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SF_H1" sourceRef="SE_H" targetRef="X0" />
-    <bpmn:sequenceFlow id="SF_X0_WalkIn" name="Đến cửa hàng luôn (không gọi)" sourceRef="X0" targetRef="T_Staff_IntakeWalkIn" />
-    <bpmn:sequenceFlow id="SF_X0_Contact" name="Liên hệ tổng đài / CSKH trước" sourceRef="X0" targetRef="T_Staff_IntakeContact">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=cachBatDau = "lien_he_truoc"</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="SF_H_1" sourceRef="SE_H" targetRef="X0" />
+    <bpmn:sequenceFlow id="SF_H_WalkIn" name="Walk-in" sourceRef="X0" targetRef="T_H_IntakeWalkIn" />
+    <bpmn:sequenceFlow id="SF_H_Contact" name="Liên hệ trước" sourceRef="X0" targetRef="T_H_IntakeContact">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=kenhBatDau = "lien_he"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SF_H2a" sourceRef="T_Staff_IntakeWalkIn" targetRef="T_Staff_ReceiveStore" />
-    <bpmn:sequenceFlow id="SF_H3a" sourceRef="T_Staff_ReceiveStore" targetRef="GW_JoinReceive" />
-    <bpmn:sequenceFlow id="SF_H2b" sourceRef="T_Staff_IntakeContact" targetRef="T_Staff_GuideAfterContact" />
-    <bpmn:sequenceFlow id="SF_H2c" sourceRef="T_Staff_GuideAfterContact" targetRef="X1" />
-    <bpmn:sequenceFlow id="SF_X1_Store" name="Mang tới cửa hàng" sourceRef="X1" targetRef="T_Staff_ReceiveStoreAfter" />
-    <bpmn:sequenceFlow id="SF_X1_Online" name="Trả hàng online" sourceRef="X1" targetRef="T_Staff_RecordTracking">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=kenhSauHuongDan = "online"</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="SF_H_WalkIn2" sourceRef="T_H_IntakeWalkIn" targetRef="T_H_ReceiveStore" />
+    <bpmn:sequenceFlow id="SF_H_Join1" sourceRef="T_H_ReceiveStore" targetRef="GW_H_JoinReceive" />
+    <bpmn:sequenceFlow id="SF_H_Guide" sourceRef="T_H_IntakeContact" targetRef="T_H_Guide" />
+    <bpmn:sequenceFlow id="SF_H_ToX1" sourceRef="T_H_Guide" targetRef="X1" />
+    <bpmn:sequenceFlow id="SF_H_StoreAfter" name="Mang tới cửa hàng" sourceRef="X1" targetRef="T_H_ReceiveStoreAfter" />
+    <bpmn:sequenceFlow id="SF_H_Mail" name="Gửi hàng online" sourceRef="X1" targetRef="T_H_ReceiveMail">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=kenhSauHuongDan = "gui_hang"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SF_H3b" sourceRef="T_Staff_ReceiveStoreAfter" targetRef="GW_JoinReceive" />
-    <bpmn:sequenceFlow id="SF_H3c1" sourceRef="T_Staff_RecordTracking" targetRef="T_Wh_ReceiveMail" />
-    <bpmn:sequenceFlow id="SF_H3c" sourceRef="T_Wh_ReceiveMail" targetRef="GW_JoinReceive" />
-    <bpmn:sequenceFlow id="SF_H4" sourceRef="GW_JoinReceive" targetRef="T_Staff_Assess" />
-    <bpmn:sequenceFlow id="SF_H5" sourceRef="T_Staff_Assess" targetRef="X2" />
-    <bpmn:sequenceFlow id="SF_X2_No" name="Không hỗ trợ đổi trả" sourceRef="X2" targetRef="T_Staff_Explain" />
-    <bpmn:sequenceFlow id="SF_X2_ExOnly" name="Chỉ đổi mới" sourceRef="X2" targetRef="T_Staff_CreateTicketEx">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=ketQuaChinhSach = "chi_doi_moi"</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="SF_H_Join2" sourceRef="T_H_ReceiveStoreAfter" targetRef="GW_H_JoinReceive" />
+    <bpmn:sequenceFlow id="SF_H_Join3" sourceRef="T_H_ReceiveMail" targetRef="GW_H_JoinReceive" />
+    <bpmn:sequenceFlow id="SF_H_Assess" sourceRef="GW_H_JoinReceive" targetRef="T_H_Assess" />
+    <bpmn:sequenceFlow id="SF_H_Confirm" sourceRef="T_H_Assess" targetRef="T_H_ConfirmPlan" />
+    <bpmn:sequenceFlow id="SF_H_ToX2" sourceRef="T_H_ConfirmPlan" targetRef="X2" />
+    <bpmn:sequenceFlow id="SF_H_Reject" name="Không hỗ trợ" sourceRef="X2" targetRef="T_H_Explain" />
+    <bpmn:sequenceFlow id="SF_H_Refund" name="Hoàn tiền" sourceRef="X2" targetRef="T_H_Refund">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=phuongAn = "hoan_tien"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SF_X2_Both" name="Đổi mới hoặc trả không thu phí" sourceRef="X2" targetRef="T_Staff_CreateTicketBoth">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=ketQuaChinhSach = "doi_moi_hoac_tra_khong_thu_phi"</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="SF_H_Exchange" name="Đổi / sản phẩm thay thế" sourceRef="X2" targetRef="T_H_Issue">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=phuongAn = "doi_hang"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SF_H6" sourceRef="T_Staff_Explain" targetRef="EE_Reject" />
-    <bpmn:sequenceFlow id="SF_H7ex" sourceRef="T_Staff_CreateTicketEx" targetRef="GW_JoinToExch" />
-    <bpmn:sequenceFlow id="SF_H7both" sourceRef="T_Staff_CreateTicketBoth" targetRef="X3" />
-    <bpmn:sequenceFlow id="SF_X3_Exch" name="Đổi mới" sourceRef="X3" targetRef="GW_JoinToExch" />
-    <bpmn:sequenceFlow id="SF_X3_Refund" name="Trả không thu phí" sourceRef="X3" targetRef="GW_JoinToRefund">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=luaChonKhach = "tra_khong_thu_phi"</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SF_H8" sourceRef="GW_JoinToExch" targetRef="T_Wh_CheckStock" />
-    <bpmn:sequenceFlow id="SF_H9" sourceRef="T_Wh_CheckStock" targetRef="X4" />
-    <bpmn:sequenceFlow id="SF_X4_Yes" name="Còn hàng" sourceRef="X4" targetRef="T_Wh_Issue">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=conHang = true</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SF_X4_No" name="Hết hàng" sourceRef="X4" targetRef="T_Staff_NotifyOOS" />
-    <bpmn:sequenceFlow id="SF_H10" sourceRef="T_Wh_Issue" targetRef="T_Wh_DispositionEx" />
-    <bpmn:sequenceFlow id="SF_H11" sourceRef="T_Wh_DispositionEx" targetRef="EE_Exchange" />
-    <bpmn:sequenceFlow id="SF_H12" sourceRef="T_Staff_NotifyOOS" targetRef="X5" />
-    <bpmn:sequenceFlow id="SF_X5_Other" name="Chọn sản phẩm khác còn hàng" sourceRef="X5" targetRef="GW_JoinToExch">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=luaChonKhiHetHang = "san_pham_khac"</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SF_X5_Return" name="Không chọn sản phẩm khác — trả hàng" sourceRef="X5" targetRef="GW_JoinToRefund" />
-    <bpmn:sequenceFlow id="SF_H13" sourceRef="GW_JoinToRefund" targetRef="T_Acc_CreateRefundOrder" />
-    <bpmn:sequenceFlow id="SF_H14" sourceRef="T_Acc_CreateRefundOrder" targetRef="T_Acc_Refund" />
-    <bpmn:sequenceFlow id="SF_H15" sourceRef="T_Acc_Refund" targetRef="T_Wh_DispositionRf" />
-    <bpmn:sequenceFlow id="SF_H16" sourceRef="T_Wh_DispositionRf" targetRef="EE_Refund" />
+    <bpmn:sequenceFlow id="SF_H_EndReject" sourceRef="T_H_Explain" targetRef="EE_H_Reject" />
+    <bpmn:sequenceFlow id="SF_H_EndRefund" sourceRef="T_H_Refund" targetRef="EE_H_Refund" />
+    <bpmn:sequenceFlow id="SF_H_EndExchange" sourceRef="T_H_Issue" targetRef="EE_H_Exchange" />
   </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Collab_B4">
+    <bpmndi:BPMNPlane id="BPMNPlane_Collab_B4" bpmnElement="Collab_B4">
+      <bpmndi:BPMNShape id="Pool_Customer_di" bpmnElement="Pool_Customer" isHorizontal="true">
+        <dc:Bounds x="0" y="0" width="1926" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SE_C_di" bpmnElement="SE_C">
+        <dc:Bounds x="60" y="52" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="X_C1_di" bpmnElement="X_C1">
+        <dc:Bounds x="203" y="45" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_C_BringDirect_di" bpmnElement="T_C_BringDirect">
+        <dc:Bounds x="328" y="30" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_C_JoinChannel_di" bpmnElement="GW_C_JoinChannel">
+        <dc:Bounds x="503" y="45" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_C_WaitReceive_di" bpmnElement="T_C_WaitReceive">
+        <dc:Bounds x="628" y="30" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_C_ConfirmPlan_di" bpmnElement="T_C_ConfirmPlan">
+        <dc:Bounds x="778" y="30" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="X_C3_di" bpmnElement="X_C3">
+        <dc:Bounds x="953" y="45" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_C_GetReject_di" bpmnElement="T_C_GetReject">
+        <dc:Bounds x="1078" y="30" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EE_C_Reject_di" bpmnElement="EE_C_Reject">
+        <dc:Bounds x="1260" y="52" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_C_Contact_di" bpmnElement="T_C_Contact">
+        <dc:Bounds x="328" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_C_ReceiveGuide_di" bpmnElement="T_C_ReceiveGuide">
+        <dc:Bounds x="478" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="X_C2_di" bpmnElement="X_C2">
+        <dc:Bounds x="653" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_C_BringAfter_di" bpmnElement="T_C_BringAfter">
+        <dc:Bounds x="778" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_C_GetRefund_di" bpmnElement="T_C_GetRefund">
+        <dc:Bounds x="1528" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EE_C_Refund_di" bpmnElement="EE_C_Refund">
+        <dc:Bounds x="1710" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_C_Ship_di" bpmnElement="T_C_Ship">
+        <dc:Bounds x="778" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_C_GetExchange_di" bpmnElement="T_C_GetExchange">
+        <dc:Bounds x="1078" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EE_C_Exchange_di" bpmnElement="EE_C_Exchange">
+        <dc:Bounds x="1260" y="332" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SF_C_1_di" bpmnElement="SF_C_1">
+        <di:waypoint x="96" y="70" />
+        <di:waypoint x="203" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_WalkIn_di" bpmnElement="SF_C_WalkIn">
+        <di:waypoint x="253" y="70" />
+        <di:waypoint x="328" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_Contact_di" bpmnElement="SF_C_Contact">
+        <di:waypoint x="228" y="95" />
+        <di:waypoint x="228" y="210" />
+        <di:waypoint x="328" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_Join1_di" bpmnElement="SF_C_Join1">
+        <di:waypoint x="428" y="70" />
+        <di:waypoint x="503" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_Wait_di" bpmnElement="SF_C_Wait">
+        <di:waypoint x="553" y="70" />
+        <di:waypoint x="628" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_ToConfirm_di" bpmnElement="SF_C_ToConfirm">
+        <di:waypoint x="728" y="70" />
+        <di:waypoint x="778" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_ToOutcome_di" bpmnElement="SF_C_ToOutcome">
+        <di:waypoint x="878" y="70" />
+        <di:waypoint x="953" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_Reject_di" bpmnElement="SF_C_Reject">
+        <di:waypoint x="1003" y="70" />
+        <di:waypoint x="1078" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_Refund_di" bpmnElement="SF_C_Refund">
+        <di:waypoint x="978" y="95" />
+        <di:waypoint x="978" y="210" />
+        <di:waypoint x="1528" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_Exchange_di" bpmnElement="SF_C_Exchange">
+        <di:waypoint x="978" y="95" />
+        <di:waypoint x="978" y="350" />
+        <di:waypoint x="1078" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_EndReject_di" bpmnElement="SF_C_EndReject">
+        <di:waypoint x="1178" y="70" />
+        <di:waypoint x="1260" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_AfterContact_di" bpmnElement="SF_C_AfterContact">
+        <di:waypoint x="428" y="210" />
+        <di:waypoint x="478" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_AfterGuide_di" bpmnElement="SF_C_AfterGuide">
+        <di:waypoint x="578" y="210" />
+        <di:waypoint x="653" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_BringAfter_di" bpmnElement="SF_C_BringAfter">
+        <di:waypoint x="703" y="210" />
+        <di:waypoint x="778" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_Ship_di" bpmnElement="SF_C_Ship">
+        <di:waypoint x="678" y="235" />
+        <di:waypoint x="678" y="350" />
+        <di:waypoint x="778" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_Join2_di" bpmnElement="SF_C_Join2">
+        <di:waypoint x="878" y="210" />
+        <di:waypoint x="903" y="210" />
+        <di:waypoint x="903" y="140" />
+        <di:waypoint x="453" y="140" />
+        <di:waypoint x="453" y="70" />
+        <di:waypoint x="503" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_EndRefund_di" bpmnElement="SF_C_EndRefund">
+        <di:waypoint x="1628" y="210" />
+        <di:waypoint x="1710" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_Join3_di" bpmnElement="SF_C_Join3">
+        <di:waypoint x="878" y="350" />
+        <di:waypoint x="903" y="350" />
+        <di:waypoint x="903" y="140" />
+        <di:waypoint x="453" y="140" />
+        <di:waypoint x="453" y="70" />
+        <di:waypoint x="503" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_C_EndExchange_di" bpmnElement="SF_C_EndExchange">
+        <di:waypoint x="1178" y="350" />
+        <di:waypoint x="1260" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Pool_Hasaki_di" bpmnElement="Pool_Hasaki" isHorizontal="true">
+        <dc:Bounds x="0" y="480" width="1926" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SE_H_di" bpmnElement="SE_H">
+        <dc:Bounds x="60" y="532" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="X0_di" bpmnElement="X0">
+        <dc:Bounds x="203" y="525" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_H_IntakeWalkIn_di" bpmnElement="T_H_IntakeWalkIn">
+        <dc:Bounds x="328" y="510" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_H_ReceiveStore_di" bpmnElement="T_H_ReceiveStore">
+        <dc:Bounds x="478" y="510" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GW_H_JoinReceive_di" bpmnElement="GW_H_JoinReceive">
+        <dc:Bounds x="653" y="525" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_H_Assess_di" bpmnElement="T_H_Assess">
+        <dc:Bounds x="778" y="510" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_H_ConfirmPlan_di" bpmnElement="T_H_ConfirmPlan">
+        <dc:Bounds x="928" y="510" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="X2_di" bpmnElement="X2">
+        <dc:Bounds x="1103" y="525" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_H_Explain_di" bpmnElement="T_H_Explain">
+        <dc:Bounds x="1228" y="510" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EE_H_Reject_di" bpmnElement="EE_H_Reject">
+        <dc:Bounds x="1410" y="532" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_H_IntakeContact_di" bpmnElement="T_H_IntakeContact">
+        <dc:Bounds x="328" y="650" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_H_Guide_di" bpmnElement="T_H_Guide">
+        <dc:Bounds x="478" y="650" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="X1_di" bpmnElement="X1">
+        <dc:Bounds x="653" y="665" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_H_ReceiveStoreAfter_di" bpmnElement="T_H_ReceiveStoreAfter">
+        <dc:Bounds x="778" y="650" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_H_Refund_di" bpmnElement="T_H_Refund">
+        <dc:Bounds x="1678" y="650" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EE_H_Refund_di" bpmnElement="EE_H_Refund">
+        <dc:Bounds x="1860" y="672" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_H_ReceiveMail_di" bpmnElement="T_H_ReceiveMail">
+        <dc:Bounds x="778" y="790" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_H_Issue_di" bpmnElement="T_H_Issue">
+        <dc:Bounds x="1228" y="790" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EE_H_Exchange_di" bpmnElement="EE_H_Exchange">
+        <dc:Bounds x="1410" y="812" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SF_H_1_di" bpmnElement="SF_H_1">
+        <di:waypoint x="96" y="550" />
+        <di:waypoint x="203" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_WalkIn_di" bpmnElement="SF_H_WalkIn">
+        <di:waypoint x="253" y="550" />
+        <di:waypoint x="328" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_Contact_di" bpmnElement="SF_H_Contact">
+        <di:waypoint x="228" y="575" />
+        <di:waypoint x="228" y="690" />
+        <di:waypoint x="328" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_WalkIn2_di" bpmnElement="SF_H_WalkIn2">
+        <di:waypoint x="428" y="550" />
+        <di:waypoint x="478" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_Join1_di" bpmnElement="SF_H_Join1">
+        <di:waypoint x="578" y="550" />
+        <di:waypoint x="653" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_Assess_di" bpmnElement="SF_H_Assess">
+        <di:waypoint x="703" y="550" />
+        <di:waypoint x="778" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_Confirm_di" bpmnElement="SF_H_Confirm">
+        <di:waypoint x="878" y="550" />
+        <di:waypoint x="928" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_ToX2_di" bpmnElement="SF_H_ToX2">
+        <di:waypoint x="1028" y="550" />
+        <di:waypoint x="1103" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_Reject_di" bpmnElement="SF_H_Reject">
+        <di:waypoint x="1153" y="550" />
+        <di:waypoint x="1228" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_Refund_di" bpmnElement="SF_H_Refund">
+        <di:waypoint x="1128" y="575" />
+        <di:waypoint x="1128" y="690" />
+        <di:waypoint x="1678" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_Exchange_di" bpmnElement="SF_H_Exchange">
+        <di:waypoint x="1128" y="575" />
+        <di:waypoint x="1128" y="830" />
+        <di:waypoint x="1228" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_EndReject_di" bpmnElement="SF_H_EndReject">
+        <di:waypoint x="1328" y="550" />
+        <di:waypoint x="1410" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_Guide_di" bpmnElement="SF_H_Guide">
+        <di:waypoint x="428" y="690" />
+        <di:waypoint x="478" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_ToX1_di" bpmnElement="SF_H_ToX1">
+        <di:waypoint x="578" y="690" />
+        <di:waypoint x="653" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_StoreAfter_di" bpmnElement="SF_H_StoreAfter">
+        <di:waypoint x="703" y="690" />
+        <di:waypoint x="778" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_Mail_di" bpmnElement="SF_H_Mail">
+        <di:waypoint x="678" y="715" />
+        <di:waypoint x="678" y="830" />
+        <di:waypoint x="778" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_Join2_di" bpmnElement="SF_H_Join2">
+        <di:waypoint x="878" y="690" />
+        <di:waypoint x="903" y="690" />
+        <di:waypoint x="903" y="620" />
+        <di:waypoint x="603" y="620" />
+        <di:waypoint x="603" y="550" />
+        <di:waypoint x="653" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_EndRefund_di" bpmnElement="SF_H_EndRefund">
+        <di:waypoint x="1778" y="690" />
+        <di:waypoint x="1860" y="690" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_Join3_di" bpmnElement="SF_H_Join3">
+        <di:waypoint x="878" y="830" />
+        <di:waypoint x="903" y="830" />
+        <di:waypoint x="903" y="620" />
+        <di:waypoint x="603" y="620" />
+        <di:waypoint x="603" y="550" />
+        <di:waypoint x="653" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF_H_EndExchange_di" bpmnElement="SF_H_EndExchange">
+        <di:waypoint x="1328" y="830" />
+        <di:waypoint x="1410" y="830" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF_WalkIn_di" bpmnElement="MF_WalkIn">
+        <di:waypoint x="378" y="110" />
+        <di:waypoint x="78" y="532" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF_Contact_di" bpmnElement="MF_Contact">
+        <di:waypoint x="378" y="250" />
+        <di:waypoint x="78" y="532" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF_Guide_di" bpmnElement="MF_Guide">
+        <di:waypoint x="528" y="650" />
+        <di:waypoint x="528" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF_BringAfter_di" bpmnElement="MF_BringAfter">
+        <di:waypoint x="828" y="250" />
+        <di:waypoint x="828" y="650" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF_Ship_di" bpmnElement="MF_Ship">
+        <di:waypoint x="828" y="390" />
+        <di:waypoint x="828" y="790" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF_ProposePlan_di" bpmnElement="MF_ProposePlan">
+        <di:waypoint x="978" y="510" />
+        <di:waypoint x="828" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF_AgreePlan_di" bpmnElement="MF_AgreePlan">
+        <di:waypoint x="828" y="110" />
+        <di:waypoint x="978" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF_Reject_di" bpmnElement="MF_Reject">
+        <di:waypoint x="1278" y="510" />
+        <di:waypoint x="1128" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF_Refund_di" bpmnElement="MF_Refund">
+        <di:waypoint x="1728" y="650" />
+        <di:waypoint x="1578" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MF_Exchange_di" bpmnElement="MF_Exchange">
+        <di:waypoint x="1278" y="790" />
+        <di:waypoint x="1128" y="390" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
 </bpmn:definitions>
